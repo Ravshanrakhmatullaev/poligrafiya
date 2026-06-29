@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_8.html -->
+<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_9.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -191,6 +191,15 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .msg-direction.inbox{background:var(--blue-light);color:var(--blue)}
 .msg-direction.sent{background:var(--green-light);color:var(--green)}
 .read-btn{font-size:11px;padding:3px 10px;border-radius:6px;border:1px solid var(--blue-border);background:#fff;color:var(--blue);cursor:pointer;font-family:inherit;margin-top:6px}
+.msg-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.msg-action-btn{font-size:12px;padding:5px 12px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-weight:500;transition:all .12s}
+.msg-action-btn.blue{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-border)}
+.msg-action-btn.green{background:var(--green-light);color:var(--green);border:1px solid var(--green-border)}
+.msg-action-btn.amber{background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)}
+.msg-action-btn:hover{opacity:0.8}
+.msg-status{font-size:12px;padding:5px 12px;border-radius:7px;font-weight:500}
+.msg-status.green{background:var(--green-light);color:var(--green)}
+.msg-status.amber{background:var(--amber-light);color:var(--amber)}
 .empty-state p{font-size:13px}
 
 .filter-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
@@ -700,12 +709,13 @@ function onLogin(){
     showScreen('app');
     // Owner: xabarlar ko'rinadi
     loadHistory().then(() => showPanel('owner'));
+    setInterval(() => loadMessages(), 30000); // Har 30 sekundda yangilash
   } else if(currentRole === 'admin'){
     nbOwner.classList.add('hidden');
     nbIshlab.classList.add('hidden');
     document.getElementById('nb-dizayner').classList.add('hidden');
     const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
-    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('admin')); }
+    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('admin')); setInterval(() => loadMessages(), 30000); }
     else { showScreen('yoriq'); }
   } else if(currentRole === 'dizayner'){
     nbOwner.classList.add('hidden');
@@ -713,7 +723,7 @@ function onLogin(){
     nbIshlab.classList.add('hidden');
     document.getElementById('nb-foiz').classList.add('hidden');
     const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
-    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dizayner')); }
+    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dizayner')); setInterval(() => loadMessages(), 30000); }
     else { showScreen('yoriq'); }
   } else {
     // ishlab chiqarish
@@ -721,7 +731,7 @@ function onLogin(){
     nbAdmin.classList.add('hidden');
     document.getElementById('nb-dizayner').classList.add('hidden');
     const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
-    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('ishlab')); }
+    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('ishlab')); setInterval(() => loadMessages(), 30000); }
     else { showScreen('yoriq'); }
   }
 }
@@ -1119,6 +1129,16 @@ async function loadMessages(){
 
 async function markRead(id){
   await sb.from('xabarlar').update({ o_qildi: true }).eq('id', id);
+  await loadMessages();
+}
+
+async function msgAction(id, type){
+  const updates = { o_qildi: true };
+  if(type === 'qabul') updates.qabul_qilindi = true;
+  if(type === 'tolov') updates.tolov_qilindi = true;
+  
+  await sb.from('xabarlar').update(updates).eq('id', id);
+  showNotify(type === 'qabul' ? '✅ Qabul qilindi!' : '💰 Tolov qilindi!');
   await loadMessages();
 }
 
