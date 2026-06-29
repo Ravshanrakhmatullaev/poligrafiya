@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_2.html -->
+<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_5.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -157,6 +157,16 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .savebtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:10px;border:none;background:var(--green);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;transition:all .15s;font-family:inherit}
 .savebtn:hover{background:#15803d}
 .savebtn svg{stroke:#fff;fill:none}
+.diz-row{background:var(--gray-light);border-radius:10px;border:1px solid var(--gray-border);padding:12px;margin-bottom:10px}
+.diz-grid{display:grid;grid-template-columns:1fr 130px 110px auto;gap:8px;align-items:center}
+.diz-mijoz{margin-top:8px;padding:10px;background:#fff;border-radius:8px;border:1px solid var(--blue-border);display:none}
+.diz-mijoz.show{display:block}
+.tolov-toggle{display:flex;gap:6px;margin-top:8px}
+.tolov-btn{flex:1;padding:7px;border-radius:8px;border:1.5px solid var(--gray-border);background:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--text3)}
+.tolov-btn.tolandi{background:var(--green-light);border-color:var(--green-border);color:var(--green)}
+.tolov-btn.tolanmadi{background:var(--red-light);border-color:var(--red-border);color:var(--red)}
+.tolov-select{width:100%;padding:7px 10px;border:1.5px solid var(--gray-border);border-radius:8px;background:#fff;color:var(--text);font-size:13px;font-family:inherit}
+.tolov-select:focus{outline:none;border-color:var(--blue)}
 .tgbtn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 .notify{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:10px;background:#1f2937;color:#fff;font-size:13px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:300px}
@@ -187,7 +197,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   <p>Yuklanmoqda...</p>
 </div>
 
-<div id="login-screen" class="">
+<div id="login-screen" class="hidden">
   <div class="login-card">
     <div class="login-logo">
       <div class="login-icon">
@@ -209,7 +219,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 </div>
 
-<div id="yoriq-screen" class="hidden">
+<div id="yoriq-screen" class="">
   <div class="yoriq-wrap">
     <div class="yoriq-header">
       <div style="font-size:40px;margin-bottom:10px">📋</div>
@@ -262,23 +272,23 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div class="topbar-right">
       <div class="user-chip">
         <div class="user-dot"></div>
-        <span id="user-name-chip">—</span>
+        <span id="user-name-chip">begzodbek</span>
       </div>
-      <span class="role-badge" id="role-badge-chip"></span>
+      <span class="role-badge dizayner" id="role-badge-chip">Ishlab chiqarish</span>
       <button class="logout-btn" onclick="doLogout()">Chiqish</button>
     </div>
   </div>
 
   <div class="nav" id="main-nav">
-    <button class="nav-btn" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
       Umumiy
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       Admin
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;ishlab&#39;)" id="nb-ishlab">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;ishlab&#39;)" id="nb-ishlab">
       <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
       Ishlab chiqarish
     </button>
@@ -286,7 +296,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
       Tarix
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
+    <button class="nav-btn" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
+      <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><circle cx="11" cy="11" r="2"></circle></svg>
+      Dizayn
+    </button>
+    <button class="nav-btn hidden" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
       <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
       Foiz jadvali
     </button>
@@ -445,6 +459,56 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     </div>
   </div>
 
+  <!-- DIZAYNER -->
+  <div class="panel" id="panel-dizayner">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 14px">
+      <div style="font-size:14px;font-weight:700">Dizayn ishlari</div>
+      <div style="font-size:13px;color:var(--text3)">Jami: <strong id="diz-total-show" style="color:var(--text)">0 so'm</strong></div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-label">Jami summa</div><div class="stat-val" style="color:var(--blue)" id="diz-jami">0 so'm</div></div>
+      <div class="stat"><div class="stat-label">To'landi</div><div class="stat-val" style="color:var(--green)" id="diz-tolandi">0 so'm</div></div>
+      <div class="stat"><div class="stat-label">To'lanmadi</div><div class="stat-val" style="color:var(--red)" id="diz-tolanmadi">0 so'm</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+        Dizayn ishlari ro'yxati
+      </div>
+      <div id="diz-rows"><div class="diz-row">
+      <div class="diz-grid">
+        <input type="text" placeholder="Mahsulot / ish nomi" value="" oninput="dizD[0].nom=this.value">
+        <input type="text" inputmode="numeric" placeholder="Summa" value="" style="text-align:right" id="dsum0">
+        <select class="tolov-select" onchange="dizD[0].tolovchi=this.value;renderDizayner()">
+          <option value="offis" selected="">🏢 Offis</option>
+          <option value="mijoz">👤 Mijoz</option>
+        </select>
+        <button class="icon-btn" onclick="delDiz(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
+      </div>
+      <div class="diz-mijoz">
+        <input type="text" placeholder="Telefon yoki Telegram (@username)" value="" oninput="dizD[0].kontakt=this.value" style="margin-bottom:0">
+      </div>
+      <div class="tolov-toggle">
+        <button class="tolov-btn" onclick="dizD[0].tolov=true;renderDizayner()">✅ To'landi</button>
+        <button class="tolov-btn" onclick="dizD[0].tolov=false;renderDizayner()">❌ To'lanmadi</button>
+      </div>
+      </div></div>
+      <button class="add-btn" onclick="addDizRow()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Ish qo'shish
+      </button>
+      <div class="tbar green" style="margin-top:12px"><span class="tl green">Jami summa</span><span class="tv green" id="diz-grand">0 so'm</span></div>
+    </div>
+    <button class="savebtn" onclick="saveDizayner()">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+      Saqlash
+    </button>
+    <button class="tgbtn" onclick="sendWeeklyDizayner()" style="margin-top:6px">
+      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      Haftalik hisobotni Menejerga yuborish
+    </button>
+  </div>
+
   <!-- FOIZ JADVALI -->
   <div class="panel" id="panel-foiz">
     <div class="card" style="margin-top:16px">
@@ -495,6 +559,9 @@ const ROLES = {
   'ra.ravshan1998+zuhriddin@gmail.com': 'ishlab',
   'ra.ravshan1998+jorabek@gmail.com': 'ishlab',
   'ra.ravshan1998+rashidulloh@gmail.com': 'admin',
+  'ra.ravshan1998+ulugbekdesign@gmail.com': 'dizayner',
+  'ra.ravshan1998+begzodbek@gmail.com': 'dizayner',
+  'ra.ravshan1998+gaybulloh@gmail.com': 'dizayner',
 };
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -569,18 +636,29 @@ function onLogin(){
   if(currentRole === 'owner'){
     nbAdmin.classList.add('hidden');
     nbIshlab.classList.add('hidden');
+    document.getElementById('nb-dizayner').classList.add('hidden');
     showScreen('app');
     loadHistory().then(() => showPanel('owner'));
   } else if(currentRole === 'admin'){
     nbOwner.classList.add('hidden');
     nbIshlab.classList.add('hidden');
+    document.getElementById('nb-dizayner').classList.add('hidden');
     const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
     if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('admin')); }
+    else { showScreen('yoriq'); }
+  } else if(currentRole === 'dizayner'){
+    nbOwner.classList.add('hidden');
+    nbAdmin.classList.add('hidden');
+    nbIshlab.classList.add('hidden');
+    document.getElementById('nb-foiz').classList.add('hidden');
+    const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
+    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dizayner')); }
     else { showScreen('yoriq'); }
   } else {
     // ishlab chiqarish
     nbOwner.classList.add('hidden');
     nbAdmin.classList.add('hidden');
+    document.getElementById('nb-dizayner').classList.add('hidden');
     const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
     if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('ishlab')); }
     else { showScreen('yoriq'); }
@@ -871,6 +949,108 @@ function numInput(el,cb){ el.addEventListener('keydown',e=>{if(e.key==='Enter')e
 
 function delIcon(fn){ return `<button class="icon-btn" onclick="${fn}" title="O'chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>`; }
 
+// ── DIZAYNER ──
+let dizD = [{nom:'', summa:'', tolovchi:'offis', tolov:null, kontakt:''}];
+
+function addDizRow(){ dizD.push({nom:'', summa:'', tolovchi:'offis', tolov:null, kontakt:''}); renderDizayner(); }
+function delDiz(i){ dizD.splice(i,1); renderDizayner(); }
+
+function renderDizayner(){
+  const el = document.getElementById('diz-rows');
+  if(!el) return;
+  el.innerHTML = '';
+  let jami=0, tolandi=0, tolanmadi=0;
+
+  dizD.forEach((r,i) => {
+    const s = parseInt(r.summa)||0;
+    if(s){ jami+=s; if(r.tolov===true) tolandi+=s; else if(r.tolov===false) tolanmadi+=s; }
+
+    const div = document.createElement('div');
+    div.className = 'diz-row';
+    div.innerHTML = `
+      <div class="diz-grid">
+        <input type="text" placeholder="Mahsulot / ish nomi" value="${r.nom}" oninput="dizD[${i}].nom=this.value">
+        <input type="text" inputmode="numeric" placeholder="Summa" value="${r.summa}" style="text-align:right" id="dsum${i}">
+        <select class="tolov-select" onchange="dizD[${i}].tolovchi=this.value;renderDizayner()">
+          <option value="offis"${r.tolovchi==='offis'?' selected':''}>🏢 Offis</option>
+          <option value="mijoz"${r.tolovchi==='mijoz'?' selected':''}>👤 Mijoz</option>
+        </select>
+        ${delIcon('delDiz('+i+')')}
+      </div>
+      <div class="diz-mijoz${r.tolovchi==='mijoz'?' show':''}">
+        <input type="text" placeholder="Telefon yoki Telegram (@username)" value="${r.kontakt||''}" 
+          oninput="dizD[${i}].kontakt=this.value"
+          style="margin-bottom:0">
+      </div>
+      <div class="tolov-toggle">
+        <button class="tolov-btn${r.tolov===true?' tolandi':''}" onclick="dizD[${i}].tolov=true;renderDizayner()">✅ To'landi</button>
+        <button class="tolov-btn${r.tolov===false?' tolanmadi':''}" onclick="dizD[${i}].tolov=false;renderDizayner()">❌ To'lanmadi</button>
+      </div>
+      ${s>0?`<div style="font-size:12px;color:var(--text3);margin-top:6px;text-align:right">${fmt(s)} so'm${r.tolov===true?' · <span style=\"color:var(--green)\">To\'landi</span>':r.tolov===false?' · <span style=\"color:var(--red)\">To\'lanmadi</span>':''}</div>`:''}`;
+    el.appendChild(div);
+    numInput(div.querySelector('#dsum'+i), v=>{ dizD[i].summa=v; renderDizayner(); });
+  });
+
+  const dizJamiEl = document.getElementById('diz-jami');
+  const dizTolandiEl = document.getElementById('diz-tolandi');
+  const dizTolanmadiEl = document.getElementById('diz-tolanmadi');
+  const dizGrandEl = document.getElementById('diz-grand');
+  const dizTotalEl = document.getElementById('diz-total-show');
+  if(dizJamiEl) dizJamiEl.textContent = fmt(jami)+' so\'m';
+  if(dizTolandiEl) dizTolandiEl.textContent = fmt(tolandi)+' so\'m';
+  if(dizTolanmadiEl) dizTolanmadiEl.textContent = fmt(tolanmadi)+' so\'m';
+  if(dizGrandEl) dizGrandEl.textContent = fmt(jami)+' so\'m';
+  if(dizTotalEl) dizTotalEl.textContent = fmt(jami)+' so\'m';
+}
+
+async function saveDizayner(){
+  const rows = dizD.filter(r=>r.nom||(parseInt(r.summa)||0));
+  if(!rows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+  const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
+  let jami=0, tolandi=0, tolanmadi=0;
+  rows.forEach(r=>{ const s=parseInt(r.summa)||0; jami+=s; if(r.tolov===true) tolandi+=s; else if(r.tolov===false) tolanmadi+=s; });
+  const sanaVaqt = getSanaVaqt();
+  const row = {
+    user_id: currentUser.id,
+    user_email: currentUser.email,
+    user_name: name,
+    type: 'dizayner',
+    data: { rows },
+    total_zakaz: jami,
+    total_daromad: tolandi,
+    total_jami: jami,
+    sana: sanaVaqt,
+  };
+  const { error } = await sb.from('zakazlar').insert(row);
+  if(error){ showNotify('❌ Xatolik: '+error.message); return; }
+  showNotify('✅ Saqlandi! — '+sanaVaqt);
+  await loadHistory();
+}
+
+async function sendWeeklyDizayner(){
+  const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
+  const { data, error } = await sb.from('zakazlar').select('*').eq('user_id', currentUser.id).eq('type','dizayner').order('created_at',{ascending:true});
+  if(error||!data||!data.length){ showNotify('Haftalik yozuvlar topilmadi'); return; }
+  let lines = [`🎨 Dizayner: ${name}`, `📅 Haftalik hisobot`, ''];
+  let totalJ=0, totalT=0, totalTM=0;
+  data.forEach(h=>{
+    lines.push(`📌 ${h.sana}`);
+    (h.data.rows||[]).forEach((r,i)=>{
+      const s=parseInt(r.summa)||0; totalJ+=s;
+      const tolovStatus = r.tolov===true?'✅ To\'landi':r.tolov===false?'❌ To\'lanmadi':'⏳ Belgilanmagan';
+      const tolovchi = r.tolovchi==='mijoz'?`👤 Mijoz${r.kontakt?' ('+r.kontakt+')':''}`: '🏢 Offis';
+      if(r.tolov===true) totalT+=s; else if(r.tolov===false) totalTM+=s;
+      lines.push(`  ${i+1}. ${r.nom}: ${fmt(s)} so'm | ${tolovchi} | ${tolovStatus}`);
+    });
+    lines.push('');
+  });
+  lines.push(`💰 Jami: ${fmt(totalJ)} so'm`);
+  lines.push(`✅ To'landi: ${fmt(totalT)} so'm`);
+  lines.push(`❌ To'lanmadi: ${fmt(totalTM)} so'm`);
+  const msg = lines.join('\n');
+  window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(msg),'_blank');
+}
+
 function renderAdmin(){
   const el=document.getElementById('admin-rows'); el.innerHTML='';
   let tz=0,td=0,soni=0;
@@ -978,6 +1158,7 @@ function showNotify(msg){ const el=document.getElementById('notify'); el.textCon
 
 renderAdmin();
 renderIshlab();
+renderDizayner();
 init();
 </script>
 
