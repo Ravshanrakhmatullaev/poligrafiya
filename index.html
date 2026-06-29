@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_1.html -->
+<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_2.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -154,6 +154,9 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 
 .tgbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:10px;border:none;background:#2AABEE;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;transition:all .15s;font-family:inherit}
 .tgbtn:hover{background:#1a9bde}
+.savebtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:10px;border:none;background:var(--green);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;transition:all .15s;font-family:inherit}
+.savebtn:hover{background:#15803d}
+.savebtn svg{stroke:#fff;fill:none}
 .tgbtn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 .notify{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:10px;background:#1f2937;color:#fff;font-size:13px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:300px}
@@ -347,9 +350,13 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       </button>
       <div class="tbar green" style="margin-top:12px"><span class="tl green">Sof daromad</span><span class="tv green" id="admin-grand">0 so'm</span></div>
     </div>
-    <button class="tgbtn" onclick="saveAndSend(&#39;admin&#39;)">
+    <button class="savebtn" onclick="saveOnly(&#39;admin&#39;)">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+      Saqlash
+    </button>
+    <button class="tgbtn" onclick="sendWeekly(&#39;admin&#39;)" style="margin-top:6px">
       <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-      Saqlash va Menejerga yuborish
+      Haftalik hisobotni Menejerga yuborish
     </button>
   </div>
 
@@ -412,9 +419,13 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div class="tbar purple" style="margin-top:10px"><span class="tl purple">UV pechat jami</span><span class="tv purple" id="uv-grand">0 so'm</span></div>
     </div>
     <div class="tbar dark"><span class="tl dark" style="font-size:14px">Umumiy jami</span><span class="tv dark" style="font-size:22px" id="ishlab-grand">0 so'm</span></div>
-    <button class="tgbtn" onclick="saveAndSend(&#39;ishlab&#39;)">
+    <button class="savebtn" onclick="saveOnly(&#39;ishlab&#39;)">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+      Saqlash
+    </button>
+    <button class="tgbtn" onclick="sendWeekly(&#39;ishlab&#39;)" style="margin-top:6px">
       <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-      Saqlash va Menejerga yuborish
+      Haftalik hisobotni Menejerga yuborish
     </button>
   </div>
 
@@ -482,6 +493,8 @@ const ROLES = {
   'ra.ravshan1998+umidjon@gmail.com': 'admin',
   'ra.ravshan1998+ulugbek@gmail.com': 'admin',
   'ra.ravshan1998+zuhriddin@gmail.com': 'ishlab',
+  'ra.ravshan1998+jorabek@gmail.com': 'ishlab',
+  'ra.ravshan1998+rashidulloh@gmail.com': 'admin',
 };
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -668,6 +681,117 @@ function renderOwnerPanel(){
 }
 
 // ── SAVE ──
+function getSanaVaqt(){
+  const now = new Date();
+  const kunlar = ['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
+  const kun = kunlar[now.getDay()];
+  const sana = now.toLocaleDateString('uz-UZ');
+  const vaqt = now.toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'});
+  return `${kun} ${sana} ${vaqt}`;
+}
+
+async function saveOnly(type){
+  const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
+  let data={}, totalZakaz=0, totalDaromad=0, totalJami=0;
+
+  if(type==='admin'){
+    const rows = adD.filter(r=>r.nom||(parseInt(r.sum)||0));
+    if(!rows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+    rows.forEach(r=>{ const s=parseInt(r.sum)||0; const f=getFoiz(s); totalZakaz+=s; totalDaromad+=Math.round(s*f); });
+    data = { rows };
+  } else {
+    const prodRows = prD.filter(r=>parseInt(r.miq)>0);
+    const uvRows   = uvD.filter(r=>parseInt(r.sig)>0&&parseInt(r.don)>0);
+    if(!prodRows.length&&!uvRows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+    prodRows.forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m)+(r.ex&&PR[r.key]&&PR[r.key].extra?200:0); totalJami+=m*np; });
+    uvRows.forEach(r=>{ const {jami}=calcUv(parseInt(r.sig),parseInt(r.don)); totalJami+=jami; });
+    data = { prodRows, uvRows };
+  }
+
+  const sanaVaqt = getSanaVaqt();
+  const row = {
+    user_id: currentUser.id,
+    user_email: currentUser.email,
+    user_name: name,
+    type,
+    data,
+    total_zakaz: totalZakaz,
+    total_daromad: totalDaromad,
+    total_jami: totalJami,
+    sana: sanaVaqt,
+  };
+
+  const { error } = await sb.from('zakazlar').insert(row);
+  if(error){ showNotify('❌ Xatolik: '+error.message); return; }
+  showNotify('✅ Saqlandi! — '+sanaVaqt);
+  await loadHistory();
+}
+
+async function sendWeekly(type){
+  // Oxirgi 7 kunlik yozuvlarni yig'ib Telegram ga yuboradi
+  const user = currentUser;
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+
+  const { data, error } = await sb.from('zakazlar')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('type', type)
+    .order('created_at', { ascending: true });
+
+  if(error || !data || !data.length){
+    showNotify('Haftalik yozuvlar topilmadi');
+    return;
+  }
+
+  const name = user.email.split('+')[1] ? user.email.split('+')[1].split('@')[0] : user.email.split('@')[0];
+  let lines = [];
+
+  if(type === 'admin'){
+    lines.push(`👤 Admin: ${name}`);
+    lines.push(`📅 Haftalik hisobot`);
+    lines.push('');
+    let totalZ=0, totalD=0;
+    data.forEach(h => {
+      lines.push(`📌 ${h.sana}`);
+      (h.data.rows||[]).filter(r=>r.nom||(parseInt(r.sum)||0)).forEach((r,i) => {
+        const s=parseInt(r.sum)||0;
+        const f=getFoiz(s);
+        const d=Math.round(s*f);
+        totalZ+=s; totalD+=d;
+        lines.push(`  ${i+1}. ${r.nom}: ${fmt(s)} so'm → ${Math.round(f*100)}% → ${fmt(d)} so'm`);
+      });
+      lines.push('');
+    });
+    lines.push(`💰 Jami zakaz: ${fmt(totalZ)} so'm`);
+    lines.push(`✅ Sof daromad: ${fmt(totalD)} so'm`);
+  } else {
+    lines.push(`🏭 Xodim: ${name}`);
+    lines.push(`📅 Haftalik hisobot`);
+    lines.push('');
+    let totalJ=0;
+    data.forEach(h => {
+      lines.push(`📌 ${h.sana}`);
+      (h.data.prodRows||[]).filter(r=>parseInt(r.miq)>0).forEach((r,i) => {
+        const m=parseInt(r.miq)||0;
+        const np=gUN(r.key,m)+(r.ex&&PR[r.key]&&PR[r.key].extra?200:0);
+        const j=m*np; totalJ+=j;
+        lines.push(`  ${i+1}. ${r.key}: ${m} ${PR[r.key]?PR[r.key].u:'dona'} × ${fmt(np)} = ${fmt(j)} so'm`);
+      });
+      (h.data.uvRows||[]).filter(r=>parseInt(r.sig)>0).forEach((r,i) => {
+        const{ls,np,jami}=calcUv(parseInt(r.sig),parseInt(r.don));
+        totalJ+=jami;
+        lines.push(`  UV: ${r.nom||'mahsulot'}: ${r.don} dona → ${ls} list × ${fmt(np)} = ${fmt(jami)} so'm`);
+      });
+      lines.push('');
+    });
+    lines.push(`💰 Jami: ${fmt(totalJ)} so'm`);
+  }
+
+  const msg = lines.join('\n');
+  window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(msg),'_blank');
+}
+
 async function saveAndSend(type){
   const name = ((currentUser.email.split('+')[1] || '').split('@')[0]) || currentUser.email.split('@')[0];
   let data={}, totalZakaz=0, totalDaromad=0, totalJami=0;
