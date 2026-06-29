@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_7.html -->
+<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_8.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -500,7 +500,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       </div>
     </div>
 
-    <div id="xabarlar-list"><div class="empty-state"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><p>Xabarlar yo'q</p></div></div>
+    <div id="xabarlar-list"><div class="empty-state"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><p>Xabarlar mavjud emas</p></div></div>
   </div>
 
   <!-- TARIX -->
@@ -1127,7 +1127,7 @@ function renderMessages(){
   if(!el) return;
   
   if(!allMessages.length){
-    el.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><p>Xabarlar yo\'q</p></div>';
+    el.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><p>Xabarlar mavjud emas</p></div>';
     return;
   }
   
@@ -1146,7 +1146,7 @@ function renderMessages(){
         <span class="msg-time">${m.sana || ''}</span>
       </div>
       <div class="msg-body">${m.text}</div>
-      ${isUnread ? `<button class="read-btn" onclick="markRead(${m.id})">O'qildi deb belgilash ✓</button>` : ''}`;
+      ${isUnread ? `<button class="read-btn" onclick="markRead(${m.id})">Oqildi deb belgilash ✓</button>` : ''}`;
     el.appendChild(div);
   });
 }
