@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_16.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_17.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,7 +68,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .topbar{background:#fff;border-bottom:1px solid var(--gray-border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100}
 .topbar-left{display:flex;align-items:center;gap:10px}
 .topbar-icon{width:32px;height:32px;background:var(--blue-light);border-radius:8px;display:flex;align-items:center;justify-content:center}
-.topbar-title{font-size:15px;font-weight:700}
+.topbar-title{font-size:15px;font-weight:700;color:var(--green)}
 .topbar-right{display:flex;align-items:center;gap:8px}
 .user-chip{display:flex;align-items:center;gap:7px;padding:5px 10px;background:var(--gray-light);border-radius:20px;font-size:12px;color:var(--text2);font-weight:500}
 .user-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
@@ -141,9 +141,12 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .pi{margin-bottom:8px;padding:12px;background:var(--gray-light);border-radius:10px;border:1px solid var(--gray-border)}
 .ui{margin-bottom:8px;padding:12px;background:var(--purple-light);border-radius:10px;border:1px solid var(--purple-border)}
 .ugrid{display:grid;grid-template-columns:1fr 80px 80px auto;gap:7px;align-items:center}
+.ugrid-wrap{display:grid;grid-template-columns:1fr;gap:8px}
+.ugrid-bottom{display:grid;grid-template-columns:75px 75px auto;gap:7px;align-items:center}
 .ures{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid var(--purple-border)}
 .note-box{font-size:11px;color:var(--text3);padding:6px 10px;background:#fff;border-radius:7px;margin-top:6px;border:1px solid var(--gray-border);line-height:1.5}
-.prod-grid{display:grid;grid-template-columns:1fr 90px 90px auto;gap:7px;align-items:center}
+.prod-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.prod-row-bottom{display:grid;grid-template-columns:1fr 90px auto;gap:7px;align-items:center}
 
 .ft{width:100%;border-collapse:collapse;font-size:13px}
 .ft th{padding:8px 12px;text-align:left;font-size:11px;color:var(--text3);font-weight:600;border-bottom:1px solid var(--gray-border);text-transform:uppercase;letter-spacing:.04em}
@@ -244,8 +247,10 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   .stat-row{grid-template-columns:1fr 1fr}
   .tbl-head,.zakaz-row{grid-template-columns:1fr 90px 44px 80px 36px;font-size:12px}
   .owner-row{grid-template-columns:28px 1fr 100px 100px}
-  .ugrid{grid-template-columns:1fr 65px 65px auto}
-  .prod-grid{grid-template-columns:1fr 75px 75px auto}
+}
+@media(max-width:420px){
+  .ugrid-bottom{grid-template-columns:1fr 1fr auto;gap:6px}
+  .prod-row-bottom{grid-template-columns:1fr 80px auto}
 }
 </style>
 </head>
@@ -262,7 +267,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div class="login-icon">
         <svg width="24" height="24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg>
       </div>
-      <h1>Poligrafiya</h1>
+      <h1 style="color:var(--green)">Ads uz</h1>
       <p>Boshqaruv tizimiga kiring</p>
     </div>
     <div class="form-group">
@@ -326,7 +331,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div class="topbar-icon">
         <svg width="18" height="18" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg>
       </div>
-      <span class="topbar-title">Poligrafiya</span>
+      <span class="topbar-title">Ads uz</span>
     </div>
     <div class="topbar-right">
       <div class="user-chip">
@@ -479,6 +484,13 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div style="font-size:14px;font-weight:700">Ishlab chiqarish</div>
       <div style="font-size:13px;color:var(--text3)">Jami: <strong id="ishlab-total-show" style="color:var(--text)">0 so'm</strong></div>
     </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="stat-label">Zakazlar soni</div><div class="stat-val" style="color:var(--blue)" id="ish-soni">0 ta</div></div>
+      <div class="stat"><div class="stat-label">Braklar summasi</div><div class="stat-val" style="color:var(--red)" id="ish-brak">0 so'm</div></div>
+      <div class="stat"><div class="stat-label">Sof daromad</div><div class="stat-val" style="color:var(--green)" id="ish-sof">0 so'm</div></div>
+    </div>
+
     <div class="stat-row">
       <div class="stat"><div class="stat-label">Oddiy mahsulotlar</div><div class="stat-val" style="color:var(--blue)" id="prod-sum">0 so'm</div></div>
       <div class="stat"><div class="stat-label">UV pechat</div><div class="stat-val" style="color:var(--purple)" id="uv-sum">0 so'm</div></div>
@@ -494,12 +506,15 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       </div>
       <div id="prod-rows"><div class="pi"><div class="prod-grid">
       <select onchange="prD[0].key=this.value;prD[0].ex=false;renderIshlab()"><optgroup label="🔥 Termopress"><option value="Futbolka DTF (old)" selected="">Futbolka DTF (old)</option><option value="Futbolka DTF (old+orqa)">Futbolka DTF (old+orqa)</option><option value="Futbolka Vinil (old)">Futbolka Vinil (old)</option><option value="Futbolka Vinil (old+orqa)">Futbolka Vinil (old+orqa)</option><option value="Lenta press">Lenta press</option><option value="Kepka DTF">Kepka DTF</option></optgroup><optgroup label="🖨️ Ekosalvent"><option value="Konturniy (pechat+kesish)">Konturniy (pechat+kesish)</option></optgroup><optgroup label="🖨️ Printer"><option value="Rangli printer (old+orqa, 1-500ta)">Rangli printer (old+orqa, 1-500ta)</option><option value="Rangli printer (old, 1-500ta)">Rangli printer (old, 1-500ta)</option><option value="Bloknot ichi (80gr qog&#39;oz)">Bloknot ichi (80gr qog'oz)</option><option value="Krujka sublimatsiya">Krujka sublimatsiya</option><option value="Sifra pechat">Sifra pechat</option></optgroup><optgroup label="📦 Boshqa"><option value="Lenta aparat pechat (Godex)">Lenta aparat pechat (Godex)</option><option value="Roll-up ustanovka">Roll-up ustanovka</option><option value="UF Ruchka">UF Ruchka</option><option value="Pauk rezka">Pauk rezka</option><option value="Znachok yasash">Znachok yasash</option><option value="Beyjik yasash/tikish">Beyjik yasash/tikish</option></optgroup></select>
-      <input type="text" inputmode="numeric" placeholder="Miqdor (dona)" value="" style="text-align:right" id="pmiq0">
-      <div class="badge bw">—</div>
-      <div style="display:flex;gap:5px;align-items:center">
-        <div class="badge bo">—</div>
-        <button class="icon-btn" onclick="delProd(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
-      </div></div></div></div>
+      <div class="prod-row-bottom">
+        <input type="text" inputmode="numeric" placeholder="Miqdor (dona)" value="" style="text-align:right" id="pmiq0">
+        <div class="badge bw">—</div>
+        <div style="display:flex;gap:5px;align-items:center">
+          <div class="badge bo">—</div>
+          <button class="icon-btn" onclick="delProd(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
+        </div>
+      </div>
+    </div></div></div>
       <button class="add-btn" onclick="addProdRow()">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Mahsulot qo'shish
@@ -522,14 +537,17 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div class="ugrid" style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:0 2px 8px">
         <div>Mahsulot nomi</div><div style="text-align:center">Sig'imi</div><div style="text-align:center">Dona</div><div style="text-align:center">Natija</div>
       </div>
-      <div id="uv-rows"><div class="ui"><div class="ugrid">
+      <div id="uv-rows"><div class="ui"><div class="ugrid-wrap">
       <input type="text" placeholder="Bloknot, daftar, termoz..." value="" oninput="uvD[0].nom=this.value">
-      <input type="text" inputmode="numeric" placeholder="8" value="" style="text-align:center" id="usig0">
-      <input type="text" inputmode="numeric" placeholder="100" value="" style="text-align:center" id="udon0">
-      <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
-        <span style="font-size:12px;color:var(--text3)">—</span>
-        <button class="icon-btn" onclick="delUv(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
-      </div></div>
+      <div class="ugrid-bottom">
+        <input type="text" inputmode="numeric" placeholder="8" value="" style="text-align:center" id="usig0">
+        <input type="text" inputmode="numeric" placeholder="100" value="" style="text-align:center" id="udon0">
+        <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
+          <span style="font-size:12px;color:var(--text3)">—</span>
+          <button class="icon-btn" onclick="delUv(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
+        </div>
+      </div>
+    </div>
       </div></div>
       <button class="add-btn purple" onclick="addUvRow()">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -555,13 +573,16 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div style="display:grid;grid-template-columns:1fr 100px 110px;gap:6px;font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:0 2px 8px">
         <div>Mahsulot nomi</div><div style="text-align:center">Kv.metr</div><div style="text-align:center">Natija</div>
       </div>
-      <div id="eko-rows"><div class="ui" style="background: var(--amber-light); border-color: var(--amber-border);"><div class="ugrid" style="grid-template-columns:1fr 100px 110px">
+      <div id="eko-rows"><div class="ui" style="background: var(--amber-light); border-color: var(--amber-border);"><div class="ugrid-wrap">
       <input type="text" placeholder="Mahsulot nomi (banner, ustanovka...)" value="" oninput="ekoD[0].nom=this.value">
-      <input type="text" inputmode="decimal" placeholder="10" value="" style="text-align:center" id="ekv0">
-      <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
-        <span style="font-size:12px;color:var(--text3)">—</span>
-        <button class="icon-btn" onclick="delEko(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
-      </div></div>
+      <div class="ugrid-bottom" style="grid-template-columns:1fr auto">
+        <input type="text" inputmode="decimal" placeholder="10" value="" style="text-align:center" id="ekv0">
+        <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
+          <span style="font-size:12px;color:var(--text3)">—</span>
+          <button class="icon-btn" onclick="delEko(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
+        </div>
+      </div>
+    </div>
       </div></div>
       <button class="add-btn" style="border-color:var(--amber-border);color:var(--amber)" onclick="addEkoRow()">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -883,6 +904,9 @@ function onLogin(){
   nbOwner.classList.remove('hidden');
   nbAdmin.classList.remove('hidden');
   nbIshlab.classList.remove('hidden');
+  document.getElementById('nb-foiz').classList.remove('hidden');
+  document.getElementById('nb-dizayner').classList.remove('hidden');
+  document.getElementById('nb-hisoblar').classList.remove('hidden');
 
   if(currentRole === 'owner'){
     nbAdmin.classList.add('hidden');
@@ -915,6 +939,7 @@ function onLogin(){
     nbAdmin.classList.add('hidden');
     document.getElementById('nb-dizayner').classList.add('hidden');
     document.getElementById('nb-hisoblar').classList.add('hidden');
+    document.getElementById('nb-foiz').classList.add('hidden');
     const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
     if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('ishlab')); setInterval(() => loadMessages(), 30000); }
     else { showScreen('yoriq'); }
@@ -938,6 +963,8 @@ async function loadHistory(){
   if(!error) allHistory = data || [];
   renderHistory();
   if(currentRole === 'owner') renderOwnerPanel();
+  if(currentRole === 'admin') renderAdminStats();
+  if(currentRole === 'ishlab') renderIshlabStats();
 }
 
 function setFilter(f, el){
@@ -984,9 +1011,21 @@ function renderHistory(){
         <span class="hist-date">${sana}</span>
       </div>
       <div class="hist-items">${itemsHtml||'—'}</div>
-      <div class="hist-total">${totalLabel}: ${fmt(total||0)} so'm</div>`;
+      <div class="hist-total">${totalLabel}: ${fmt(total||0)} so'm</div>
+      ${(!isAdmin && currentRole==='owner') ? `
+      <div style="margin-top:8px">
+        <button class="hisob-btn ${h.is_brak?'amber active':'amber'}" onclick="toggleBrak(${h.id}, ${!h.is_brak})">
+          ${h.is_brak ? '⚠️ Brak (belgilangan)' : '⚠️ Brak deb belgilash'}
+        </button>
+      </div>` : (h.is_brak ? `<div style="margin-top:6px"><span class="avans-chip kutilmoqda">⚠️ Brak deb belgilangan</span></div>` : '')}`;
     el.appendChild(div);
   });
+}
+
+async function toggleBrak(id, val){
+  await sb.from('zakazlar').update({ is_brak: val }).eq('id', id);
+  showNotify(val ? '⚠️ Brak deb belgilandi' : 'Brak belgisi olib tashlandi');
+  await loadHistory();
 }
 
 function renderOwnerPanel(){
@@ -1028,20 +1067,25 @@ function getSanaVaqt(){
   return `${kun} ${sana} ${vaqt}`;
 }
 
+let isSaving = false;
+
 async function saveOnly(type){
+  if(isSaving){ showNotify('Saqlanmoqda, kuting...'); return; }
+  isSaving = true;
+
   const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
   let data={}, totalZakaz=0, totalDaromad=0, totalJami=0;
 
   if(type==='admin'){
     const rows = adD.filter(r=>r.nom||(parseInt(r.sum)||0));
-    if(!rows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+    if(!rows.length){ showNotify('Hech narsa kiritilmagan'); isSaving=false; return; }
     rows.forEach(r=>{ const s=parseInt(r.sum)||0; const f=getFoiz(s); totalZakaz+=s; totalDaromad+=Math.round(s*f); });
     data = { rows };
   } else {
     const prodRows = prD.filter(r=>parseInt(r.miq)>0);
     const uvRows   = uvD.filter(r=>parseInt(r.sig)>0&&parseInt(r.don)>0);
     const ekoRows  = ekoD.filter(r=>parseFloat(r.kv)>0);
-    if(!prodRows.length&&!uvRows.length&&!ekoRows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+    if(!prodRows.length&&!uvRows.length&&!ekoRows.length){ showNotify('Hech narsa kiritilmagan'); isSaving=false; return; }
     prodRows.forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m)+(r.ex&&PR[r.key]&&PR[r.key].extra?200:0); totalJami+=m*np; });
     uvRows.forEach(r=>{ const {jami}=calcUv(parseInt(r.sig),parseInt(r.don)); totalJami+=jami; });
     ekoRows.forEach(r=>{ const {jami}=calcEko(parseFloat(r.kv)); totalJami+=jami; });
@@ -1062,8 +1106,22 @@ async function saveOnly(type){
   };
 
   const { error } = await sb.from('zakazlar').insert(row);
+  isSaving = false;
   if(error){ showNotify('❌ Xatolik: '+error.message); return; }
-  showNotify('✅ Saqlandi! — '+sanaVaqt);
+
+  showNotify('✅ Saqlandi! — '+sanaVaqt+'. Tarixda ko\'rishingiz mumkin.');
+
+  // Formani tozalash
+  if(type==='admin'){
+    adD = [{nom:'',sum:''},{nom:'',sum:''},{nom:'',sum:''}];
+    renderAdmin();
+  } else {
+    prD = [{key:'Futbolka DTF (old)',miq:'',ex:false}];
+    uvD = [{nom:'',sig:'',don:''}];
+    ekoD = [{nom:'',kv:''}];
+    renderIshlab();
+  }
+
   await loadHistory();
 }
 
@@ -1133,25 +1191,29 @@ async function sendWeekly(type){
 }
 
 async function saveAndSend(type){
+  if(isSaving){ showNotify('Saqlanmoqda, kuting...'); return; }
+  isSaving = true;
+
   const name = ((currentUser.email.split('+')[1] || '').split('@')[0]) || currentUser.email.split('@')[0];
   let data={}, totalZakaz=0, totalDaromad=0, totalJami=0;
 
   if(type==='admin'){
     const rows = adD.filter(r=>r.nom||(parseInt(r.sum)||0));
-    if(!rows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+    if(!rows.length){ showNotify('Hech narsa kiritilmagan'); isSaving=false; return; }
     rows.forEach(r=>{ const s=parseInt(r.sum)||0; const f=getFoiz(s); totalZakaz+=s; totalDaromad+=Math.round(s*f); });
     data = { rows };
   } else {
     const prodRows = prD.filter(r=>parseInt(r.miq)>0);
     const uvRows   = uvD.filter(r=>parseInt(r.sig)>0&&parseInt(r.don)>0);
     const ekoRows  = ekoD.filter(r=>parseFloat(r.kv)>0);
-    if(!prodRows.length&&!uvRows.length&&!ekoRows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+    if(!prodRows.length&&!uvRows.length&&!ekoRows.length){ showNotify('Hech narsa kiritilmagan'); isSaving=false; return; }
     prodRows.forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m)+(r.ex && PR[r.key] && PR[r.key].extra?200:0); totalJami+=m*np; });
     uvRows.forEach(r=>{ const {jami}=calcUv(parseInt(r.sig),parseInt(r.don)); totalJami+=jami; });
     ekoRows.forEach(r=>{ const {jami}=calcEko(parseFloat(r.kv)); totalJami+=jami; });
     data = { prodRows, uvRows, ekoRows };
   }
 
+  const sanaVaqt2 = getSanaVaqt();
   const row = {
     user_id: currentUser.id,
     user_email: currentUser.email,
@@ -1161,14 +1223,30 @@ async function saveAndSend(type){
     total_zakaz: totalZakaz,
     total_daromad: totalDaromad,
     total_jami: totalJami,
-    sana: new Date().toLocaleDateString('uz-UZ'),
+    sana: sanaVaqt2,
   };
 
   const { error } = await sb.from('zakazlar').insert(row);
+  isSaving = false;
   if(error){ showNotify('❌ Xatolik: '+error.message); return; }
-  showNotify('✅ Saqlandi!');
-  await loadHistory();
+
+  showNotify('✅ Saqlandi! — '+sanaVaqt2);
+
+  // Telegram xabarini formani tozalashdan oldin tayyorlash
   const msg = type==='admin' ? buildAdminMsg() : buildIshlabMsg();
+
+  // Formani tozalash
+  if(type==='admin'){
+    adD = [{nom:'',sum:''},{nom:'',sum:''},{nom:'',sum:''}];
+    renderAdmin();
+  } else {
+    prD = [{key:'Futbolka DTF (old)',miq:'',ex:false}];
+    uvD = [{nom:'',sig:'',don:''}];
+    ekoD = [{nom:'',kv:''}];
+    renderIshlab();
+  }
+
+  await loadHistory();
   window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(msg),'_blank');
 }
 
@@ -1920,11 +1998,47 @@ function renderAdmin(){
     el.appendChild(row);
     numInput(row.querySelector(`#asum${i}`),v=>{adD[i].sum=v;renderAdmin();});
   });
+  // Joriy (hali saqlanmagan) forma yig'indisi — faqat pastdagi "Sof daromad" tugmasi yonida
   document.getElementById('admin-grand').textContent=fmt(td)+" so'm";
-  document.getElementById('adm-zakaz').textContent=fmt(tz)+" so'm";
-  document.getElementById('adm-daromad').textContent=fmt(td)+" so'm";
-  document.getElementById('adm-soni').textContent=soni+' ta';
-  document.getElementById('adm-total').textContent=fmt(td)+" so'm";
+
+  // Statistika kartalari endi TARIXDAN hisoblanadi (renderAdminStats orqali)
+  renderAdminStats();
+}
+
+function renderAdminStats(){
+  // Tarixdagi barcha "admin" turdagi yozuvlarni shu user uchun yig'amiz, to'lovga qadar
+  if(!currentUser) return;
+  const myHistory = (allHistory||[]).filter(h => h.user_email===currentUser.email && h.type==='admin');
+  let tz=0, td=0, soni=0;
+  myHistory.forEach(h=>{
+    tz += h.total_zakaz||0;
+    td += h.total_daromad||0;
+    soni += (h.data&&h.data.rows ? h.data.rows.filter(r=>r.nom||(parseInt(r.sum)||0)).length : 0);
+  });
+  const zEl=document.getElementById('adm-zakaz'), dEl=document.getElementById('adm-daromad'),
+        sEl=document.getElementById('adm-soni'), tEl=document.getElementById('adm-total');
+  if(zEl) zEl.textContent=fmt(tz)+" so'm";
+  if(dEl) dEl.textContent=fmt(td)+" so'm";
+  if(sEl) sEl.textContent=soni+' ta';
+  if(tEl) tEl.textContent=fmt(td)+" so'm";
+}
+
+function renderIshlabStats(){
+  // Tarixdagi barcha "ishlab" turdagi yozuvlarni shu user uchun yig'amiz
+  if(!currentUser) return;
+  const myHistory = (allHistory||[]).filter(h => h.user_email===currentUser.email && h.type==='ishlab');
+  let soni=0, jamiSumma=0, brakSumma=0;
+  myHistory.forEach(h=>{
+    soni++;
+    const summa = h.total_jami||0;
+    jamiSumma += summa;
+    if(h.is_brak) brakSumma += summa;
+  });
+  const sofDaromad = jamiSumma - brakSumma;
+  const soniEl=document.getElementById('ish-soni'), brakEl=document.getElementById('ish-brak'), sofEl=document.getElementById('ish-sof');
+  if(soniEl) soniEl.textContent = soni+' ta';
+  if(brakEl) brakEl.textContent = fmt(brakSumma)+" so'm";
+  if(sofEl) sofEl.textContent = fmt(sofDaromad)+" so'm";
 }
 
 function renderIshlab(){
@@ -1945,12 +2059,15 @@ function renderIshlab(){
     const div=document.createElement('div'); div.className='pi';
     div.innerHTML=`<div class="prod-grid">
       <select onchange="prD[${i}].key=this.value;prD[${i}].ex=false;renderIshlab()">${opts}</select>
-      <input type="text" inputmode="numeric" placeholder="Miqdor (${unit})" value="${r.miq}" style="text-align:right" id="pmiq${i}">
-      <div class="badge bw">${m>0?fmt(np)+" so'm":'—'}</div>
-      <div style="display:flex;gap:5px;align-items:center">
-        <div class="badge bo">${jami>0?fmt(jami)+" so'm":'—'}</div>
-        ${delIcon(`delProd(${i})`)}
-      </div></div>${exH}${note}`;
+      <div class="prod-row-bottom">
+        <input type="text" inputmode="numeric" placeholder="Miqdor (${unit})" value="${r.miq}" style="text-align:right" id="pmiq${i}">
+        <div class="badge bw">${m>0?fmt(np)+" so'm":'—'}</div>
+        <div style="display:flex;gap:5px;align-items:center">
+          <div class="badge bo">${jami>0?fmt(jami)+" so'm":'—'}</div>
+          ${delIcon(`delProd(${i})`)}
+        </div>
+      </div>
+    </div>${exH}${note}`;
     pelP.appendChild(div);
     numInput(div.querySelector(`#pmiq${i}`),v=>{prD[i].miq=v;renderIshlab();});
   });
@@ -1962,14 +2079,17 @@ function renderIshlab(){
     const sig=parseInt(r.sig)||0; const don=parseInt(r.don)||0;
     const{ls,np,jami}=calcUv(sig,don); if(don>0&&sig>0)ut+=jami;
     const div=document.createElement('div'); div.className='ui';
-    div.innerHTML=`<div class="ugrid">
+    div.innerHTML=`<div class="ugrid-wrap">
       <input type="text" placeholder="Bloknot, daftar, termoz..." value="${r.nom}" oninput="uvD[${i}].nom=this.value">
-      <input type="text" inputmode="numeric" placeholder="8" value="${r.sig}" style="text-align:center" id="usig${i}">
-      <input type="text" inputmode="numeric" placeholder="100" value="${r.don}" style="text-align:center" id="udon${i}">
-      <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
-        ${sig>0&&don>0?`<span class="badge bp">${ls} list</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
-        ${delIcon(`delUv(${i})`)}
-      </div></div>
+      <div class="ugrid-bottom">
+        <input type="text" inputmode="numeric" placeholder="8" value="${r.sig}" style="text-align:center" id="usig${i}">
+        <input type="text" inputmode="numeric" placeholder="100" value="${r.don}" style="text-align:center" id="udon${i}">
+        <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
+          ${sig>0&&don>0?`<span class="badge bp">${ls} list</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
+          ${delIcon(`delUv(${i})`)}
+        </div>
+      </div>
+    </div>
       ${sig>0&&don>0?`<div class="ures"><span class="badge bp">${ls} list</span><span style="font-size:11px;color:var(--text3)">×</span><span class="badge bw">${fmt(np)} so'm/list</span><span style="font-size:11px;color:var(--text3)">=</span><span class="badge bo">${fmt(jami)} so'm</span>${r.nom?`<span style="font-size:11px;color:var(--text3)">(${r.nom}: ${sig}ta/list, ${don} dona)</span>`:''}</div>`:''}`;
     pelU.appendChild(div);
     numInput(div.querySelector(`#usig${i}`),v=>{uvD[i].sig=v;renderIshlab();});
@@ -1983,13 +2103,16 @@ function renderIshlab(){
     const kv=parseFloat(r.kv)||0;
     const{narx,jami}=calcEko(kv); if(kv>0)et+=jami;
     const div=document.createElement('div'); div.className='ui'; div.style.background='var(--amber-light)'; div.style.borderColor='var(--amber-border)';
-    div.innerHTML=`<div class="ugrid" style="grid-template-columns:1fr 100px 110px">
+    div.innerHTML=`<div class="ugrid-wrap">
       <input type="text" placeholder="Mahsulot nomi (banner, ustanovka...)" value="${r.nom}" oninput="ekoD[${i}].nom=this.value">
-      <input type="text" inputmode="decimal" placeholder="10" value="${r.kv}" style="text-align:center" id="ekv${i}">
-      <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
-        ${kv>0?`<span class="badge" style="background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)">${kv} kv.m</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
-        ${delIcon(`delEko(${i})`)}
-      </div></div>
+      <div class="ugrid-bottom" style="grid-template-columns:1fr auto">
+        <input type="text" inputmode="decimal" placeholder="10" value="${r.kv}" style="text-align:center" id="ekv${i}">
+        <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
+          ${kv>0?`<span class="badge" style="background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)">${kv} kv.m</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
+          ${delIcon(`delEko(${i})`)}
+        </div>
+      </div>
+    </div>
       ${kv>0?`<div class="ures" style="border-color:var(--amber-border)"><span class="badge" style="background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)">${kv} kv.m</span><span style="font-size:11px;color:var(--text3)">×</span><span class="badge bw">${fmt(narx)} so'm/kv.m</span><span style="font-size:11px;color:var(--text3)">=</span><span class="badge bo">${fmt(jami)} so'm</span></div>`:''}`;
     pelE.appendChild(div);
     numInput(div.querySelector(`#ekv${i}`),v=>{ekoD[i].kv=v;renderIshlab();});
