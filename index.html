@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0042)file:///C:/Users/User/Downloads/index.html -->
+<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_3.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -192,6 +192,15 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .avans-chip.berildi{background:var(--green-light);color:var(--green)}
 .give-avans-row{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
 .give-avans-row input{width:140px}
+.diz-row-tools{display:flex;align-items:center;gap:8px;margin:8px 0;flex-wrap:wrap}
+.sw-mini{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#fff;border-radius:8px;border:1px solid var(--gray-border);flex:1;min-width:0}
+.sw-mini-time{font-size:14px;font-weight:700;font-family:monospace;color:var(--text);letter-spacing:1px}
+.sw-mini-price{font-size:11px;color:var(--green);font-weight:600;flex:1}
+.sw-mini-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .12s;flex-shrink:0;line-height:1}
+.sw-mini-btn:hover{background:var(--blue-light);border-color:var(--blue-border)}
+.sw-mini-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tasdiq-btn{padding:5px 10px;border-radius:7px;border:1.5px solid var(--purple-border);background:var(--purple-light);color:var(--purple);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .12s}
+.tasdiq-btn:hover{background:var(--purple);color:#fff}
 .empty-state{text-align:center;padding:48px 20px;color:var(--text3)}
 .empty-state svg{width:40px;height:40px;stroke:var(--gray-border);fill:none;stroke-width:1.5;margin:0 auto 12px;display:block}
 .bell-btn{position:relative;padding:7px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
@@ -450,6 +459,10 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <button class="nav-btn" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
       <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><circle cx="11" cy="11" r="2"></circle></svg>
       Dizayn
+    </button>
+    <button class="nav-btn hidden" onclick="showPanel(&#39;stopwatch&#39;)" id="nb-stopwatch">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14.5 15.5"></polyline><path d="M16.51 3.51L19 1M7.49 3.51L5 1"></path></svg>
+      Taymer
     </button>
     <button class="nav-btn" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
       <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
@@ -758,24 +771,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
         Dizayn ishlari ro'yxati
       </div>
-      <div id="diz-rows"><div class="diz-row">
-      <div class="diz-grid">
-        <input type="text" placeholder="Mahsulot / ish nomi" value="" oninput="dizD[0].nom=this.value">
-        <input type="text" inputmode="numeric" placeholder="Summa" value="" style="text-align:right" id="dsum0">
-        <select class="tolov-select" onchange="dizD[0].tolovchi=this.value;renderDizayner()">
-          <option value="offis" selected="">🏢 Offis</option>
-          <option value="mijoz">👤 Mijoz</option>
-        </select>
-        <button class="icon-btn" onclick="delDiz(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
-      </div>
-      <div class="diz-mijoz">
-        <input type="text" placeholder="Telefon yoki Telegram (@username)" value="" oninput="dizD[0].kontakt=this.value" style="margin-bottom:0">
-      </div>
-      <div class="tolov-toggle">
-        <button class="tolov-btn" onclick="dizD[0].tolov=true;renderDizayner()">✅ To'landi</button>
-        <button class="tolov-btn" onclick="dizD[0].tolov=false;renderDizayner()">❌ To'lanmadi</button>
-      </div>
-      </div></div>
+      <div id="diz-rows"><div class="diz-row"><div class="diz-grid"><input type="text" placeholder="Mahsulot / ish nomi" value="" oninput="dizD[0].nom=this.value"><input type="text" inputmode="numeric" placeholder="Summa" value="" style="text-align:right" id="dsum0"><select class="tolov-select" onchange="dizD[0].tolovchi=this.value;renderDizayner()"><option value="offis" selected="">Offis</option><option value="mijoz">Mijoz</option></select><button class="icon-btn" onclick="delDiz(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button></div><div class="diz-mijoz"><input type="text" placeholder="Tel/Telegram" value="" oninput="dizD[0].kontakt=this.value" style="margin-bottom:0"></div><div class="diz-row-tools"><div class="sw-mini" id="sw-mini-0"><span class="sw-mini-time">00:00:00</span><span class="sw-mini-price">0 so'm</span><button class="sw-mini-btn " onclick="swRowToggle(0)">▶</button><button class="sw-mini-btn" onclick="swRowReset(0)" title="Qayta">↻</button></div><button class="tasdiq-btn" onclick="showTasdiqXat(0)">📋 Tasdiq xati</button></div><div class="tolov-toggle"><button class="tolov-btn" onclick="dizD[0].tolov=true;renderDizayner()">To'landi</button><button class="tolov-btn" onclick="dizD[0].tolov=false;renderDizayner()">To'lanmadi</button></div></div></div>
       <button class="add-btn" onclick="addDizRow()">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Ish qo'shish
@@ -790,6 +786,29 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
       Haftalik hisobotni Menejerga yuborish
     </button>
+    <button class="avans-btn" onclick="showAvansForm()" style="margin-top:6px">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+      Avans so'rash
+    </button>
+  </div>
+
+  <!-- STOPWATCH -->
+  <div class="panel" id="panel-stopwatch">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 14px">
+      <div style="font-size:14px;font-weight:700">Vaqt taymeri</div>
+      <div style="font-size:12px;color:var(--text3)">100 000 so'm/soat</div>
+    </div>
+    <div class="card" style="text-align:center;padding:28px 16px">
+      <div id="sw-display" style="font-size:52px;font-weight:700;font-family:monospace;color:var(--text);letter-spacing:2px">00:00:00</div>
+      <div id="sw-ms" style="font-size:18px;color:var(--text3);font-family:monospace">.000</div>
+      <div id="sw-price" style="font-size:18px;font-weight:600;color:var(--green);margin:10px 0">0 so'm</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap">
+        <button id="sw-btn" class="savebtn" style="width:auto;padding:12px 28px;font-size:15px" onclick="swToggle()">Boshlash</button>
+        <button class="hisob-btn amber" style="padding:12px 18px" onclick="swReset()">Qayta</button>
+        <button class="hisob-btn green" style="padding:12px 18px" onclick="swCopy()">Nusxa</button>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px">Har bir zakaz qatorida ham alohida mini-taymer mavjud</div>
   </div>
 
   <!-- FOIZ JADVALI -->
@@ -814,6 +833,18 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         <div class="fzbadge" id="calc-foiz">— %</div>
         <div class="drbadge" id="calc-daromad">— so'm</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- TASDIQ XATI MODAL -->
+<div class="modal-overlay hidden" id="tasdiq-modal">
+  <div class="modal-box" style="max-width:460px">
+    <div class="modal-title">Tasdiq xati</div>
+    <textarea id="tasdiq-text" rows="14" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-border);border-radius:8px;font-size:12px;font-family:monospace;resize:vertical;line-height:1.6;background:var(--gray-light)"></textarea>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="savebtn" style="flex:1" onclick="copyTasdiqXat()">Nusxa olish</button>
+      <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById(&#39;tasdiq-modal&#39;).classList.add(&#39;hidden&#39;)">Yopish</button>
     </div>
   </div>
 </div>
@@ -972,6 +1003,7 @@ function onLogin(){
     nbAdmin.classList.add('hidden');
     nbIshlab.classList.add('hidden');
     document.getElementById('nb-foiz').classList.add('hidden');
+    document.getElementById('nb-stopwatch').classList.remove('hidden');
     const seen = sessionStorage.getItem('diz_yoriq_'+currentUser.id);
     if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dizayner')); setInterval(() => loadMessages(), 30000); }
     else { showScreen('dizayner_yoriq'); }
@@ -997,6 +1029,7 @@ function enterApp(){
 
 function enterDizaynerApp(){
   sessionStorage.setItem('diz_yoriq_'+currentUser.id, '1');
+  document.getElementById('nb-stopwatch').classList.remove('hidden');
   showScreen('app');
   loadHistory().then(()=>showPanel('dizayner'));
   setInterval(() => loadMessages(), 30000);
@@ -1500,6 +1533,8 @@ function applyHiddenSections(){
 
 let uvD=[{nom:'',sig:'',don:''}];
 let ekoD=[{nom:'',kv:''}];
+let dizTimers = {};
+let swRowIntervals = {};
 let prD=[{key:'Futbolka DTF (old)',miq:'',ex:false}];
 let adD=[{nom:'',sum:''},{nom:'',sum:''},{nom:'',sum:''}];
 
@@ -1911,28 +1946,37 @@ function renderDizayner(){
     const s = parseInt(r.summa)||0;
     if(s){ jami+=s; if(r.tolov===true) tolandi+=s; else if(r.tolov===false) tolanmadi+=s; }
 
+    // Mini stopwatch state
+    const t = dizTimers[i] || {running:false, elapsed:0, start:null};
+    const ms = t.running ? t.elapsed + (Date.now()-t.start) : t.elapsed;
+    const ts = Math.floor(ms/1000);
+    const swTime = String(Math.floor(ts/3600)).padStart(2,'0')+':'+String(Math.floor((ts%3600)/60)).padStart(2,'0')+':'+String(ts%60).padStart(2,'0');
+    const swPrice = ts > 0 ? fmt(Math.round((ms/3600000)*100000)) : '0';
+
+    const tolovchiOpts = '<option value="offis"' + (r.tolovchi==='offis'?' selected':'') + '>' + 'Offis</option>' +
+      '<option value="mijoz"' + (r.tolovchi==='mijoz'?' selected':'') + '>' + 'Mijoz</option>';
+
     const div = document.createElement('div');
     div.className = 'diz-row';
-    div.innerHTML = `
-      <div class="diz-grid">
-        <input type="text" placeholder="Mahsulot / ish nomi" value="${r.nom}" oninput="dizD[${i}].nom=this.value">
-        <input type="text" inputmode="numeric" placeholder="Summa" value="${r.summa}" style="text-align:right" id="dsum${i}">
-        <select class="tolov-select" onchange="dizD[${i}].tolovchi=this.value;renderDizayner()">
-          <option value="offis"${r.tolovchi==='offis'?' selected':''}>🏢 Offis</option>
-          <option value="mijoz"${r.tolovchi==='mijoz'?' selected':''}>👤 Mijoz</option>
-        </select>
-        ${delIcon('delDiz('+i+')')}
-      </div>
-      <div class="diz-mijoz${r.tolovchi==='mijoz'?' show':''}">
-        <input type="text" placeholder="Telefon yoki Telegram (@username)" value="${r.kontakt||''}" 
-          oninput="dizD[${i}].kontakt=this.value"
-          style="margin-bottom:0">
-      </div>
-      <div class="tolov-toggle">
-        <button class="tolov-btn${r.tolov===true?' tolandi':''}" onclick="dizD[${i}].tolov=true;renderDizayner()">✅ To'landi</button>
-        <button class="tolov-btn${r.tolov===false?' tolanmadi':''}" onclick="dizD[${i}].tolov=false;renderDizayner()">❌ To'lanmadi</button>
-      </div>
-      ${s>0?`<div style="font-size:12px;color:var(--text3);margin-top:6px;text-align:right">${fmt(s)} so'm${r.tolov===true?' · <span style=\"color:var(--green)\">To\'landi</span>':r.tolov===false?' · <span style=\"color:var(--red)\">To\'lanmadi</span>':''}</div>`:''}`;
+    div.innerHTML =
+      '<div class="diz-grid">' +
+      '<input type="text" placeholder="Mahsulot / ish nomi" value="' + r.nom + '" oninput="dizD[' + i + '].nom=this.value">' +
+      '<input type="text" inputmode="numeric" placeholder="Summa" value="' + r.summa + '" style="text-align:right" id="dsum' + i + '">' +
+      '<select class="tolov-select" onchange="dizD[' + i + '].tolovchi=this.value;renderDizayner()">' + tolovchiOpts + '</select>' +
+      delIcon('delDiz(' + i + ')') + '</div>' +
+      '<div class="diz-mijoz' + (r.tolovchi==='mijoz'?' show':'') + '">' +
+      '<input type="text" placeholder="Tel/Telegram" value="' + (r.kontakt||'') + '" oninput="dizD[' + i + '].kontakt=this.value" style="margin-bottom:0"></div>' +
+      '<div class="diz-row-tools">' +
+      '<div class="sw-mini" id="sw-mini-' + i + '">' +
+      '<span class="sw-mini-time">' + swTime + '</span>' +
+      '<span class="sw-mini-price">' + swPrice + " so'm" + '</span>' +
+      '<button class="sw-mini-btn ' + (t.running?'active':'') + '" onclick="swRowToggle(' + i + ')">' + (t.running?'&#9646;&#9646;':'&#9654;') + '</button>' +
+      '<button class="sw-mini-btn" onclick="swRowReset(' + i + ')" title="Qayta">&#8635;</button></div>' +
+      '<button class="tasdiq-btn" onclick="showTasdiqXat(' + i + ')">&#x1F4CB; Tasdiq xati</button></div>' +
+      '<div class="tolov-toggle">' +
+      '<button class="tolov-btn' + (r.tolov===true?' tolandi':'') + '" onclick="dizD[' + i + '].tolov=true;renderDizayner()">To\'landi</button>' +
+      '<button class="tolov-btn' + (r.tolov===false?' tolanmadi':'') + '" onclick="dizD[' + i + '].tolov=false;renderDizayner()">To\'lanmadi</button></div>' +
+      (s>0?('<div style="font-size:12px;color:var(--text3);margin-top:6px;text-align:right">'+fmt(s)+" so'm</div>"):'');
     el.appendChild(div);
     numInput(div.querySelector('#dsum'+i), v=>{ dizD[i].summa=v; renderDizayner(); });
   });
@@ -1948,6 +1992,7 @@ function renderDizayner(){
   if(dizGrandEl) dizGrandEl.textContent = fmt(jami)+" so'm";
   if(dizTotalEl) dizTotalEl.textContent = fmt(jami)+" so'm";
 }
+
 
 async function saveDizayner(){
   const rows = dizD.filter(r=>r.nom||(parseInt(r.summa)||0));
@@ -2178,6 +2223,134 @@ renderIshlab();
 renderDizayner();
 renderMessages();
 init();
+
+// ── STOPWATCH ──
+let swMain = {running:false, elapsed:0, start:null};
+let swMainInterval = null;
+
+function swToggle(){
+  const btn = document.getElementById('sw-btn');
+  if(swMain.running){
+    swMain.elapsed += Date.now() - swMain.start;
+    swMain.running = false;
+    clearInterval(swMainInterval);
+    if(btn) btn.textContent = 'Boshlash';
+  } else {
+    swMain.start = Date.now();
+    swMain.running = true;
+    swMainInterval = setInterval(swMainUpdate, 50);
+    if(btn) btn.textContent = "To\'xtatish";
+  }
+}
+
+function swMainUpdate(){
+  const ms = swMain.elapsed + (swMain.running ? Date.now() - swMain.start : 0);
+  const totalSec = Math.floor(ms/1000);
+  const hh = String(Math.floor(totalSec/3600)).padStart(2,'0');
+  const mm = String(Math.floor((totalSec%3600)/60)).padStart(2,'0');
+  const ss = String(totalSec%60).padStart(2,'0');
+  const msDisp = String(ms%1000).padStart(3,'0');
+  const price = Math.round((ms/3600000)*100000);
+  const d=document.getElementById('sw-display');
+  const m=document.getElementById('sw-ms');
+  const p=document.getElementById('sw-price');
+  if(d) d.textContent=hh+':'+mm+':'+ss;
+  if(m) m.textContent='.'+msDisp;
+  if(p) p.textContent=fmt(price)+" so\'m";
+}
+
+function swReset(){
+  swMain={running:false,elapsed:0,start:null};
+  clearInterval(swMainInterval);
+  const d=document.getElementById('sw-display');
+  const m=document.getElementById('sw-ms');
+  const p=document.getElementById('sw-price');
+  const b=document.getElementById('sw-btn');
+  if(d) d.textContent='00:00:00';
+  if(m) m.textContent='.000';
+  if(p) p.textContent="0 so\'m";
+  if(b) b.textContent='Boshlash';
+}
+
+function swCopy(){
+  const ms=swMain.elapsed+(swMain.running?Date.now()-swMain.start:0);
+  const ts=Math.floor(ms/1000);
+  const t=String(Math.floor(ts/3600)).padStart(2,'0')+':'+String(Math.floor((ts%3600)/60)).padStart(2,'0')+':'+String(ts%60).padStart(2,'0');
+  const pr=Math.round((ms/3600000)*100000);
+  navigator.clipboard.writeText("Vaqt: "+t+"\nNarx: "+fmt(pr)+" so\'m").then(()=>showNotify('Nusxa olindi!')).catch(()=>showNotify('Xato'));
+}
+
+function swRowToggle(i){
+  if(!dizTimers[i]) dizTimers[i]={running:false,elapsed:0,start:null};
+  const t=dizTimers[i];
+  if(t.running){
+    t.elapsed+=Date.now()-t.start;
+    t.running=false;
+    clearInterval(swRowIntervals[i]);
+    delete swRowIntervals[i];
+  } else {
+    t.start=Date.now();
+    t.running=true;
+    swRowIntervals[i]=setInterval(()=>swRowUpdate(i),200);
+  }
+  renderDizayner();
+}
+
+function swRowReset(i){
+  if(swRowIntervals[i]){clearInterval(swRowIntervals[i]);delete swRowIntervals[i];}
+  dizTimers[i]={running:false,elapsed:0,start:null};
+  renderDizayner();
+}
+
+function swRowUpdate(i){
+  const t=dizTimers[i];
+  if(!t||!t.running) return;
+  const ms=t.elapsed+(Date.now()-t.start);
+  const ts=Math.floor(ms/1000);
+  const hh=String(Math.floor(ts/3600)).padStart(2,'0');
+  const mm=String(Math.floor((ts%3600)/60)).padStart(2,'0');
+  const ss=String(ts%60).padStart(2,'0');
+  const pr=Math.round((ms/3600000)*100000);
+  const el=document.getElementById('sw-mini-'+i);
+  if(el){
+    const te=el.querySelector('.sw-mini-time');
+    const pe=el.querySelector('.sw-mini-price');
+    if(te) te.textContent=hh+':'+mm+':'+ss;
+    if(pe) pe.textContent=fmt(pr)+" so\'m";
+  }
+}
+
+// ── TASDIQ XATI ──
+function showTasdiqXat(i){
+  const r=dizD[i]||{};
+  const nom=r.nom||'Dizayn ishi';
+  const summa=r.summa?fmt(parseInt(r.summa))+" so\'m":'—';
+  const kontakt=r.kontakt||'—';
+  const sana=getSanaVaqt();
+  const dizaynAdi=document.getElementById('user-name-chip')?document.getElementById('user-name-chip').textContent:'Dizayner';
+  const xat="DIZAYN TASDIQLOV XATI\n"+"─".repeat(30)+"\n"+
+    "Mahsulot: "+nom+"\n"+
+    "Dizayner: "+dizaynAdi+"\n"+
+    "Sana: "+sana+"\n"+
+    "Narx: "+summa+"\n"+
+    "Mijoz kontakt: "+kontakt+"\n"+
+    "─".repeat(30)+"\n"+
+    "Hurmatli mijoz, sizning buyurtmangiz tayyor.\n"+
+    "Iltimos, dizayn faylini ko\'rib chiqing va tasdiqlovingizni bildiring.\n\n"+
+    "Tasdiqlash uchun javob yozing yoki qo\'ng\'iroq qiling.\n\n"+
+    "Eslatma: Tasdiqlashdan keyin o\'zgartirishlar qilinmaydi.\n"+
+    "─".repeat(30)+"\n"+
+    "Ads uz Poligrafiya";
+  const modal=document.getElementById('tasdiq-modal');
+  const textEl=document.getElementById('tasdiq-text');
+  if(modal&&textEl){textEl.value=xat;modal.classList.remove('hidden');}
+}
+
+function copyTasdiqXat(){
+  const t=document.getElementById('tasdiq-text');
+  if(!t) return;
+  navigator.clipboard.writeText(t.value).then(()=>showNotify('Tasdiq xati nusxa olindi!')).catch(()=>{t.select();document.execCommand('copy');showNotify('Nusxa olindi!');});
+}
 </script>
 
 
