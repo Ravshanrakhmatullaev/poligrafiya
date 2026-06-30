@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_21.html -->
+<!-- saved from url=(0042)file:///C:/Users/User/Downloads/index.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -261,7 +261,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   <p>Yuklanmoqda...</p>
 </div>
 
-<div id="login-screen" class="hidden">
+<div id="login-screen" class="">
   <div class="login-card">
     <div class="login-logo">
       <div class="login-icon">
@@ -283,7 +283,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 </div>
 
-<div id="yoriq-screen" class="">
+<div id="yoriq-screen" class="hidden">
   <div class="yoriq-wrap">
     <div class="yoriq-header">
       <div style="font-size:40px;margin-bottom:10px">📋</div>
@@ -325,6 +325,84 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 </div>
 
+<!-- DIZAYNER YO'RIQNOMA -->
+<div id="dizayner-yoriq-screen" class="hidden">
+  <div class="yoriq-wrap">
+    <div class="yoriq-header">
+      <div style="font-size:40px;margin-bottom:10px">🎨</div>
+      <h2>Dizayner yo'riqnomasi</h2>
+      <p>Tizimga kirishdan oldin o'qing</p>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-title">✅ Asosiy majburiyatlar</div>
+      <div class="rule-body">
+        <ol>
+          <li>Ishga mas'uliyat bilan yondashing.</li>
+          <li>Har bir buyurtmani belgilangan muddatda tayyorlang.</li>
+          <li>Fayllarni tartibli saqlang va to'g'ri nomlang.</li>
+          <li>Chop etishdan oldin faylni kamida bir marta tekshiring.</li>
+          <li>Ish jarayonida menejer va ishlab chiqarish bo'limi bilan doimiy aloqada bo'ling.</li>
+          <li>Mijoz tasdiqlamagan dizaynni ishlab chiqarishga yubormang.</li>
+          <li>Kompaniya fayllari va mijoz ma'lumotlarini uchinchi shaxslarga bermang.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-title">👤 Mijoz oldidagi majburiyatlar</div>
+      <div class="rule-body">
+        <ol>
+          <li>Mijozga hurmat bilan muomala qiling.</li>
+          <li>Mijozning texnik topshirig'iga amal qiling.</li>
+          <li>Tushunarsiz joylar bo'lsa, taxmin qilmang — aniqlashtiring.</li>
+          <li>Imlo, telefon raqami, manzil va logotipni bir necha bor tekshiring.</li>
+          <li>Dizaynni estetik va chop etishga tayyor holatda topshiring.</li>
+          <li>Mijoz tasdiqlaganidan keyin o'zboshimchalik bilan o'zgartirish kiritmang.</li>
+          <li>Mijozning vaqti va fikrini hurmat qiling.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="rule-card" style="border-left-color:var(--purple)">
+      <div class="rule-title" style="color:var(--purple)">🖨️ Poligrafiya uchun texnik talablar</div>
+      <div class="rule-body">
+        <ul style="margin-left:18px">
+          <li>Rang rejimi: <strong>CMYK</strong>.</li>
+          <li>Rasmlar sifati: kamida <strong>300 DPI</strong>.</li>
+          <li>Shriftlarni egri chiziqqa (Outline/Convert to Curves) o'tkazing.</li>
+          <li>Kesiladigan mahsulotlarda <strong>bleed</strong> qoldiring.</li>
+          <li>Xavfsiz zona (Safe Area)ga rioya qiling.</li>
+          <li>Chop etishdan oldin yakuniy PDF yoki ishlab chiqarish talab qilgan formatni tayyorlang.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rule-card" style="border-left-color:var(--amber)">
+      <div class="rule-title" style="color:var(--amber)">🤝 Ish etikasi</div>
+      <div class="rule-body">
+        <ul style="margin-left:18px">
+          <li>Kechikish haqida oldindan xabar bering.</li>
+          <li>Ish joyini tartibli saqlang.</li>
+          <li>Hamkasblarga hurmat bilan munosabatda bo'ling.</li>
+          <li>Bahsli vaziyatlarda tortishmang, rahbar yoki menejer orqali hal qiling.</li>
+          <li>Har kuni yangi bilim va dizayn trendlarini o'rganishga harakat qiling.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="padding:14px 16px;background:var(--purple-light);border-radius:10px;border:1px solid var(--purple-border);margin-bottom:12px;font-size:13px;color:var(--text2);line-height:1.75">
+      💡 <strong>Esda tuting:</strong> Dizaynerning vazifasi faqat chiroyli dizayn yaratish emas. Uning asosiy vazifasi mijozning maqsadini to'g'ri tushunish, xatosiz fayl tayyorlash va ishlab chiqarish jarayonini muammosiz o'tishini ta'minlashdir. Har bir xato vaqt, material va kompaniya obro'siga zarar yetkazadi.
+    </div>
+
+    <label class="agree-row">
+      <input type="checkbox" id="diz-agree-chk" onchange="document.getElementById(&#39;diz-agree-btn&#39;).disabled=!this.checked">
+      <span>Barcha qoidalar bilan tanishdim va roziman.</span>
+    </label>
+    <button class="agree-btn" id="diz-agree-btn" disabled="" onclick="enterDizaynerApp()">Tizimga kirish</button>
+  </div>
+</div>
+
 <div id="app-screen" class="hidden">
   <div class="topbar">
     <div class="topbar-left">
@@ -336,9 +414,9 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div class="topbar-right">
       <div class="user-chip">
         <div class="user-dot"></div>
-        <span id="user-name-chip">parvina</span>
+        <span id="user-name-chip">—</span>
       </div>
-      <span class="role-badge ishlab" id="role-badge-chip">Ishlab chiqarish</span>
+      <span class="role-badge" id="role-badge-chip"></span>
       <button class="bell-btn" onclick="showPanel(&#39;xabarlar&#39;)" id="bell-btn" title="Xabarlar">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         <span class="bell-badge hidden" id="bell-count">0</span>
@@ -348,11 +426,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 
   <div class="nav" id="main-nav">
-    <button class="nav-btn hidden" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
+    <button class="nav-btn" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
       Umumiy
     </button>
-    <button class="nav-btn hidden" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
+    <button class="nav-btn" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       Admin
     </button>
@@ -369,11 +447,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       Xabarlar
       <span class="nav-badge hidden" id="nav-bell-count">0</span>
     </button>
-    <button class="nav-btn hidden" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
+    <button class="nav-btn" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
       <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><circle cx="11" cy="11" r="2"></circle></svg>
       Dizayn
     </button>
-    <button class="nav-btn hidden" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
+    <button class="nav-btn" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
       <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
       Foiz jadvali
     </button>
@@ -894,9 +972,9 @@ function onLogin(){
     nbAdmin.classList.add('hidden');
     nbIshlab.classList.add('hidden');
     document.getElementById('nb-foiz').classList.add('hidden');
-    const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
+    const seen = sessionStorage.getItem('diz_yoriq_'+currentUser.id);
     if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dizayner')); setInterval(() => loadMessages(), 30000); }
-    else { showScreen('yoriq'); }
+    else { showScreen('dizayner_yoriq'); }
   } else {
     // ishlab chiqarish
     nbOwner.classList.add('hidden');
@@ -914,6 +992,14 @@ function enterApp(){
   showScreen('app');
   const defaultPanel = currentRole === 'admin' ? 'admin' : currentRole === 'ishlab' ? 'ishlab' : 'tarix';
   loadHistory().then(()=>showPanel(defaultPanel));
+  setInterval(() => loadMessages(), 30000);
+}
+
+function enterDizaynerApp(){
+  sessionStorage.setItem('diz_yoriq_'+currentUser.id, '1');
+  showScreen('app');
+  loadHistory().then(()=>showPanel('dizayner'));
+  setInterval(() => loadMessages(), 30000);
 }
 
 // ── HISTORY ──
@@ -2083,7 +2169,7 @@ let ftBuilt=false;
 function renderFoizTable(){ if(ftBuilt)return; ftBuilt=true; const tb=document.getElementById('foiz-tbody'); FOIZ.forEach(([,,f],i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${FL[i]}</td><td class="fp">${Math.round(f*100)}%</td>`; tb.appendChild(tr); }); }
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
-function showScreen(id){ ['login-screen','yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
+function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
 function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); }
 function showNotify(msg){ const el=document.getElementById('notify'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2800); }
 
