@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_3.html -->
+<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_4.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -312,6 +312,18 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       </div>
     </div>
     <div class="rule-card danger">
+      <div class="rule-title">🚫 Brak haqida muhim qoida</div>
+      <div class="rule-body">
+        <ul style="margin-left:18px">
+          <li>Ish jarayonida brak bo'lsa, <strong>darhol tizimga kiritish</strong> shart.</li>
+          <li>Brak mahsulotni yashirish yoki buyurtma ichiga tiqib yuborish <strong>100% jarima</strong>ga olib keladi.</li>
+          <li>Brak soni to'g'ri kiritilmasa va keyinchalik ma'lum bo'lsa — <strong>ish haqining 100%i olib qo'yiladi</strong>.</li>
+          <li>Brak bo'lishi tabiiy holat — yashirilmasligi kerak!</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rule-card danger">
       <div class="rule-title">⚠️ Kechikish uchun jarima</div>
       <div class="rule-body">
         <p style="margin-bottom:8px">Buyurtma o'z vaqtida bitmasa — sotilish narxidan jarima olinadi:</p>
@@ -555,10 +567,16 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
       Saqlash
     </button>
-    <button class="tgbtn" onclick="sendWeekly(&#39;admin&#39;)" style="margin-top:6px">
-      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-      Haftalik hisobotni Menejerga yuborish
-    </button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+      <button class="tgbtn" style="margin-top:0" onclick="sendWeekly(&#39;admin&#39;)">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        Telegram
+      </button>
+      <button class="savebtn" style="margin-top:0;background:var(--purple)" onclick="copyWeekly(&#39;admin&#39;)">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Nusxa olish
+      </button>
+    </div>
     <button class="avans-btn" onclick="showAvansForm()" style="margin-top:6px">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
       Avans so'rash
@@ -600,6 +618,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
           <div class="badge bo">—</div>
           <button class="icon-btn" onclick="delProd(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
         </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+        <label style="font-size:12px;color:var(--text3)">Brak soni:</label>
+        <input type="text" inputmode="numeric" placeholder="0" value="" style="width:70px;text-align:center;" id="pbrak0">
+        
       </div>
     </div></div></div>
       <button class="add-btn" onclick="addProdRow()">
@@ -687,10 +710,16 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
       Saqlash
     </button>
-    <button class="tgbtn" onclick="sendWeekly(&#39;ishlab&#39;)" style="margin-top:6px">
-      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-      Haftalik hisobotni Menejerga yuborish
-    </button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+      <button class="tgbtn" style="margin-top:0" onclick="sendWeekly(&#39;ishlab&#39;)">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        Telegram
+      </button>
+      <button class="savebtn" style="margin-top:0;background:var(--purple)" onclick="copyWeekly(&#39;ishlab&#39;)">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Nusxa olish
+      </button>
+    </div>
     <button class="avans-btn" onclick="showAvansForm()" style="margin-top:6px">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
       Avans so'rash
@@ -782,10 +811,16 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
       Saqlash
     </button>
-    <button class="tgbtn" onclick="sendWeeklyDizayner()" style="margin-top:6px">
-      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-      Haftalik hisobotni Menejerga yuborish
-    </button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+      <button class="tgbtn" style="margin-top:0" onclick="sendWeeklyDizayner()">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        Telegram
+      </button>
+      <button class="savebtn" style="margin-top:0;background:var(--purple)" onclick="copyWeeklyDizayner()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Nusxa olish
+      </button>
+    </div>
     <button class="avans-btn" onclick="showAvansForm()" style="margin-top:6px">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
       Avans so'rash
@@ -1095,10 +1130,18 @@ function renderHistory(){
         return `• ${r.nom}: ${fmt(s)} so'm → ${Math.round(f*100)}% → ${fmt(Math.round(s*f))} so'm`;
       }).join('<br>');
     } else if(!isAdmin){
-      const pl=(d.prodRows||[]).filter(r=>parseInt(r.miq)>0).map(r=>`• ${r.key}: ${r.miq} ${( PR[r.key] ? PR[r.key].u : 'dona')||'dona'}`);
+      const pl=(d.prodRows||[]).filter(r=>parseInt(r.miq)>0).map(r=>{
+        const brak = parseInt(r.brak)||0;
+        const toza = parseInt(r.miq) - brak;
+        const brakTxt = brak > 0 ? ` <span style="color:var(--red);font-weight:600">⚠️ ${brak} ta BRAK</span><span style="color:var(--green)"> (${toza} ta toza)</span>` : '';
+        return `• ${r.key}: ${r.miq} ${(PR[r.key]?PR[r.key].u:'dona')||'dona'}${brakTxt}`;
+      });
       const ul=(d.uvRows||[]).filter(r=>parseInt(r.sig)>0).map(r=>`• UV: ${r.nom||'mahsulot'} — ${r.don} dona (${r.sig}ta/list)`);
       const el2=(d.ekoRows||[]).filter(r=>parseFloat(r.kv)>0).map(r=>`• Ekosalvent: ${r.nom||'mahsulot'} — ${r.kv} kv.m`);
       itemsHtml = [...pl,...ul,...el2].join('<br>');
+      // If any brak exists, add red border to row
+      const hasBrak = (d.prodRows||[]).some(r=>parseInt(r.brak)>0);
+      if(hasBrak) div.style.borderLeft = '4px solid var(--red)';
     }
     const total = isAdmin ? h.total_daromad : h.total_jami;
     const totalLabel = isAdmin ? 'Sof daromad' : 'Jami';
@@ -1277,7 +1320,8 @@ async function saveOnly(type){
     prodRows.forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m)+(r.ex&&PR[r.key]&&PR[r.key].extra?200:0); totalJami+=m*np; });
     uvRows.forEach(r=>{ const {jami}=calcUv(parseInt(r.sig),parseInt(r.don)); totalJami+=jami; });
     ekoRows.forEach(r=>{ const {jami}=calcEko(parseFloat(r.kv)); totalJami+=jami; });
-    data = { prodRows, uvRows, ekoRows };
+    const brakRows = prodRows.filter(r=>parseInt(r.brak)>0);
+    data = { prodRows, uvRows, ekoRows, brakRows };
   }
 
   const sanaVaqt = getSanaVaqt();
@@ -1360,9 +1404,11 @@ async function sendWeekly(type){
       lines.push(`📌 ${h.sana}`);
       (h.data.prodRows||[]).filter(r=>parseInt(r.miq)>0).forEach((r,i) => {
         const m=parseInt(r.miq)||0;
+        const brak=parseInt(r.brak)||0;
         const np=gUN(r.key,m)+(r.ex&&PR[r.key]&&PR[r.key].extra?200:0);
         const j=m*np; totalJ+=j;
-        lines.push(`  ${i+1}. ${r.key}: ${m} ${PR[r.key]?PR[r.key].u:'dona'} × ${fmt(np)} = ${fmt(j)} so'm`);
+        const brakTxt = brak > 0 ? ` | ⚠️ ${brak} ta BRAK` : '';
+        lines.push(`  ${i+1}. ${r.key}: ${m} ${PR[r.key]?PR[r.key].u:'dona'} × ${fmt(np)} = ${fmt(j)} so'm${brakTxt}`);
       });
       (h.data.uvRows||[]).filter(r=>parseInt(r.sig)>0).forEach((r,i) => {
         const{ls,np,jami}=calcUv(parseInt(r.sig),parseInt(r.don));
@@ -1377,6 +1423,104 @@ async function sendWeekly(type){
   const msg = lines.join('\n');
   window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(msg),'_blank');
 }
+
+async function copyWeekly(type){
+  const user = currentUser;
+  const { data, error } = await sb.from('zakazlar')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('type', type)
+    .order('created_at', { ascending: true });
+
+  if(error || !data || !data.length){
+    showNotify('Haftalik yozuvlar topilmadi');
+    return;
+  }
+
+  const name = user.email.split('+')[1] ? user.email.split('+')[1].split('@')[0] : user.email.split('@')[0];
+  let lines2 = [];
+
+  if(type === 'admin'){
+    lines2.push('Admin: ' + name);
+    lines2.push('Haftalik hisobot');
+    lines2.push('');
+    let totalZ=0, totalD=0;
+    data.forEach(h => {
+      lines2.push(h.sana || '');
+      (h.data.rows||[]).filter(r=>r.nom||(parseInt(r.sum)||0)).forEach((r,i) => {
+        const s=parseInt(r.sum)||0;
+        const f=getFoiz(s);
+        const d=Math.round(s*f);
+        totalZ+=s; totalD+=d;
+        lines2.push('  '+(i+1)+'. '+r.nom+': '+fmt(s)+" so'm "+Math.round(f*100)+'% '+fmt(d)+" so'm");
+      });
+      lines2.push('');
+    });
+    lines2.push('Jami zakaz: '+fmt(totalZ)+" so'm");
+    lines2.push('Sof daromad: '+fmt(totalD)+" so'm");
+  } else {
+    lines2.push('Xodim: ' + name);
+    lines2.push('Haftalik hisobot');
+    lines2.push('');
+    let totalJ=0;
+    data.forEach(h => {
+      lines2.push(h.sana || '');
+      (h.data.prodRows||[]).filter(r=>parseInt(r.miq)>0).forEach((r,i) => {
+        const m=parseInt(r.miq)||0;
+        const brak=parseInt(r.brak)||0;
+        const np=gUN(r.key,m)+(r.ex&&PR[r.key]&&PR[r.key].extra?200:0);
+        const j=m*np; totalJ+=j;
+        const brakTxt = brak > 0 ? ' | BRAK: '+brak+' ta' : '';
+        lines2.push('  '+(i+1)+'. '+r.key+': '+m+' '+(PR[r.key]?PR[r.key].u:'dona')+' = '+fmt(j)+" so'm"+brakTxt);
+      });
+      (h.data.uvRows||[]).filter(r=>parseInt(r.sig)>0).forEach(r => {
+        const{ls,np,jami}=calcUv(parseInt(r.sig),parseInt(r.don));
+        totalJ+=jami;
+        lines2.push('  UV: '+(r.nom||'mahsulot')+': '+r.don+' dona '+ls+' list = '+fmt(jami)+" so'm");
+      });
+      (h.data.ekoRows||[]).filter(r=>parseFloat(r.kv)>0).forEach(r => {
+        const{narx,jami}=calcEko(parseFloat(r.kv));
+        totalJ+=jami;
+        lines2.push('  Eko: '+(r.nom||'mahsulot')+': '+r.kv+' kv.m = '+fmt(jami)+" so'm");
+      });
+      lines2.push('');
+    });
+    lines2.push('Jami: '+fmt(totalJ)+" so'm");
+  }
+
+  const msg = lines2.join('\n');
+  navigator.clipboard.writeText(msg)
+    .then(()=>showNotify('Nusxa olindi! Telegramga qo\'lda joylashtiring.'))
+    .catch(()=>showNotify('Nusxa olishda xato'));
+}
+
+async function copyWeeklyDizayner(){
+  const user = currentUser;
+  const name = user.email.split('+')[1] ? user.email.split('+')[1].split('@')[0] : user.email.split('@')[0];
+  const { data, error } = await sb.from('zakazlar').select('*').eq('user_id', user.id).eq('type','dizayner').order('created_at',{ascending:true});
+  if(error||!data||!data.length){ showNotify('Haftalik yozuvlar topilmadi'); return; }
+  let lines3 = ['Dizayner: '+name,'Haftalik hisobot',''];
+  let totalJ=0, totalT=0, totalTM=0;
+  data.forEach(h=>{
+    lines3.push(h.sana||'');
+    (h.data.rows||[]).forEach((r,i)=>{
+      const s=parseInt(r.summa)||0; totalJ+=s;
+      const tolovStatus = r.tolov===true?"To'landi":r.tolov===false?"To'lanmadi":'Belgilanmagan';
+      const tolovchi = r.tolovchi==='mijoz'?'Mijoz'+(r.kontakt?' ('+r.kontakt+')':''):'Offis';
+      if(r.tolov===true) totalT+=s; else if(r.tolov===false) totalTM+=s;
+      lines3.push('  '+(i+1)+'. '+r.nom+': '+fmt(s)+" so'm | "+tolovchi+' | '+tolovStatus);
+    });
+    lines3.push('');
+  });
+  lines3.push("Jami: "+fmt(totalJ)+" so'm");
+  lines3.push("To'landi: "+fmt(totalT)+" so'm");
+  lines3.push("To'lanmadi: "+fmt(totalTM)+" so'm");
+  const msg = lines3.join('\n');
+  navigator.clipboard.writeText(msg)
+    .then(()=>showNotify("Nusxa olindi! Telegramga qo'lda joylashtiring."))
+    .catch(()=>showNotify('Nusxa olishda xato'));
+}
+
 
 async function saveAndSend(type){
   if(isSaving){ showNotify('Saqlanmoqda, kuting...'); return; }
@@ -1398,7 +1542,8 @@ async function saveAndSend(type){
     prodRows.forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m)+(r.ex && PR[r.key] && PR[r.key].extra?200:0); totalJami+=m*np; });
     uvRows.forEach(r=>{ const {jami}=calcUv(parseInt(r.sig),parseInt(r.don)); totalJami+=jami; });
     ekoRows.forEach(r=>{ const {jami}=calcEko(parseFloat(r.kv)); totalJami+=jami; });
-    data = { prodRows, uvRows, ekoRows };
+    const brakRows = prodRows.filter(r=>parseInt(r.brak)>0);
+    data = { prodRows, uvRows, ekoRows, brakRows };
   }
 
   const sanaVaqt2 = getSanaVaqt();
@@ -1535,7 +1680,7 @@ let uvD=[{nom:'',sig:'',don:''}];
 let ekoD=[{nom:'',kv:''}];
 let dizTimers = {};
 let swRowIntervals = {};
-let prD=[{key:'Futbolka DTF (old)',miq:'',ex:false}];
+let prD=[{key:'Futbolka DTF (old)',miq:'',brak:'',ex:false}];
 let adD=[{nom:'',sum:''},{nom:'',sum:''},{nom:'',sum:''}];
 
 function addUvRow(){uvD.push({nom:'',sig:'',don:''});renderIshlab();}
@@ -2119,6 +2264,9 @@ function renderIshlab(){
     const note=p && p.note?`<div class="note-box">${p.note}</div>`:'';
     const exH=p && p.extra?`<div style="margin-top:6px;display:flex;align-items:center;gap:6px"><input type="checkbox" id="ex${i}" ${r.ex?'checked':''} onchange="prD[${i}].ex=this.checked;renderIshlab()" style="width:auto;cursor:pointer;accent-color:var(--blue)"><label for="ex${i}" style="font-size:12px;color:var(--text3);cursor:pointer">2 tomonli (+200 so'm/dona)</label></div>`:'';
     const div=document.createElement('div'); div.className='pi';
+    const brak = parseInt(r.brak)||0;
+    const toza = m > 0 ? m - brak : 0;
+    const brakStyle = brak > 0 ? 'border-color:var(--red-border);background:var(--red-light)' : '';
     div.innerHTML=`<div class="prod-grid">
       <select onchange="prD[${i}].key=this.value;prD[${i}].ex=false;renderIshlab()">${opts}</select>
       <div class="prod-row-bottom">
@@ -2129,9 +2277,15 @@ function renderIshlab(){
           ${delIcon(`delProd(${i})`)}
         </div>
       </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+        <label style="font-size:12px;color:var(--text3)">Brak soni:</label>
+        <input type="text" inputmode="numeric" placeholder="0" value="${r.brak||''}" style="width:70px;text-align:center;${brakStyle}" id="pbrak${i}">
+        ${brak>0?`<span class="badge" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-border)">⚠️ ${brak} ta brak</span><span class="badge bw">${toza} ta toza</span>`:''}
+      </div>
     </div>${exH}${note}`;
     pelP.appendChild(div);
     numInput(div.querySelector(`#pmiq${i}`),v=>{prD[i].miq=v;renderIshlab();});
+    numInput(div.querySelector(`#pbrak${i}`),v=>{prD[i].brak=v;renderIshlab();});
   });
   document.getElementById('prod-grand').textContent=fmt(pt)+" so'm";
   document.getElementById('prod-sum').textContent=fmt(pt)+" so'm";
