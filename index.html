@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_4.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_22.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -192,6 +192,27 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .avans-chip.berildi{background:var(--green-light);color:var(--green)}
 .give-avans-row{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
 .give-avans-row input{width:140px}
+.sklad-search-wrap{display:flex;align-items:center;gap:6px;padding:7px 11px;border:1.5px solid var(--gray-border);border-radius:8px;background:#fff}
+.sklad-search-wrap svg{stroke:var(--text3);flex-shrink:0}
+.sklad-card{background:#fff;border-radius:12px;border:1px solid var(--gray-border);padding:14px;margin-bottom:10px;transition:all .15s}
+.sklad-card:hover{border-color:var(--blue-border);box-shadow:0 2px 8px rgba(37,99,235,0.08)}
+.sklad-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px}
+.sklad-nom{font-size:14px;font-weight:700;color:var(--text)}
+.sklad-miq{font-size:22px;font-weight:700}
+.sklad-birlik{font-size:12px;color:var(--text3);font-weight:400;margin-left:3px}
+.sklad-actions{display:flex;gap:6px;flex-wrap:wrap}
+.prixod-btn{padding:6px 12px;border-radius:7px;border:1.5px solid var(--green-border);background:var(--green-light);color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s}
+.prixod-btn:hover{background:var(--green);color:#fff}
+.rasxod-btn{padding:6px 12px;border-radius:7px;border:1.5px solid var(--red-border);background:var(--red-light);color:var(--red);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s}
+.rasxod-btn:hover{background:var(--red);color:#fff}
+.sklad-hist-btn{padding:6px 12px;border-radius:7px;border:1.5px solid var(--gray-border);background:var(--gray-light);color:var(--text3);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s}
+.sklad-hist-btn:hover{background:var(--blue-light);border-color:var(--blue-border);color:var(--blue)}
+.sklad-log{margin-top:10px;border-top:1px solid var(--gray-border);padding-top:10px;display:none}
+.sklad-log.show{display:block}
+.sklad-log-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px;border-bottom:1px solid var(--gray-border)}
+.sklad-log-item:last-child{border-bottom:none}
+.sklad-warning{background:var(--red-light);border-color:var(--red-border)}
+.sklad-low{background:var(--amber-light);border-color:var(--amber-border)}
 .diz-row-tools{display:flex;align-items:center;gap:8px;margin:8px 0;flex-wrap:wrap}
 .sw-mini{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#fff;border-radius:8px;border:1px solid var(--gray-border);flex:1;min-width:0}
 .sw-mini-time{font-size:14px;font-weight:700;font-family:monospace;color:var(--text);letter-spacing:1px}
@@ -270,7 +291,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   <p>Yuklanmoqda...</p>
 </div>
 
-<div id="login-screen" class="">
+<div id="login-screen" class="hidden">
   <div class="login-card">
     <div class="login-logo">
       <div class="login-icon">
@@ -292,7 +313,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 </div>
 
-<div id="yoriq-screen" class="hidden">
+<div id="yoriq-screen" class="">
   <div class="yoriq-wrap">
     <div class="yoriq-header">
       <div style="font-size:40px;margin-bottom:10px">📋</div>
@@ -435,9 +456,9 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div class="topbar-right">
       <div class="user-chip">
         <div class="user-dot"></div>
-        <span id="user-name-chip">—</span>
+        <span id="user-name-chip">parvina</span>
       </div>
-      <span class="role-badge" id="role-badge-chip"></span>
+      <span class="role-badge ishlab" id="role-badge-chip">Ishlab chiqarish</span>
       <button class="bell-btn" onclick="showPanel(&#39;xabarlar&#39;)" id="bell-btn" title="Xabarlar">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         <span class="bell-badge hidden" id="bell-count">0</span>
@@ -447,11 +468,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 
   <div class="nav" id="main-nav">
-    <button class="nav-btn" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
       Umumiy
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       Admin
     </button>
@@ -468,7 +489,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       Xabarlar
       <span class="nav-badge hidden" id="nav-bell-count">0</span>
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
+    <button class="nav-btn" onclick="showPanel(&#39;sklad&#39;)" id="nb-sklad">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      Sklad
+    </button>
+    <button class="nav-btn hidden" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
       <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><circle cx="11" cy="11" r="2"></circle></svg>
       Dizayn
     </button>
@@ -476,7 +501,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14.5 15.5"></polyline><path d="M16.51 3.51L19 1M7.49 3.51L5 1"></path></svg>
       Taymer
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
       <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
       Foiz jadvali
     </button>
@@ -658,7 +683,12 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         </div>
       </div>
     </div>
-      </div></div>
+      
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+        <label style="font-size:12px;color:var(--text3)">Brak soni:</label>
+        <input type="text" inputmode="numeric" placeholder="0" value="" style="width:70px;text-align:center;" id="ubrak0">
+        
+      </div></div></div>
       <button class="add-btn purple" onclick="addUvRow()">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         UV mahsulot qo'shish
@@ -693,7 +723,12 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         </div>
       </div>
     </div>
-      </div></div>
+      
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+        <label style="font-size:12px;color:var(--text3)">Brak:</label>
+        <input type="text" inputmode="numeric" placeholder="0" value="" style="width:70px;text-align:center;" id="ebrak0">
+        
+      </div></div></div>
       <button class="add-btn" style="border-color:var(--amber-border);color:var(--amber)" onclick="addEkoRow()">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Ekosalvent qo'shish
@@ -844,6 +879,93 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       </div>
     </div>
     <div style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px">Har bir zakaz qatorida ham alohida mini-taymer mavjud</div>
+  </div>
+
+  <!-- SKLAD -->
+  <div class="panel" id="panel-sklad">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 14px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:14px;font-weight:700">Sklad</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="sklad-search-wrap">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="sklad-search" placeholder="Qidirish..." oninput="filterSklad(this.value)" style="border:none;outline:none;font-size:13px;width:140px;font-family:inherit">
+        </div>
+        <button class="add-btn" id="sklad-add-btn" style="width:auto;padding:7px 14px" onclick="showSkladForm()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Mahsulot qo'shish
+        </button>
+      </div>
+    </div>
+
+    <!-- Yangi mahsulot formasi -->
+    <div class="card hidden" id="sklad-form-card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Yangi mahsulot
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Nomi *</label>
+          <input type="text" id="sk-nom" placeholder="Mahsulot nomi">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Birlik</label>
+          <select id="sk-birlik" style="width:100%">
+            <option value="dona">dona</option>
+            <option value="kg">kg</option>
+            <option value="metr">metr</option>
+            <option value="litr">litr</option>
+            <option value="rulon">rulon</option>
+            <option value="varaq">varaq</option>
+            <option value="qop">qop</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Boshlang'ich miqdor</label>
+          <input type="text" inputmode="numeric" id="sk-miq" placeholder="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Izoh</label>
+          <input type="text" id="sk-izoh" placeholder="Ixtiyoriy">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="savebtn" style="flex:1" onclick="saveSkladItem()">Saqlash</button>
+        <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="hideSkladForm()">Bekor</button>
+      </div>
+    </div>
+
+    <!-- Harakat (prixod/rasxod) modal -->
+    <div class="modal-overlay hidden" id="sklad-harakat-modal">
+      <div class="modal-box" style="max-width:380px">
+        <div class="modal-title" id="sh-title">Prixod</div>
+        <div id="sh-nom-show" style="font-size:13px;color:var(--text3);margin-bottom:12px"></div>
+        <div class="form-group" style="margin-bottom:10px">
+          <label class="form-label">Miqdor</label>
+          <input type="text" inputmode="numeric" id="sh-miq" placeholder="0">
+        </div>
+        <div class="form-group" style="margin-bottom:14px">
+          <label class="form-label">Sabab / Izoh</label>
+          <input type="text" id="sh-sabab" placeholder="Masalan: Yetkazib berildi">
+        </div>
+        <input type="hidden" id="sh-sklad-id">
+        <input type="hidden" id="sh-tur">
+        <div style="display:flex;gap:8px">
+          <button class="savebtn" style="flex:1" id="sh-save-btn" onclick="saveSkladHarakat()">Saqlash</button>
+          <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById(&#39;sklad-harakat-modal&#39;).classList.add(&#39;hidden&#39;)">Bekor</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sklad mahsulotlar ro'yxati -->
+    <div id="sklad-list">
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        <p>Sklad bo'sh</p>
+      </div>
+    </div>
   </div>
 
   <!-- FOIZ JADVALI -->
@@ -1343,18 +1465,22 @@ async function saveOnly(type){
 
   showNotify('✅ Saqlandi! — '+sanaVaqt+'. Tarixda ko\'rishingiz mumkin.');
 
+  // Avval tarixni yangilab, keyin formani tozalamiz
+  await loadHistory();
+
   // Formani tozalash
   if(type==='admin'){
     adD = [{nom:'',sum:''},{nom:'',sum:''},{nom:'',sum:''}];
     renderAdmin();
+  } else if(type==='dizayner'){
+    dizD = [{nom:'', summa:'', tolovchi:'offis', tolov:null, kontakt:''}];
+    renderDizayner();
   } else {
-    prD = [{key:'Futbolka DTF (old)',miq:'',ex:false}];
+    prD = [{key:'Futbolka DTF (old)',miq:'',brak:'',ex:false}];
     uvD = [{nom:'',sig:'',don:''}];
     ekoD = [{nom:'',kv:''}];
     renderIshlab();
   }
-
-  await loadHistory();
 }
 
 async function sendWeekly(type){
@@ -1568,18 +1694,20 @@ async function saveAndSend(type){
   // Telegram xabarini formani tozalashdan oldin tayyorlash
   const msg = type==='admin' ? buildAdminMsg() : buildIshlabMsg();
 
+  // Avval tarixni yangilab, keyin formani tozalamiz
+  await loadHistory();
+
   // Formani tozalash
   if(type==='admin'){
     adD = [{nom:'',sum:''},{nom:'',sum:''},{nom:'',sum:''}];
     renderAdmin();
   } else {
-    prD = [{key:'Futbolka DTF (old)',miq:'',ex:false}];
+    prD = [{key:'Futbolka DTF (old)',miq:'',brak:'',ex:false}];
     uvD = [{nom:'',sig:'',don:''}];
     ekoD = [{nom:'',kv:''}];
     renderIshlab();
   }
 
-  await loadHistory();
   window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(msg),'_blank');
 }
 
@@ -1676,16 +1804,16 @@ function applyHiddenSections(){
   }
 }
 
-let uvD=[{nom:'',sig:'',don:''}];
-let ekoD=[{nom:'',kv:''}];
+let uvD=[{nom:'',sig:'',don:'',brak:''}];
+let ekoD=[{nom:'',kv:'',brak:''}];
 let dizTimers = {};
 let swRowIntervals = {};
 let prD=[{key:'Futbolka DTF (old)',miq:'',brak:'',ex:false}];
 let adD=[{nom:'',sum:''},{nom:'',sum:''},{nom:'',sum:''}];
 
-function addUvRow(){uvD.push({nom:'',sig:'',don:''});renderIshlab();}
+function addUvRow(){uvD.push({nom:'',sig:'',don:'',brak:''});renderIshlab();}
 function delUv(i){uvD.splice(i,1);renderIshlab();}
-function addEkoRow(){ekoD.push({nom:'',kv:''});renderIshlab();}
+function addEkoRow(){ekoD.push({nom:'',kv:'',brak:''});renderIshlab();}
 function delEko(i){ekoD.splice(i,1);renderIshlab();}
 function addProdRow(){prD.push({key:Object.keys(PR)[0],miq:'',ex:false});renderIshlab();}
 function delProd(i){prD.splice(i,1);renderIshlab();}
@@ -2306,10 +2434,16 @@ function renderIshlab(){
         </div>
       </div>
     </div>
-      ${sig>0&&don>0?`<div class="ures"><span class="badge bp">${ls} list</span><span style="font-size:11px;color:var(--text3)">×</span><span class="badge bw">${fmt(np)} so'm/list</span><span style="font-size:11px;color:var(--text3)">=</span><span class="badge bo">${fmt(jami)} so'm</span>${r.nom?`<span style="font-size:11px;color:var(--text3)">(${r.nom}: ${sig}ta/list, ${don} dona)</span>`:''}</div>`:''}`;
+      ${sig>0&&don>0?`<div class="ures"><span class="badge bp">${ls} list</span><span style="font-size:11px;color:var(--text3)">×</span><span class="badge bw">${fmt(np)} so'm/list</span><span style="font-size:11px;color:var(--text3)">=</span><span class="badge bo">${fmt(jami)} so'm</span>${r.nom?`<span style="font-size:11px;color:var(--text3)">(${r.nom}: ${sig}ta/list, ${don} dona)</span>`:''}</div>`:''}
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+        <label style="font-size:12px;color:var(--text3)">Brak soni:</label>
+        <input type="text" inputmode="numeric" placeholder="0" value="${r.brak||''}" style="width:70px;text-align:center;${parseInt(r.brak)>0?'border-color:var(--red-border);background:var(--red-light)':''}" id="ubrak${i}">
+        ${parseInt(r.brak)>0?`<span class="badge" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-border)">⚠️ ${r.brak} ta brak</span>`:''}
+      </div>`;
     pelU.appendChild(div);
     numInput(div.querySelector(`#usig${i}`),v=>{uvD[i].sig=v;renderIshlab();});
     numInput(div.querySelector(`#udon${i}`),v=>{uvD[i].don=v;renderIshlab();});
+    if(div.querySelector(`#ubrak${i}`)) numInput(div.querySelector(`#ubrak${i}`),v=>{uvD[i].brak=v;renderIshlab();});
   });
   document.getElementById('uv-grand').textContent=fmt(ut)+" so'm";
   document.getElementById('uv-sum').textContent=fmt(ut)+" so'm";
@@ -2329,9 +2463,15 @@ function renderIshlab(){
         </div>
       </div>
     </div>
-      ${kv>0?`<div class="ures" style="border-color:var(--amber-border)"><span class="badge" style="background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)">${kv} kv.m</span><span style="font-size:11px;color:var(--text3)">×</span><span class="badge bw">${fmt(narx)} so'm/kv.m</span><span style="font-size:11px;color:var(--text3)">=</span><span class="badge bo">${fmt(jami)} so'm</span></div>`:''}`;
+      ${kv>0?`<div class="ures" style="border-color:var(--amber-border)"><span class="badge" style="background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)">${kv} kv.m</span><span style="font-size:11px;color:var(--text3)">×</span><span class="badge bw">${fmt(narx)} so'm/kv.m</span><span style="font-size:11px;color:var(--text3)">=</span><span class="badge bo">${fmt(jami)} so'm</span></div>`:''}
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+        <label style="font-size:12px;color:var(--text3)">Brak:</label>
+        <input type="text" inputmode="numeric" placeholder="0" value="${r.brak||''}" style="width:70px;text-align:center;${parseInt(r.brak)>0?'border-color:var(--red-border);background:var(--red-light)':''}" id="ebrak${i}">
+        ${parseInt(r.brak)>0?`<span class="badge" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-border)">⚠️ ${r.brak} kv.m brak</span>`:''}
+      </div>`;
     pelE.appendChild(div);
     numInput(div.querySelector(`#ekv${i}`),v=>{ekoD[i].kv=v;renderIshlab();});
+    if(div.querySelector(`#ebrak${i}`)) numInput(div.querySelector(`#ebrak${i}`),v=>{ekoD[i].brak=v;renderIshlab();});
   });
   document.getElementById('eko-grand').textContent=fmt(et)+" so'm";
 
@@ -2369,7 +2509,7 @@ function renderFoizTable(){ if(ftBuilt)return; ftBuilt=true; const tb=document.g
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
 function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
-function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); }
+function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); }
 function showNotify(msg){ const el=document.getElementById('notify'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2800); }
 
 renderAdmin();
@@ -2377,6 +2517,158 @@ renderIshlab();
 renderDizayner();
 renderMessages();
 init();
+
+// ── SKLAD ──
+const SKLAD_EDITOR = 'ra.ravshan1998+bayramali@gmail.com'; // faqat shu qo'sha/o'chira oladi
+let skladData = [];
+let skladFilter = '';
+
+function canEditSklad(){
+  return currentUser && currentUser.email === SKLAD_EDITOR;
+}
+
+function showSkladForm(){
+  document.getElementById('sklad-form-card').classList.remove('hidden');
+}
+function hideSkladForm(){
+  document.getElementById('sklad-form-card').classList.add('hidden');
+  document.getElementById('sk-nom').value='';
+  document.getElementById('sk-miq').value='';
+  document.getElementById('sk-izoh').value='';
+}
+
+function filterSklad(q){
+  skladFilter = q.toLowerCase();
+  renderSkladList();
+}
+
+async function loadSklad(){
+  const { data } = await sb.from('sklad').select('*, sklad_harakati(id,tur,miqdor,sabab,user_name,sana,created_at)').order('nom');
+  if(data){
+    // Calculate actual quantity from harakati
+    skladData = data.map(s => {
+      const harakati = s.sklad_harakati || [];
+      const prixod = harakati.filter(h=>h.tur==='prixod').reduce((sum,h)=>sum+(h.miqdor||0),0);
+      const rasxod = harakati.filter(h=>h.tur==='rasxod').reduce((sum,h)=>sum+(h.miqdor||0),0);
+      return { ...s, hisob_miq: (s.miqdor||0) + prixod - rasxod, harakati };
+    });
+    renderSkladList();
+  }
+}
+
+function renderSkladList(){
+  const el = document.getElementById('sklad-list');
+  if(!el) return;
+  const filtered = skladFilter
+    ? skladData.filter(s => s.nom.toLowerCase().includes(skladFilter))
+    : skladData;
+
+  if(!filtered.length){
+    el.innerHTML = skladFilter
+      ? '<div class="empty-state"><p>Topilmadi: "'+skladFilter+'"</p></div>'
+      : '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><p>Sklad bosh</p></div>';
+    return;
+  }
+
+  el.innerHTML = '';
+  filtered.forEach(s => {
+    const miq = s.hisob_miq || 0;
+    const isLow = miq > 0 && miq <= 5;
+    const isEmpty = miq <= 0;
+    const card = document.createElement('div');
+    card.className = 'sklad-card' + (isEmpty?' sklad-warning':isLow?' sklad-low':'');
+
+    const harakatiHtml = (s.harakati||[]).slice(0,5).map(h =>
+      '<div class="sklad-log-item">' +
+      '<span class="avans-chip '+(h.tur==="prixod"?"berildi":"kutilmoqda")+'" style="'+(h.tur==="rasxod"?"background:var(--red-light);color:var(--red)":"")+'">'+
+      (h.tur==="prixod"?"+ Prixod":"- Rasxod")+'</span>'+
+      '<span style="font-weight:600">'+h.miqdor+' '+s.birlik+'</span>'+
+      '<span style="color:var(--text3)">'+( h.sabab||'')+'</span>'+
+      '<span style="color:var(--text3)">'+( h.sana||'').split(' ').slice(0,2).join(' ')+'</span>'+
+      '</div>'
+    ).join('');
+
+    card.innerHTML =
+      '<div class="sklad-top">' +
+        '<div>' +
+          '<div class="sklad-nom">' + s.nom + (isEmpty ? ' <span style="color:var(--red);font-size:11px">TUGADI</span>' : isLow ? ' <span style="color:var(--amber);font-size:11px">OZ QOLDI</span>' : '') + '</div>' +
+          (s.izoh ? '<div style="font-size:12px;color:var(--text3);margin-top:2px">'+s.izoh+'</div>' : '') +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div class="sklad-miq" style="color:'+(isEmpty?'var(--red)':isLow?'var(--amber)':'var(--blue)')+'">'+fmt(miq)+'<span class="sklad-birlik">'+s.birlik+'</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="sklad-actions">' +
+        (canEditSklad() ?
+          '<button class="prixod-btn" data-id="'+s.id+'" data-nom="'+s.nom+'" data-birlik="'+s.birlik+'" onclick="openHarakatEl(this,\'prixod\')">+ Prixod</button>' +
+          '<button class="rasxod-btn" data-id="'+s.id+'" data-nom="'+s.nom+'" data-birlik="'+s.birlik+'" onclick="openHarakatEl(this,\'rasxod\')">- Rasxod</button>'
+        : '') +
+        '<button class="sklad-hist-btn" onclick="toggleSkladLog(this)">Tarix</button>' +
+      '</div>' +
+      '<div class="sklad-log">' + (harakatiHtml || '<div style="font-size:12px;color:var(--text3);padding:6px 0">Harakat yoq</div>') + '</div>';
+
+    el.appendChild(card);
+  });
+}
+
+function toggleSkladLog(btn){
+  const log = btn.parentElement.nextElementSibling;
+  if(log) log.classList.toggle('show');
+}
+
+function openHarakatEl(el, tur){
+  const id = parseInt(el.dataset.id);
+  const nom = el.dataset.nom;
+  const birlik = el.dataset.birlik;
+  openHarakat(id, tur, nom, birlik);
+}
+
+function openHarakat(id, tur, nom, birlik){
+  document.getElementById('sh-sklad-id').value = id;
+  document.getElementById('sh-tur').value = tur;
+  document.getElementById('sh-title').textContent = tur === 'prixod' ? '+ Prixod kiritish' : '- Rasxod kiritish';
+  document.getElementById('sh-nom-show').textContent = nom + ' (' + birlik + ')';
+  document.getElementById('sh-miq').value = '';
+  document.getElementById('sh-sabab').value = '';
+  const btn = document.getElementById('sh-save-btn');
+  btn.style.background = tur === 'prixod' ? 'var(--green)' : 'var(--red)';
+  document.getElementById('sklad-harakat-modal').classList.remove('hidden');
+}
+
+async function saveSkladItem(){
+  const nom = document.getElementById('sk-nom').value.trim();
+  if(!nom){ showNotify("Nomi kiritilmagan"); return; }
+  const birlik = document.getElementById('sk-birlik').value;
+  const miqdor = parseFloat(document.getElementById('sk-miq').value)||0;
+  const izoh = document.getElementById('sk-izoh').value.trim();
+
+  const { error } = await sb.from('sklad').insert({ nom, birlik, miqdor, izoh });
+  if(error){ showNotify("Xatolik: "+error.message); return; }
+  showNotify("Mahsulot qo'shildi!");
+  hideSkladForm();
+  await loadSklad();
+}
+
+async function saveSkladHarakat(){
+  const id = parseInt(document.getElementById('sh-sklad-id').value);
+  const tur = document.getElementById('sh-tur').value;
+  const miqdor = parseFloat(document.getElementById('sh-miq').value)||0;
+  const sabab = document.getElementById('sh-sabab').value.trim();
+
+  if(!miqdor){ showNotify("Miqdor kiritilmagan"); return; }
+
+  const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
+  const { error } = await sb.from('sklad_harakati').insert({
+    sklad_id: id, tur, miqdor, sabab,
+    user_email: currentUser.email,
+    user_name: name,
+    sana: getSanaVaqt(),
+  });
+  if(error){ showNotify("Xatolik: "+error.message); return; }
+  showNotify(tur==="prixod" ? "+ Prixod saqlandi!" : "- Rasxod saqlandi!");
+  document.getElementById('sklad-harakat-modal').classList.add('hidden');
+  await loadSklad();
+}
 
 // ── STOPWATCH ──
 let swMain = {running:false, elapsed:0, start:null};
