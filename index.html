@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_22.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_26.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -212,6 +212,14 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .sklad-log-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px;border-bottom:1px solid var(--gray-border)}
 .sklad-log-item:last-child{border-bottom:none}
 .sklad-warning{background:var(--red-light);border-color:var(--red-border)}
+.rasm-upload-area{border:2px dashed var(--gray-border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .15s;background:var(--gray-light)}
+.rasm-upload-area:hover{border-color:var(--blue-border);background:var(--blue-light)}
+.rasm-upload-area img{width:100%;max-height:120px;object-fit:cover;border-radius:7px}
+.sklad-img{width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:10px;cursor:pointer}
+.sklad-img-wrap{position:relative}
+.sklad-img-wrap:hover::after{content:"Kattalashtirish";position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;border-radius:8px}
+.sklad-img-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sklad-img-modal img{max-width:95vw;max-height:90vh;border-radius:10px;object-fit:contain}
 .sklad-low{background:var(--amber-light);border-color:var(--amber-border)}
 .diz-row-tools{display:flex;align-items:center;gap:8px;margin:8px 0;flex-wrap:wrap}
 .sw-mini{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#fff;border-radius:8px;border:1px solid var(--gray-border);flex:1;min-width:0}
@@ -291,7 +299,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   <p>Yuklanmoqda...</p>
 </div>
 
-<div id="login-screen" class="hidden">
+<div id="login-screen" class="">
   <div class="login-card">
     <div class="login-logo">
       <div class="login-icon">
@@ -313,7 +321,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 </div>
 
-<div id="yoriq-screen" class="">
+<div id="yoriq-screen" class="hidden">
   <div class="yoriq-wrap">
     <div class="yoriq-header">
       <div style="font-size:40px;margin-bottom:10px">📋</div>
@@ -456,9 +464,9 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div class="topbar-right">
       <div class="user-chip">
         <div class="user-dot"></div>
-        <span id="user-name-chip">parvina</span>
+        <span id="user-name-chip">—</span>
       </div>
-      <span class="role-badge ishlab" id="role-badge-chip">Ishlab chiqarish</span>
+      <span class="role-badge" id="role-badge-chip"></span>
       <button class="bell-btn" onclick="showPanel(&#39;xabarlar&#39;)" id="bell-btn" title="Xabarlar">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         <span class="bell-badge hidden" id="bell-count">0</span>
@@ -468,11 +476,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 
   <div class="nav" id="main-nav">
-    <button class="nav-btn hidden" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
+    <button class="nav-btn" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
       Umumiy
     </button>
-    <button class="nav-btn hidden" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
+    <button class="nav-btn" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       Admin
     </button>
@@ -493,7 +501,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
       Sklad
     </button>
-    <button class="nav-btn hidden" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
+    <button class="nav-btn" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
       <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><circle cx="11" cy="11" r="2"></circle></svg>
       Dizayn
     </button>
@@ -501,7 +509,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14.5 15.5"></polyline><path d="M16.51 3.51L19 1M7.49 3.51L5 1"></path></svg>
       Taymer
     </button>
-    <button class="nav-btn hidden" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
+    <button class="nav-btn" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
       <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
       Foiz jadvali
     </button>
@@ -931,8 +939,18 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
           <input type="text" id="sk-izoh" placeholder="Ixtiyoriy">
         </div>
       </div>
+      <div class="form-group" style="margin-bottom:10px">
+        <label class="form-label">Mahsulot rasmi</label>
+        <div class="rasm-upload-area" id="sk-rasm-area" onclick="document.getElementById(&#39;sk-rasm-input&#39;).click()">
+          <input type="file" id="sk-rasm-input" accept="image/*" style="display:none" onchange="previewRasm(this)">
+          <div id="sk-rasm-preview">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text3)"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <p style="margin:6px 0 0;font-size:12px;color:var(--text3)">Rasm tanlash uchun bosing</p>
+          </div>
+        </div>
+      </div>
       <div style="display:flex;gap:8px">
-        <button class="savebtn" style="flex:1" onclick="saveSkladItem()">Saqlash</button>
+        <button class="savebtn" style="flex:1" id="sk-save-btn" onclick="saveSkladItem()">Saqlash</button>
         <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="hideSkladForm()">Bekor</button>
       </div>
     </div>
@@ -2535,6 +2553,10 @@ function hideSkladForm(){
   document.getElementById('sk-nom').value='';
   document.getElementById('sk-miq').value='';
   document.getElementById('sk-izoh').value='';
+  document.getElementById('sk-rasm-input').value='';
+  document.getElementById('sk-rasm-preview').innerHTML =
+    '<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text3)"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>' +
+    '<p style="margin:6px 0 0;font-size:12px;color:var(--text3)">Rasm tanlash uchun bosing</p>';
 }
 
 function filterSklad(q){
@@ -2589,6 +2611,7 @@ function renderSkladList(){
     ).join('');
 
     card.innerHTML =
+      (s.rasm_url ? '<div class="sklad-img-wrap" data-url="'+s.rasm_url+'" onclick="openRasmModal(this.dataset.url)"><img class="sklad-img" src="'+s.rasm_url+'" alt="'+s.nom+'"></div>' : '') +
       '<div class="sklad-top">' +
         '<div>' +
           '<div class="sklad-nom">' + s.nom + (isEmpty ? ' <span style="color:var(--red);font-size:11px">TUGADI</span>' : isLow ? ' <span style="color:var(--amber);font-size:11px">OZ QOLDI</span>' : '') + '</div>' +
