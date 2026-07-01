@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_31.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_32.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,6 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:var(--bg);min-height:100vh}
 .hidden{display:none!important}
-  
 
 #loading{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:12px}
 .spinner{width:36px;height:36px;border:3px solid var(--gray-border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
@@ -1347,6 +1346,8 @@ async function togglePaid(id, val){
   await sb.from('zakazlar').update({ is_paid: val }).eq('id', id);
   showNotify(val ? "✅ To'landi deb belgilandi" : "Belgisi olib tashlandi");
   await loadHistory();
+  if(currentRole === 'admin') renderAdminStats();
+  if(currentRole === 'ishlab') renderIshlabStats();
 }
 
 async function deleteHistoryItem(id){
@@ -1736,7 +1737,35 @@ async function saveAndSend(type){
 const FOIZ=[[0,99999,.20],[100000,249999,.15],[250000,499999,.12],[500000,999999,.10],[1000000,1999999,.08],[2000000,2999999,.06],[3000000,3999999,.055],[4000000,4999999,.05],[5000000,9999999,.04],[10000000,29999999,.035],[30000000,49999999,.033],[50000000,99999999,.032],[100000000,Infinity,.03]];
 function getFoiz(s){ for(const[a,b,f]of FOIZ)if(s>=a&&s<=b)return f; return .03; }
 function uvNarx(n){ return n<=5?40000:n<=10?25000:20000; }
-function calcUv(sig,don){ if(!sig||!don||sig<=0||don<=0)return{ls:0,np:0,jami:0}; const ls=Math.ceil(don/sig); return{ls,np:uvNarx(ls),jami:ls*uvNarx(ls)}; }
+
+function calcUv(sig, don){
+  if(!sig||!don||sig<=0||don<=0) return {ls:0, lsReal:0, lsFull:0, lsFrac:0, np:0, jami:0};
+  
+  const fullLists = Math.floor(don / sig); // to'liq listlar
+  const remainder = don % sig;             // qolgan dona
+  
+  let frac = 0;
+  if(remainder > 0){
+    const pct = remainder / sig;
+    if(pct <= 0.125)    frac = 0.2;
+    else if(pct <= 0.5) frac = 0.5;
+    else                frac = 1.0;
+  }
+  
+  const lsReal = fullLists + frac;
+  const totalListsForPrice = Math.ceil(lsReal); // narx bosqichi uchun
+  const npPerList = uvNarx(totalListsForPrice);
+  
+  // Har bir qism alohida narx
+  const jamiToliq = fullLists * npPerList;
+  let jamiFrac = 0;
+  if(frac === 0.2)      jamiFrac = 20000;
+  else if(frac === 0.5) jamiFrac = 30000;
+  else if(frac === 1.0) jamiFrac = npPerList;
+  
+  const jami = jamiToliq + jamiFrac;
+  return {ls: lsReal, lsReal, lsFull: fullLists, lsFrac: frac, np: npPerList, jami};
+}
 
 function ekoNarx(kv){ if(kv<=10)return 5000; if(kv<=50)return 4000; if(kv<=100)return 3700; return 3500; }
 function calcEko(kv){ if(!kv||kv<=0)return{narx:0,jami:0}; const narx=ekoNarx(kv); return{narx,jami:Math.round(kv*narx)}; }
@@ -2159,11 +2188,27 @@ async function submitAvans(){
   });
   
   if(error){ showNotify('❌ Xatolik: '+error.message); return; }
+
+  // Xabarlar jadvaliga ham yoz (owner ko'rsin)
+  const ownerEmail = 'ra.ravshan1998@gmail.com';
+  const xatText = `💰 Avans so'rovi\n👤 ${name}\n💵 ${fmt(summa)} so'm\n📝 ${sabab}`;
+  await sb.from('xabarlar').insert({
+    from_id: currentUser.id,
+    from_email: currentUser.email,
+    from_name: name,
+    to_email: ownerEmail,
+    to_name: 'Ravshan (Owner)',
+    text: xatText,
+    o_qildi: false,
+    sana: getSanaVaqt(),
+  });
+
   showNotify("✅ Avans so'rovi yuborildi!");
   hideAvansForm();
+  await loadMessages();
   
   // Telegram orqali ham yuborish
-  const msg = `💰 AVANS SO\\'ROVI\\n👤 ${name}\\n💵 ${fmt(summa)} so\\'m\\n📝 ${sabab}\\n📅 ${getSanaVaqt()}`;
+  const msg = "💰 AVANS SO'ROVI\n👤 " + name + "\n💵 " + fmt(summa) + " so'm\n📝 " + sabab + "\n📅 " + getSanaVaqt();
   window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(msg),'_blank');
 }
 
@@ -2442,7 +2487,16 @@ function renderIshlab(){
   const pelU=document.getElementById('uv-rows'); pelU.innerHTML=''; let ut=0;
   uvD.forEach((r,i)=>{
     const sig=parseInt(r.sig)||0; const don=parseInt(r.don)||0;
-    const{ls,np,jami}=calcUv(sig,don); if(don>0&&sig>0)ut+=jami;
+    const{ls,lsFull,lsFrac,np,jami}=calcUv(sig,don); if(don>0&&sig>0)ut+=jami;
+    
+    // List ko'rinishi
+    let lsDisplay = '';
+    if(sig>0&&don>0){
+      if(lsFrac===0) lsDisplay = `${lsFull} list`;
+      else if(lsFull===0) lsDisplay = `${lsFrac} list`;
+      else lsDisplay = `${lsFull} + ${lsFrac} list`;
+    }
+    
     const div=document.createElement('div'); div.className='ui';
     div.innerHTML=`<div class="ugrid-wrap">
       <input type="text" placeholder="Bloknot, daftar, termoz..." value="${r.nom}" oninput="uvD[${i}].nom=this.value">
@@ -2450,12 +2504,18 @@ function renderIshlab(){
         <input type="text" inputmode="numeric" placeholder="8" value="${r.sig}" style="text-align:center" id="usig${i}">
         <input type="text" inputmode="numeric" placeholder="100" value="${r.don}" style="text-align:center" id="udon${i}">
         <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
-          ${sig>0&&don>0?`<span class="badge bp">${ls} list</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
+          ${sig>0&&don>0?`<span class="badge bp">${lsDisplay}</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
           ${delIcon(`delUv(${i})`)}
         </div>
       </div>
     </div>
-      ${sig>0&&don>0?`<div class="ures"><span class="badge bp">${ls} list</span><span style="font-size:11px;color:var(--text3)">×</span><span class="badge bw">${fmt(np)} so'm/list</span><span style="font-size:11px;color:var(--text3)">=</span><span class="badge bo">${fmt(jami)} so'm</span>${r.nom?`<span style="font-size:11px;color:var(--text3)">(${r.nom}: ${sig}ta/list, ${don} dona)</span>`:''}</div>`:''}
+      ${sig>0&&don>0?`<div class="ures">
+        <span class="badge bp">${lsDisplay}</span>
+        <span style="font-size:11px;color:var(--text3)">→</span>
+        <span class="badge bo">${fmt(jami)} so'm</span>
+        ${lsFrac>0?`<span style="font-size:11px;color:var(--text3)">(${lsFull} list×${fmt(np)} + ${lsFrac} list×${lsFrac===0.2?'20 000':lsFrac===0.5?'30 000':fmt(np)})</span>`:''}
+        ${r.nom?`<span style="font-size:11px;color:var(--text3)">${r.nom}: ${sig}ta/list, ${don} dona</span>`:''}
+      </div>`:''}
       <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
         <label style="font-size:12px;color:var(--text3)">Brak soni:</label>
         <input type="text" inputmode="numeric" placeholder="0" value="${r.brak||''}" style="width:70px;text-align:center;${parseInt(r.brak)>0?'border-color:var(--red-border);background:var(--red-light)':''}" id="ubrak${i}">
