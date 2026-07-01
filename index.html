@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_32.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_34.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -192,6 +192,12 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .avans-chip.berildi{background:var(--green-light);color:var(--green)}
 .give-avans-row{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
 .give-avans-row input{width:140px}
+.db-recent-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;margin-bottom:6px;border:1px solid var(--gray-border);background:#fff}
+.db-recent-item:hover{border-color:var(--blue-border)}
+.db-recent-label{font-size:12px;font-weight:600}
+.db-recent-sum{font-size:13px;font-weight:700}
+.db-recent-date{font-size:11px;color:var(--text3)}
+.db-recent-status{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
 .sklad-search-wrap{display:flex;align-items:center;gap:6px;padding:7px 11px;border:1.5px solid var(--gray-border);border-radius:8px;background:#fff}
 .sklad-search-wrap svg{stroke:var(--text3);flex-shrink:0}
 .sklad-card{background:#fff;border-radius:12px;border:1px solid var(--gray-border);padding:14px;margin-bottom:10px;transition:all .15s}
@@ -376,6 +382,110 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 </div>
 
+<!-- ADMIN YO'RIQNOMA -->
+<div id="admin-yoriq-screen" class="hidden">
+  <div class="yoriq-wrap">
+    <div class="yoriq-header">
+      <div style="font-size:40px;margin-bottom:10px">📋</div>
+      <h2>Admin (Operator) yo'riqnomasi</h2>
+      <p>Tizimga kirishdan oldin o'qing</p>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-title">🤝 1. Mijoz bilan muomala</div>
+      <div class="rule-body"><ul style="margin-left:18px">
+        <li>Har bir mijozni xushmuomalalik bilan kutib olish.</li>
+        <li>Mijozga javobni imkon qadar <strong>5 daqiqa ichida</strong> berish.</li>
+        <li>Hurmat bilan gapirish, bahslashmaslik.</li>
+        <li>Mijozning ehtiyojini to'liq aniqlashdan oldin narx aytmaslik.</li>
+        <li>Mijozning murojaati javobsiz qolmasligi shart.</li>
+      </ul></div>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-title">📦 2. Buyurtma qabul qilish</div>
+      <div class="rule-body">
+        <p style="margin-bottom:8px">Buyurtma qabul qilishdan oldin quyidagilarni aniqlash <strong>majburiy:</strong></p>
+        <ul style="margin-left:18px">
+          <li>Mahsulot turi • Soni • O'lchami • Materiali • Bosma turi</li>
+          <li>Tayyor bo'lish muddati</li>
+          <li>Dizayn bormi yoki yo'q</li>
+          <li>Yetkazib berish kerakmi • To'lov turi</li>
+        </ul>
+        <p style="margin-top:8px;color:var(--red);font-weight:600">Hech bir buyurtma to'liq ma'lumotlarsiz ishlab chiqarishga yuborilmaydi.</p>
+      </div>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-title">💰 3. Narx hisoblash</div>
+      <div class="rule-body"><ul style="margin-left:18px">
+        <li>Faqat tasdiqlangan narxlar bo'yicha hisoblash.</li>
+        <li>O'zboshimchalik bilan chegirma bermaslik.</li>
+        <li>Rahbar ruxsatisiz narxni o'zgartirmaslik.</li>
+        <li>Qo'shimcha xizmatlar alohida hisoblanadi.</li>
+      </ul></div>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-title">🎨 4. Dizaynerga topshiriq berish</div>
+      <div class="rule-body">
+        <p style="margin-bottom:8px">Topshiriqda quyidagilar bo'lishi shart:</p>
+        <ul style="margin-left:18px">
+          <li>Mijoz nomi • Telefon raqami • Mahsulot turi • O'lcham</li>
+          <li>Matn • Logo • Ranglar • Izohlar • Muddat</li>
+        </ul>
+        <p style="margin-top:8px;color:var(--red);font-weight:600">"Noaniq qilib bering", "o'zingiz chiroyli qiling" kabi topshiriqlar berilmaydi.</p>
+      </div>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-title">✅ 5. Mijoz tasdig'i</div>
+      <div class="rule-body"><ul style="margin-left:18px">
+        <li>Dizayn mijozga yuboriladi.</li>
+        <li>Mijoz "Tasdiqlayman" deb yozma tasdiq beradi.</li>
+        <li>Tasdiqsiz ishlab chiqarish boshlanmaydi.</li>
+      </ul></div>
+    </div>
+
+    <div class="rule-card danger">
+      <div class="rule-title">🚫 9. Taqiqlanadi</div>
+      <div class="rule-body"><ul style="margin-left:18px">
+        <li>Buyurtmani unutish</li>
+        <li>Mijozga qo'pol muomala qilish</li>
+        <li>Tasdiqsiz chop etish</li>
+        <li>Rahbarsiz chegirma berish</li>
+        <li>Narxni o'zboshimchalik bilan o'zgartirish</li>
+        <li>Buyurtma fayllarini yo'qotish</li>
+        <li>Mijoz sirlarini tarqatish</li>
+      </ul></div>
+    </div>
+
+    <div class="rule-card" style="border-left-color:var(--blue)">
+      <div class="rule-title" style="color:var(--blue)">🔄 Asosiy buyurtma bosqichlari</div>
+      <div class="rule-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px">
+          <div style="padding:6px 10px;background:var(--blue-light);border-radius:6px;font-size:12px">1. Mijoz murojaati</div>
+          <div style="padding:6px 10px;background:var(--blue-light);border-radius:6px;font-size:12px">2. Ma'lumotlarni aniqlash</div>
+          <div style="padding:6px 10px;background:var(--blue-light);border-radius:6px;font-size:12px">3. Narx hisoblash</div>
+          <div style="padding:6px 10px;background:var(--blue-light);border-radius:6px;font-size:12px">4. To'lovni kelishish</div>
+          <div style="padding:6px 10px;background:var(--blue-light);border-radius:6px;font-size:12px">5. Dizaynerga topshirish</div>
+          <div style="padding:6px 10px;background:var(--blue-light);border-radius:6px;font-size:12px">6. Mijoz tasdig'ini olish</div>
+          <div style="padding:6px 10px;background:var(--blue-light);border-radius:6px;font-size:12px">7. Ishlab chiqarishga yuborish</div>
+          <div style="padding:6px 10px;background:var(--blue-light);border-radius:6px;font-size:12px">8. Sifat nazorati</div>
+          <div style="padding:6px 10px;background:var(--blue-light);border-radius:6px;font-size:12px">9. Tayyor mahsulotni topshirish</div>
+          <div style="padding:6px 10px;background:var(--blue-light);border-radius:6px;font-size:12px">10. Mijoz fikrini olish</div>
+        </div>
+      </div>
+    </div>
+
+    <label class="agree-row">
+      <input type="checkbox" id="admin-agree-chk" onchange="document.getElementById(&#39;admin-agree-btn&#39;).disabled=!this.checked">
+      <span>Barcha qoidalar bilan tanishdim va roziman.</span>
+    </label>
+    <button class="agree-btn" id="admin-agree-btn" disabled="" onclick="enterAdminApp()">Tizimga kirish</button>
+  </div>
+</div>
+
 <!-- DIZAYNER YO'RIQNOMA -->
 <div id="dizayner-yoriq-screen" class="hidden">
   <div class="yoriq-wrap">
@@ -488,6 +598,10 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <button class="nav-btn" onclick="showPanel(&#39;ishlab&#39;)" id="nb-ishlab">
       <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
       Ishlab chiqarish
+    </button>
+    <button class="nav-btn" onclick="showPanel(&#39;dashboard&#39;)" id="nb-dashboard">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      Dashboard
     </button>
     <button class="nav-btn active" onclick="showPanel(&#39;tarix&#39;)" id="nb-tarix">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -803,6 +917,53 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     </div>
 
     <div id="xabarlar-list"><div class="empty-state"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><p>Xabarlar mavjud emas</p></div></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="panel" id="panel-dashboard">
+    <div style="margin:16px 0 14px">
+      <div style="font-size:14px;font-weight:700" id="db-title">Dashboard</div>
+      <div style="font-size:12px;color:var(--text3)" id="db-subtitle">Shaxsiy hisobot</div>
+    </div>
+
+    <!-- Stat kartalar -->
+    <div class="stat-row" id="db-stats-row">
+      <div class="stat"><div class="stat-label">Jami zakaz</div><div class="stat-val" style="color:var(--blue)" id="db-jami">0</div></div>
+      <div class="stat"><div class="stat-label">Sof daromad</div><div class="stat-val" style="color:var(--green)" id="db-daromad">0 so'm</div></div>
+      <div class="stat"><div class="stat-label">Bu oy</div><div class="stat-val" style="color:var(--purple)" id="db-bu-oy">0 so'm</div></div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-label">O'tgan oy</div><div class="stat-val" id="db-utgan-oy">0 so'm</div></div>
+      <div class="stat"><div class="stat-label">O'sish</div><div class="stat-val" id="db-osish">0%</div></div>
+      <div class="stat"><div class="stat-label">Brak</div><div class="stat-val" style="color:var(--red)" id="db-brak">0 ta</div></div>
+    </div>
+
+    <!-- Grafik -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div class="card-title" style="margin:0">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          Daromad dinamikasi
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="filter-btn active" id="db-btn-oylik" onclick="setDbMode(&#39;oylik&#39;,this)">Oylik</button>
+          <button class="filter-btn" id="db-btn-haftalik" onclick="setDbMode(&#39;haftalik&#39;,this)">Haftalik</button>
+          <button class="filter-btn" id="db-btn-yillik" onclick="setDbMode(&#39;yillik&#39;,this)">Yillik</button>
+        </div>
+      </div>
+      <div style="position:relative;height:200px">
+        <canvas id="db-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- So'nggi zakazlar -->
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        So'nggi zakazlar
+      </div>
+      <div id="db-recent-list"></div>
+    </div>
   </div>
 
   <!-- TARIX / HISOBOTLAR -->
@@ -1172,9 +1333,9 @@ function onLogin(){
     nbOwner.classList.add('hidden');
     nbIshlab.classList.add('hidden');
     document.getElementById('nb-dizayner').classList.add('hidden');
-    const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
-    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('admin')); setInterval(() => loadMessages(), 30000); }
-    else { showScreen('yoriq'); }
+    const seen = sessionStorage.getItem('admin_yoriq_'+currentUser.id);
+    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dashboard')); setInterval(() => loadMessages(), 30000); }
+    else { showScreen('admin_yoriq'); }
   } else if(currentRole === 'dizayner'){
     nbOwner.classList.add('hidden');
     nbAdmin.classList.add('hidden');
@@ -1182,7 +1343,7 @@ function onLogin(){
     document.getElementById('nb-foiz').classList.add('hidden');
     document.getElementById('nb-stopwatch').classList.remove('hidden');
     const seen = sessionStorage.getItem('diz_yoriq_'+currentUser.id);
-    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dizayner')); setInterval(() => loadMessages(), 30000); }
+    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dashboard')); setInterval(() => loadMessages(), 30000); }
     else { showScreen('dizayner_yoriq'); }
   } else {
     // ishlab chiqarish
@@ -1191,7 +1352,7 @@ function onLogin(){
     document.getElementById('nb-dizayner').classList.add('hidden');
     document.getElementById('nb-foiz').classList.add('hidden');
     const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
-    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('ishlab')); setInterval(() => loadMessages(), 30000); }
+    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dashboard')); setInterval(() => loadMessages(), 30000); }
     else { showScreen('yoriq'); }
   }
 }
@@ -1200,7 +1361,14 @@ function enterApp(){
   sessionStorage.setItem('yoriq_'+currentUser.id, '1');
   showScreen('app');
   const defaultPanel = currentRole === 'admin' ? 'admin' : currentRole === 'ishlab' ? 'ishlab' : 'tarix';
-  loadHistory().then(()=>showPanel(defaultPanel));
+  loadHistory().then(()=>showPanel('dashboard'));
+  setInterval(() => loadMessages(), 30000);
+}
+
+function enterAdminApp(){
+  sessionStorage.setItem('admin_yoriq_'+currentUser.id, '1');
+  showScreen('app');
+  loadHistory().then(()=>showPanel('dashboard'));
   setInterval(() => loadMessages(), 30000);
 }
 
@@ -1208,7 +1376,7 @@ function enterDizaynerApp(){
   sessionStorage.setItem('diz_yoriq_'+currentUser.id, '1');
   document.getElementById('nb-stopwatch').classList.remove('hidden');
   showScreen('app');
-  loadHistory().then(()=>showPanel('dizayner'));
+  loadHistory().then(()=>showPanel('dashboard'));
   setInterval(() => loadMessages(), 30000);
 }
 
@@ -1224,6 +1392,7 @@ async function loadHistory(){
   if(currentRole === 'owner') renderOwnerPanel();
   if(currentRole === 'admin') renderAdminStats();
   if(currentRole === 'ishlab') renderIshlabStats();
+  renderDashboard();
 }
 
 function setFilter(f, el){
@@ -1348,6 +1517,7 @@ async function togglePaid(id, val){
   await loadHistory();
   if(currentRole === 'admin') renderAdminStats();
   if(currentRole === 'ishlab') renderIshlabStats();
+  renderDashboard();
 }
 
 async function deleteHistoryItem(id){
@@ -2589,14 +2759,195 @@ let ftBuilt=false;
 function renderFoizTable(){ if(ftBuilt)return; ftBuilt=true; const tb=document.getElementById('foiz-tbody'); FOIZ.forEach(([,,f],i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${FL[i]}</td><td class="fp">${Math.round(f*100)}%</td>`; tb.appendChild(tr); }); }
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
-function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
-function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); }
+function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','admin-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',admin_yoriq:'admin-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
+function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); }
 function showNotify(msg){ const el=document.getElementById('notify'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2800); }
 
 renderAdmin();
 renderIshlab();
 renderDizayner();
 renderMessages();
+
+// ── PERSONAL DASHBOARD ──
+let dbMode = 'oylik';
+let dbChart = null;
+const OY_NOMI = ['Yan','Fev','Mar','Apr','May','Iyun','Iyul','Avg','Sen','Okt','Noy','Dek'];
+
+function setDbMode(mode, el){
+  dbMode = mode;
+  document.querySelectorAll('#panel-dashboard .filter-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderDashboard();
+}
+
+function renderDashboard(){
+  if(!currentUser || !allHistory) return;
+  const myData = allHistory.filter(h => h.user_email === currentUser.email);
+  if(!myData.length){
+    document.getElementById('db-recent-list').innerHTML = '<div class="empty-state"><p>Hali yozuvlar yoq</p></div>';
+    return;
+  }
+
+  const now = new Date();
+  const thisMonth = now.getMonth();
+  const thisYear = now.getFullYear();
+  const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
+  const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
+
+  // Hisoblash
+  let jamiZakaz = 0, sofDaromad = 0, buOy = 0, utganOy = 0, brakSoni = 0;
+
+  myData.forEach(h => {
+    const d = new Date(h.created_at);
+    const val = h.type === 'admin' ? (h.total_daromad||0) : (h.total_jami||0);
+    jamiZakaz += (h.type === 'admin' ? (h.total_zakaz||0) : val);
+    if(!h.is_paid && !h.is_brak) sofDaromad += val;
+    if(d.getMonth() === thisMonth && d.getFullYear() === thisYear) buOy += val;
+    if(d.getMonth() === lastMonth && d.getFullYear() === lastMonthYear) utganOy += val;
+    if(h.is_brak) brakSoni++;
+  });
+
+  const osish = utganOy > 0 ? Math.round(((buOy - utganOy) / utganOy) * 100) : (buOy > 0 ? 100 : 0);
+
+  // Stat kartalar
+  const el = id => document.getElementById(id);
+  el('db-jami').textContent = myData.length + ' ta';
+  el('db-daromad').textContent = fmt(sofDaromad) + " so'm";
+  el('db-bu-oy').textContent = fmt(buOy) + " so'm";
+  el('db-utgan-oy').textContent = fmt(utganOy) + " so'm";
+  el('db-osish').textContent = (osish >= 0 ? '+' : '') + osish + '%';
+  el('db-osish').style.color = osish >= 0 ? 'var(--green)' : 'var(--red)';
+  el('db-brak').textContent = brakSoni + ' ta';
+
+  // Grafik
+  renderDbChart(myData, thisMonth, thisYear);
+
+  // So'nggi 5 ta zakaz
+  const recent = [...myData].slice(0, 5);
+  const listEl = el('db-recent-list');
+  if(!listEl) return;
+  listEl.innerHTML = recent.map(h => {
+    const val = h.type === 'admin' ? (h.total_daromad||0) : (h.total_jami||0);
+    const statusColor = h.is_brak ? 'var(--red)' : h.is_paid ? 'var(--green)' : 'var(--amber)';
+    const statusText = h.is_brak ? 'Brak' : h.is_paid ? "To'landi" : 'Kutilmoqda';
+    const typeLabel = h.type === 'admin' ? '👤' : h.type === 'ishlab' ? '🏭' : '🎨';
+    return `<div class="db-recent-item">
+      <div>
+        <div class="db-recent-label">${typeLabel} ${h.sana || ''}</div>
+        <div class="db-recent-date">${h.sana || ''}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="db-recent-sum" style="color:var(--blue)">${fmt(val)} so'm</div>
+        <span class="db-recent-status" style="background:${statusColor}22;color:${statusColor}">${statusText}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDbChart(myData, thisMonth, thisYear){
+  const canvas = document.getElementById('db-chart');
+  if(!canvas || typeof Chart === 'undefined') return;
+
+  let labels = [], data = [];
+
+  if(dbMode === 'oylik'){
+    // Bu yilning har oyi
+    const monthly = Array(12).fill(0);
+    myData.forEach(h => {
+      const d = new Date(h.created_at);
+      if(d.getFullYear() === thisYear){
+        const val = h.type === 'admin' ? (h.total_daromad||0) : (h.total_jami||0);
+        monthly[d.getMonth()] += val;
+      }
+    });
+    labels = OY_NOMI;
+    data = monthly;
+
+  } else if(dbMode === 'haftalik'){
+    // So'nggi 8 hafta
+    const weeks = {};
+    myData.forEach(h => {
+      const d = new Date(h.created_at);
+      const weekNum = Math.floor((new Date() - d) / (7*24*60*60*1000));
+      if(weekNum < 8){
+        if(!weeks[weekNum]) weeks[weekNum] = 0;
+        const val = h.type === 'admin' ? (h.total_daromad||0) : (h.total_jami||0);
+        weeks[weekNum] += val;
+      }
+    });
+    labels = Array.from({length:8},(_,i) => i===0?'Bu hafta':(i+' hafta oldin')).reverse();
+    data = Array.from({length:8},(_,i)=>weeks[7-i]||0);
+
+  } else {
+    // Yillik
+    const yearly = {};
+    myData.forEach(h => {
+      const y = new Date(h.created_at).getFullYear();
+      if(!yearly[y]) yearly[y] = 0;
+      const val = h.type === 'admin' ? (h.total_daromad||0) : (h.total_jami||0);
+      yearly[y] += val;
+    });
+    const years = Object.keys(yearly).sort();
+    labels = years;
+    data = years.map(y => yearly[y]);
+  }
+
+  if(dbChart) dbChart.destroy();
+
+  // Gradient
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+  gradient.addColorStop(0, 'rgba(37,99,235,0.3)');
+  gradient.addColorStop(1, 'rgba(37,99,235,0.02)');
+
+  dbChart = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: "Daromad",
+        data,
+        borderColor: '#2563eb',
+        backgroundColor: gradient,
+        borderWidth: 2.5,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#2563eb',
+        pointBorderWidth: 2,
+        pointHoverRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          titleColor: '#94a3b8',
+          bodyColor: '#fff',
+          callbacks: {
+            label: ctx => fmt(ctx.parsed.y) + " so'm"
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { callback: v => v >= 1000000 ? (v/1000000).toFixed(1)+'M' : v >= 1000 ? (v/1000).toFixed(0)+'K' : v }
+        },
+        x: {
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+
 init();
 
 // ── RASM YUKLASH ──
