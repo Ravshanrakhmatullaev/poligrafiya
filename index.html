@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_35.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_36.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -222,7 +222,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .rasm-upload-area:hover{border-color:var(--blue-border);background:var(--blue-light)}
 .rasm-upload-area.drag-over{border-color:var(--blue);background:var(--blue-light);transform:scale(1.01)}
 .rasm-upload-area img{width:100%;max-height:120px;object-fit:cover;border-radius:7px}
-.sklad-img{width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:10px;cursor:pointer}
+.sklad-img{width:100%;height:200px;object-fit:cover;object-position:center;border-radius:8px;margin-bottom:10px;cursor:pointer}
 .sklad-img-wrap{position:relative}
 .sklad-img-wrap:hover::after{content:"Kattalashtirish";position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;border-radius:8px}
 .sklad-img-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;cursor:pointer}
@@ -1319,7 +1319,7 @@ function onLogin(){
     nbIshlab.classList.add('hidden');
     document.getElementById('nb-dizayner').classList.add('hidden');
     const seen = sessionStorage.getItem('admin_yoriq_'+currentUser.id);
-    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dashboard')); setInterval(() => loadMessages(), 30000); }
+    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel(getLastPanel('dashboard'))); setInterval(() => loadMessages(), 30000); }
     else { showScreen('admin_yoriq'); }
   } else if(currentRole === 'dizayner'){
     nbOwner.classList.add('hidden');
@@ -1328,7 +1328,12 @@ function onLogin(){
     document.getElementById('nb-foiz').classList.add('hidden');
     document.getElementById('nb-stopwatch').classList.remove('hidden');
     const seen = sessionStorage.getItem('diz_yoriq_'+currentUser.id);
-    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dashboard')); setInterval(() => loadMessages(), 30000); }
+    if(seen){
+      loadTimers();
+      showScreen('app');
+      loadHistory().then(()=>showPanel(getLastPanel('dashboard')));
+      setInterval(() => loadMessages(), 30000);
+    }
     else { showScreen('dizayner_yoriq'); }
   } else {
     // ishlab chiqarish
@@ -1337,7 +1342,7 @@ function onLogin(){
     document.getElementById('nb-dizayner').classList.add('hidden');
     document.getElementById('nb-foiz').classList.add('hidden');
     const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
-    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel('dashboard')); setInterval(() => loadMessages(), 30000); }
+    if(seen){ showScreen('app'); loadHistory().then(()=>showPanel(getLastPanel('dashboard'))); setInterval(() => loadMessages(), 30000); }
     else { showScreen('yoriq'); }
   }
 }
@@ -1360,6 +1365,7 @@ function enterAdminApp(){
 function enterDizaynerApp(){
   sessionStorage.setItem('diz_yoriq_'+currentUser.id, '1');
   document.getElementById('nb-stopwatch').classList.remove('hidden');
+  loadTimers();
   showScreen('app');
   loadHistory().then(()=>showPanel('dashboard'));
   setInterval(() => loadMessages(), 30000);
@@ -2492,8 +2498,10 @@ function renderDizayner(){
 
 
 async function saveDizayner(){
+  if(isSaving){ showNotify('Saqlanmoqda, kuting...'); return; }
   const rows = dizD.filter(r=>r.nom||(parseInt(r.summa)||0));
   if(!rows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+  isSaving = true;
   const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
   let jami=0, tolandi=0, tolanmadi=0;
   rows.forEach(r=>{ const s=parseInt(r.summa)||0; jami+=s; if(r.tolov===true) tolandi+=s; else if(r.tolov===false) tolanmadi+=s; });
@@ -2510,9 +2518,14 @@ async function saveDizayner(){
     sana: sanaVaqt,
   };
   const { error } = await sb.from('zakazlar').insert(row);
+  isSaving = false;
   if(error){ showNotify('❌ Xatolik: '+error.message); return; }
   showNotify('✅ Saqlandi! — '+sanaVaqt);
+  // Avval tarixni yangilab, keyin formani tozalaymiz
   await loadHistory();
+  dizD = [{nom:'', summa:'', tolovchi:'offis', tolov:null, kontakt:''}];
+  dizTimers = {};
+  renderDizayner();
 }
 
 async function sendWeeklyDizayner(){
@@ -2769,7 +2782,7 @@ function renderFoizTable(){ if(ftBuilt)return; ftBuilt=true; const tb=document.g
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
 function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','admin-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',admin_yoriq:'admin-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
-function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); }
+function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); saveCurrentPanel(id); }
 function showNotify(msg){ const el=document.getElementById('notify'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2800); }
 
 renderAdmin();
@@ -3186,6 +3199,47 @@ async function saveSkladHarakat(){
 let swMain = {running:false, elapsed:0, start:null};
 let swMainInterval = null;
 
+// Taymerni saqlash/yuklash
+function saveTimers(){
+  try {
+    const userId = currentUser ? currentUser.id : 'guest';
+    const snapshot = {};
+    Object.keys(dizTimers).forEach(i => {
+      const t = dizTimers[i];
+      snapshot[i] = { elapsed: t.running ? t.elapsed + (Date.now()-t.start) : t.elapsed };
+    });
+    localStorage.setItem('dizTimers_'+userId, JSON.stringify(snapshot));
+  } catch(e){}
+}
+
+function loadTimers(){
+  try {
+    const userId = currentUser ? currentUser.id : 'guest';
+    const saved = localStorage.getItem('dizTimers_'+userId);
+    if(saved){
+      const snap = JSON.parse(saved);
+      Object.keys(snap).forEach(i => {
+        dizTimers[i] = { running:false, elapsed: snap[i].elapsed||0, start:null };
+      });
+    }
+  } catch(e){}
+}
+
+// Panel holatini saqlash
+function saveCurrentPanel(id){
+  try {
+    const userId = currentUser ? currentUser.id : 'guest';
+    sessionStorage.setItem('lastPanel_'+userId, id);
+  } catch(e){}
+}
+
+function getLastPanel(def){
+  try {
+    const userId = currentUser ? currentUser.id : 'guest';
+    return sessionStorage.getItem('lastPanel_'+userId) || def;
+  } catch(e){ return def; }
+}
+
 function swToggle(){
   const btn = document.getElementById('sw-btn');
   if(swMain.running){
@@ -3251,12 +3305,21 @@ function swRowToggle(i){
     t.running=true;
     swRowIntervals[i]=setInterval(()=>swRowUpdate(i),200);
   }
+  saveTimers();
   renderDizayner();
 }
 
 function swRowReset(i){
   if(swRowIntervals[i]){clearInterval(swRowIntervals[i]);delete swRowIntervals[i];}
   dizTimers[i]={running:false,elapsed:0,start:null};
+  saveTimers();
+  renderDizayner();
+}
+
+function swRowReset(i){
+  if(swRowIntervals[i]){clearInterval(swRowIntervals[i]);delete swRowIntervals[i];}
+  dizTimers[i]={running:false,elapsed:0,start:null};
+  saveTimers();
   renderDizayner();
 }
 
