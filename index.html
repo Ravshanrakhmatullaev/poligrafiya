@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_10.html -->
-<html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_13.html -->
+<html lang="uz" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poligrafiya — Boshqaruv tizimi</title>
@@ -16,6 +16,16 @@
   --text:#111827;--text2:#374151;--text3:#6b7280;
   --bg:#f3f4f6;--white:#fff;--radius:10px;
 }
+[data-theme="dark"]{
+  --blue:#60a5fa;--blue-light:#1e3a5f;--blue-border:#1e40af;
+  --green:#4ade80;--green-light:#14532d;--green-border:#166534;
+  --red:#f87171;--red-light:#450a0a;--red-border:#991b1b;
+  --purple:#a78bfa;--purple-light:#2e1065;--purple-border:#4c1d95;
+  --amber:#fbbf24;--amber-light:#451a03;--amber-border:#92400e;
+  --gray:#9ca3af;--gray-light:#1f2937;--gray-border:#374151;
+  --text:#f9fafb;--text2:#e5e7eb;--text3:#9ca3af;
+  --bg:#0f172a;--white:#1e293b;--radius:10px;
+}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:var(--bg);min-height:100vh}
 .hidden{display:none!important}
 
@@ -25,7 +35,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 #loading p{font-size:13px;color:var(--text3)}
 
 #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.login-card{background:#fff;border-radius:16px;padding:32px 28px;width:100%;max-width:380px;box-shadow:0 4px 24px rgba(0,0,0,0.08);border:1px solid var(--gray-border)}
+.login-card{background:var(--white);border-radius:16px;padding:32px 28px;width:100%;max-width:380px;box-shadow:0 4px 24px rgba(0,0,0,0.08);border:1px solid var(--gray-border)}
 .login-logo{text-align:center;margin-bottom:24px}
 .login-icon{width:56px;height:56px;background:var(--blue-light);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
 .login-logo h1{font-size:20px;font-weight:700}
@@ -45,7 +55,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .yoriq-header{text-align:center;margin-bottom:24px;padding-top:12px}
 .yoriq-header h2{font-size:20px;font-weight:700;margin-bottom:6px}
 .yoriq-header p{font-size:13px;color:var(--text3)}
-.rule-card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;border-left:4px solid var(--blue);box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.rule-card{background:var(--white);border-radius:12px;padding:16px;margin-bottom:12px;border-left:4px solid var(--blue);box-shadow:0 1px 4px rgba(0,0,0,0.06)}
 .rule-card.danger{border-left-color:var(--red)}
 .rule-title{font-size:14px;font-weight:700;margin-bottom:10px}
 .rule-body{font-size:13px;color:var(--text2);line-height:1.75}
@@ -65,7 +75,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .agree-btn:disabled{opacity:.4;cursor:not-allowed}
 
 #app-screen{min-height:100vh;background:var(--bg)}
-.topbar{background:#fff;border-bottom:1px solid var(--gray-border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100}
+.topbar{background:var(--white);border-bottom:1px solid var(--gray-border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100}
 .topbar-left{display:flex;align-items:center;gap:10px}
 .topbar-icon{width:32px;height:32px;background:var(--blue-light);border-radius:8px;display:flex;align-items:center;justify-content:center}
 .topbar-title{font-size:15px;font-weight:700;color:var(--green)}
@@ -79,7 +89,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .logout-btn{padding:6px 12px;border-radius:7px;border:1px solid var(--gray-border);background:#fff;font-size:12px;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .12s}
 .logout-btn:hover{border-color:var(--red-border);color:var(--red);background:var(--red-light)}
 
-.nav{display:flex;gap:2px;padding:8px 12px;background:#fff;border-bottom:1px solid var(--gray-border);overflow-x:auto;position:sticky;top:52px;z-index:99}
+.nav{display:flex;gap:2px;padding:8px 12px;background:var(--white);border-bottom:1px solid var(--gray-border);overflow-x:auto;position:sticky;top:52px;z-index:99}
 .nav-btn{padding:7px 14px;border-radius:8px;border:1px solid transparent;background:transparent;cursor:pointer;font-size:13px;font-weight:500;color:var(--text3);display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .12s;font-family:inherit}
 .nav-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .nav-btn.active{background:var(--blue-light);border-color:var(--blue-border);color:var(--blue)}
@@ -89,11 +99,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .panel.active{display:block}
 
 .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.stat{background:#fff;border-radius:var(--radius);padding:14px;border:1px solid var(--gray-border)}
+.stat{background:var(--white);border-radius:var(--radius);padding:14px;border:1px solid var(--gray-border)}
 .stat-label{font-size:11px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 .stat-val{font-size:21px;font-weight:700}
 
-.card{background:#fff;border:1px solid var(--gray-border);border-radius:12px;padding:16px;margin-bottom:14px}
+.card{background:var(--white);border:1px solid var(--gray-border);border-radius:12px;padding:16px;margin-bottom:14px}
 .card-title{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text);display:flex;align-items:center;gap:8px}
 .card-title svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
@@ -185,14 +195,14 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .avans-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;border-radius:10px;border:1.5px solid var(--amber-border);background:var(--amber-light);color:var(--amber);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
 .avans-btn:hover{background:var(--amber);color:#fff}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
-.modal-box{background:#fff;border-radius:14px;padding:24px;width:100%;max-width:380px;box-shadow:0 10px 40px rgba(0,0,0,0.2)}
+.modal-box{background:var(--white);border-radius:14px;padding:24px;width:100%;max-width:380px;box-shadow:0 10px 40px rgba(0,0,0,0.2)}
 .modal-title{font-size:16px;font-weight:700;margin-bottom:16px}
 .avans-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-right:6px}
 .avans-chip.kutilmoqda{background:var(--amber-light);color:var(--amber)}
 .avans-chip.berildi{background:var(--green-light);color:var(--green)}
 .give-avans-row{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
 .give-avans-row input{width:140px}
-.db-recent-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;margin-bottom:6px;border:1px solid var(--gray-border);background:#fff}
+.db-recent-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;margin-bottom:6px;border:1px solid var(--gray-border);background:var(--white)}
 .db-recent-item:hover{border-color:var(--blue-border)}
 .db-recent-label{font-size:12px;font-weight:600}
 .db-recent-sum{font-size:13px;font-weight:700}
@@ -200,7 +210,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .db-recent-status{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
 .sklad-search-wrap{display:flex;align-items:center;gap:6px;padding:7px 11px;border:1.5px solid var(--gray-border);border-radius:8px;background:#fff}
 .sklad-search-wrap svg{stroke:var(--text3);flex-shrink:0}
-.sklad-card{background:#fff;border-radius:12px;border:1px solid var(--gray-border);padding:14px;margin-bottom:10px;transition:all .15s}
+.sklad-card{background:var(--white);border-radius:12px;border:1px solid var(--gray-border);padding:14px;margin-bottom:10px;transition:all .15s}
 .sklad-card:hover{border-color:var(--blue-border);box-shadow:0 2px 8px rgba(37,99,235,0.08)}
 .sklad-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px}
 .sklad-nom{font-size:14px;font-weight:700;color:var(--text)}
@@ -240,11 +250,22 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .empty-state{text-align:center;padding:48px 20px;color:var(--text3)}
 .empty-state svg{width:40px;height:40px;stroke:var(--gray-border);fill:none;stroke-width:1.5;margin:0 auto 12px;display:block}
 .bell-btn{position:relative;padding:7px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.shift-toggle{position:relative;display:inline-flex;align-items:center;cursor:pointer;width:56px;height:30px;flex-shrink:0}
+.shift-toggle input{opacity:0;width:0;height:0;position:absolute}
+.shift-slider{position:absolute;inset:0;background:#cbd5e1;border-radius:15px;transition:all .35s;border:2px solid #94a3b8}
+.shift-slider::before{content:'';position:absolute;width:22px;height:22px;background:#fff;border-radius:50%;top:2px;left:2px;transition:all .35s;box-shadow:0 2px 6px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center}
+.shift-toggle input:checked + .shift-slider{background:#334155;border-color:#475569}
+.shift-toggle input:checked + .shift-slider::before{transform:translateX(26px);background:#f8fafc}
+.shift-icon{font-size:12px;position:absolute;transition:all .3s;pointer-events:none;line-height:1}
+.shift-icon.day{right:5px;top:50%;transform:translateY(-50%)}
+.shift-icon.night{left:5px;top:50%;transform:translateY(-50%);opacity:0}
+.shift-toggle input:checked + .shift-slider .shift-icon.day{opacity:0}
+.shift-toggle input:checked + .shift-slider .shift-icon.night{opacity:1}
 .bell-btn:hover{background:var(--blue-light);border-color:var(--blue-border);color:var(--blue)}
 .bell-btn svg{stroke:var(--text3)}
 .bell-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
 .nav-badge{background:var(--red);color:#fff;border-radius:20px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:2px}
-.msg-item{padding:12px 14px;background:#fff;border-radius:10px;margin-bottom:8px;border:1px solid var(--gray-border);position:relative}
+.msg-item{padding:12px 14px;background:var(--white);border-radius:10px;margin-bottom:8px;border:1px solid var(--gray-border);position:relative}
 .msg-item.unread{border-color:var(--blue-border);background:var(--blue-light)}
 .msg-item.sent{border-color:var(--green-border);background:var(--green-light)}
 .msg-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
@@ -264,7 +285,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .msg-status{font-size:12px;padding:5px 12px;border-radius:7px;font-weight:500}
 .msg-status.green{background:var(--green-light);color:var(--green)}
 .msg-status.amber{background:var(--amber-light);color:var(--amber)}
-.hisob-row{background:#fff;border-radius:10px;border:1px solid var(--gray-border);padding:14px 16px;margin-bottom:8px}
+.hisob-row{background:var(--white);border-radius:10px;border:1px solid var(--gray-border);padding:14px 16px;margin-bottom:8px}
 .hisob-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px}
 .hisob-name{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
 .hisob-role{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
@@ -288,6 +309,30 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .filter-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--gray-border);background:#fff;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;transition:all .12s;font-family:inherit}
 .filter-btn.active{background:var(--blue-light);border-color:var(--blue-border);color:var(--blue)}
 
+[data-theme="dark"] .nav-btn{color:var(--text3)}
+[data-theme="dark"] .nav-btn:hover,[data-theme="dark"] .nav-btn.active{background:var(--gray-light);color:var(--text)}
+[data-theme="dark"] .logout-btn{background:var(--gray-light);border-color:var(--gray-border);color:var(--text)}
+[data-theme="dark"] .badge.bw{background:var(--gray-light);border-color:var(--gray-border);color:var(--text2)}
+[data-theme="dark"] .badge.bo{background:#1a2744;border-color:#1e40af;color:#93c5fd}
+[data-theme="dark"] .pi,[data-theme="dark"] .ui,[data-theme="dark"] .diz-row{background:var(--gray-light);border-color:var(--gray-border)}
+[data-theme="dark"] .zakaz-row{background:var(--gray-light);border-color:var(--gray-border)}
+[data-theme="dark"] .tbar.dark{background:#0f172a;border-color:#334155}
+[data-theme="dark"] .filter-btn{background:var(--gray-light);border-color:var(--gray-border);color:var(--text3)}
+[data-theme="dark"] .filter-btn.active{background:var(--blue-light);color:var(--blue)}
+[data-theme="dark"] .add-btn{background:var(--gray-light);border-color:var(--gray-border);color:var(--text2)}
+[data-theme="dark"] .sklad-card{background:var(--white)}
+[data-theme="dark"] .sklad-hist-btn{background:var(--gray-light);border-color:var(--gray-border);color:var(--text3)}
+[data-theme="dark"] .icon-btn{background:var(--gray-light);border-color:var(--gray-border);color:var(--text3)}
+[data-theme="dark"] .note-box{background:#1e3a2f;border-color:#166534;color:#86efac}
+[data-theme="dark"] .uv-info{background:var(--gray-light);border-color:var(--purple-border)}
+[data-theme="dark"] .tolov-btn{background:var(--gray-light);border-color:var(--gray-border);color:var(--text3)}
+[data-theme="dark"] .sw-mini{background:var(--gray-light);border-color:var(--gray-border)}
+[data-theme="dark"] .sw-mini-btn{background:var(--gray-light);border-color:var(--gray-border);color:var(--text3)}
+[data-theme="dark"] #loading{background:var(--bg)}
+[data-theme="dark"] .login-card{box-shadow:0 4px 24px rgba(0,0,0,0.5)}
+[data-theme="dark"] .rasm-upload-area{background:var(--gray-light);border-color:var(--gray-border)}
+[data-theme="dark"] .sklad-log{border-color:var(--gray-border)}
+[data-theme="dark"] .sklad-log-item{border-color:var(--gray-border)}
 @media(max-width:600px){
   .stat-row{grid-template-columns:1fr 1fr}
   .tbl-head,.zakaz-row{grid-template-columns:1fr 90px 44px 80px 36px;font-size:12px}
@@ -578,7 +623,14 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         <span id="user-name-chip">—</span>
       </div>
       <span class="role-badge" id="role-badge-chip"></span>
-      <span id="shift-badge" style="font-size:11px;padding:3px 8px;border-radius:20px;background:var(--blue-light);color:var(--blue);font-weight:600;display:none"></span>
+      <span id="shift-badge" style="font-size: 11px; padding: 3px 8px; border-radius: 20px; background: rgb(30, 41, 59); color: rgb(148, 163, 184); font-weight: 600; display: none;">🌙 Tungi</span>
+      <label class="shift-toggle" id="shift-toggle-wrap" title="Kunduzgi / Tungi rejim">
+        <input type="checkbox" id="shift-toggle-input" onchange="toggleShift(this.checked)">
+        <span class="shift-slider">
+          <span class="shift-icon day">☀️</span>
+          <span class="shift-icon night">🌙</span>
+        </span>
+      </label>
       <button class="bell-btn" onclick="showPanel(&#39;xabarlar&#39;)" id="bell-btn" title="Xabarlar">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         <span class="bell-badge hidden" id="bell-count">0</span>
@@ -1303,15 +1355,51 @@ const ROLES = {
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ── SHIFT TIZIMI ──
+// ── SHIFT / DARK MODE TIZIMI ──
 function getCurrentShift(){
+  // Qo'lda o'rnatilgan bo'lsa uni ishlat
+  const manual = localStorage.getItem('shift_manual');
+  if(manual) return manual;
+  // Avtomatik: 08:00-20:00 kunduzgi, qolgani tungi
   const h = new Date().getHours();
-  // Kunduzgi: 08:00 - 20:00, Tungi: 20:00 - 08:00
   return (h >= 8 && h < 20) ? 'day' : 'night';
 }
 
 function getShiftLabel(){
   return getCurrentShift() === 'day' ? '☀️ Kunduzgi' : '🌙 Tungi';
+}
+
+function applyShift(shift){
+  if(shift === 'night'){
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  // Toggle input holati
+  const inp = document.getElementById('shift-toggle-input');
+  if(inp) inp.checked = (shift === 'night');
+  // Badge yangilash
+  const badge = document.getElementById('shift-badge');
+  if(badge){
+    badge.textContent = shift === 'night' ? '🌙 Tungi' : '☀️ Kunduzgi';
+    badge.style.background = shift === 'night' ? '#1e293b' : '#fef9c3';
+    badge.style.color = shift === 'night' ? '#94a3b8' : '#92400e';
+  }
+}
+
+function toggleShift(isNight){
+  const shift = isNight ? 'night' : 'day';
+  localStorage.setItem('shift_manual', shift);
+  applyShift(shift);
+}
+
+function initShift(){
+  const shift = getCurrentShift();
+  applyShift(shift);
+  // Har soatda avtomatik tekshirish (qo'lda o'rnatilmagan bo'lsa)
+  setInterval(()=>{
+    if(!localStorage.getItem('shift_manual')) applyShift(getCurrentShift());
+  }, 60000);
 }
 const fmt = n => Math.round(n).toLocaleString('uz-UZ');
 
@@ -1322,6 +1410,7 @@ let histFilter = 'all';
 
 // ── INIT ──
 async function init(){
+  initShift(); // Shift va dark mode ni ishga tushirish
   const { data: { session } } = await sb.auth.getSession();
   document.getElementById('loading').classList.add('hidden');
   if(session && session.user){
