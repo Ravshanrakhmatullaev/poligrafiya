@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_36.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_37.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1064,6 +1064,20 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
           <input type="text" id="sk-nom" placeholder="Mahsulot nomi">
         </div>
         <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Kategoriya</label>
+          <select id="sk-kategoriya" style="width:100%">
+            <option value="">— Tanlang —</option>
+            <option value="Beyjik">Beyjik</option>
+            <option value="Futbolka">Futbolka</option>
+            <option value="Kepka">Kepka</option>
+            <option value="Kraskalar">Kraskalar</option>
+            <option value="Materiallar">Materiallar</option>
+            <option value="Boshqa">Boshqa</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="form-group" style="margin-bottom:0">
           <label class="form-label">Birlik</label>
           <select id="sk-birlik" style="width:100%">
             <option value="dona">dona</option>
@@ -1081,6 +1095,12 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
           <label class="form-label">Miqdor</label>
           <input type="text" inputmode="numeric" id="sk-miq" placeholder="0">
         </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Min chegara ⚠️</label>
+          <input type="text" inputmode="numeric" id="sk-min" placeholder="5">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:10px">
         <div class="form-group" style="margin-bottom:0">
           <label class="form-label">Izoh</label>
           <input type="text" id="sk-izoh" placeholder="Ixtiyoriy">
@@ -1156,6 +1176,18 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         <div class="fzbadge" id="calc-foiz">— %</div>
         <div class="drbadge" id="calc-daromad">— so'm</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay hidden" id="edit-history-modal">
+  <div class="modal-box" style="max-width:480px;max-height:85vh;overflow-y:auto">
+    <div class="modal-title">Yozuvni tahrirlash</div>
+    <div id="edit-modal-content"></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="savebtn" style="flex:1" onclick="saveEditedHistory()">Saqlash</button>
+      <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById(&#39;edit-history-modal&#39;).classList.add(&#39;hidden&#39;)">Bekor</button>
     </div>
   </div>
 </div>
@@ -1478,6 +1510,7 @@ function renderHistory(){
       </div>` : '';
     
     const deleteBtn = canDelete ? `<button class="icon-btn" style="margin-left:6px" onclick="deleteHistoryItem(${h.id})" title="O'chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>` : '';
+    const editBtn = canDelete ? `<button class="icon-btn" style="margin-left:6px;color:var(--blue);border-color:var(--blue-border)" onclick="editHistoryItem(${h.id})" title="Tahrirlash"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>` : '';
 
     const div = document.createElement('div'); div.className='hist-row';
     // Brak bo'lsa qizil chiziq
@@ -1492,6 +1525,7 @@ function renderHistory(){
         </div>
         <div style="display:flex;align-items:center">
           <span class="hist-date">${sana}</span>
+          ${editBtn}
           ${deleteBtn}
         </div>
       </div>
@@ -1509,6 +1543,94 @@ async function togglePaid(id, val){
   if(currentRole === 'admin') renderAdminStats();
   if(currentRole === 'ishlab') renderIshlabStats();
   renderDashboard();
+}
+
+let editingHistoryId = null;
+let editingHistoryData = null;
+
+function editHistoryItem(id){
+  const h = allHistory.find(x => x.id === id);
+  if(!h){ showNotify('Yozuv topilmadi'); return; }
+  editingHistoryId = id;
+  editingHistoryData = JSON.parse(JSON.stringify(h.data || {}));
+
+  const modal = document.getElementById('edit-history-modal');
+  const content = document.getElementById('edit-modal-content');
+
+  let html = '';
+  if(h.type === 'admin'){
+    const rows = editingHistoryData.rows || [];
+    html = '<div style="font-size:12px;color:var(--text3);margin-bottom:10px">Zakaz summalarini tahrirlang:</div>';
+    rows.forEach((r, i) => {
+      html += `<div style="display:grid;grid-template-columns:1fr 120px;gap:8px;margin-bottom:8px">
+        <input type="text" value="${r.nom||''}" oninput="editingHistoryData.rows[${i}].nom=this.value" placeholder="Mahsulot nomi">
+        <input type="text" inputmode="numeric" value="${r.sum||''}" oninput="editingHistoryData.rows[${i}].sum=this.value" placeholder="Summa" style="text-align:right">
+      </div>`;
+    });
+  } else if(h.type === 'ishlab'){
+    const prodRows = editingHistoryData.prodRows || [];
+    html = '<div style="font-size:12px;color:var(--text3);margin-bottom:10px">Mahsulot miqdorlarini tahrirlang:</div>';
+    prodRows.forEach((r, i) => {
+      html += `<div style="display:grid;grid-template-columns:1fr 80px 80px;gap:8px;margin-bottom:8px">
+        <div style="font-size:12px;padding:8px;background:var(--gray-light);border-radius:6px">${r.key}</div>
+        <input type="text" inputmode="numeric" value="${r.miq||''}" oninput="editingHistoryData.prodRows[${i}].miq=this.value" placeholder="Miqdor" style="text-align:center">
+        <input type="text" inputmode="numeric" value="${r.brak||''}" oninput="editingHistoryData.prodRows[${i}].brak=this.value" placeholder="Brak" style="text-align:center;border-color:var(--red-border)">
+      </div>`;
+    });
+    if((editingHistoryData.uvRows||[]).length){
+      html += '<div style="font-size:12px;color:var(--text3);margin:10px 0 6px">UV pechat:</div>';
+      (editingHistoryData.uvRows||[]).forEach((r,i) => {
+        html += `<div style="display:grid;grid-template-columns:1fr 70px 70px;gap:8px;margin-bottom:8px">
+          <input type="text" value="${r.nom||''}" oninput="editingHistoryData.uvRows[${i}].nom=this.value" placeholder="Nomi">
+          <input type="text" inputmode="numeric" value="${r.sig||''}" oninput="editingHistoryData.uvRows[${i}].sig=this.value" placeholder="Sig'im" style="text-align:center">
+          <input type="text" inputmode="numeric" value="${r.don||''}" oninput="editingHistoryData.uvRows[${i}].don=this.value" placeholder="Dona" style="text-align:center">
+        </div>`;
+      });
+    }
+  } else if(h.type === 'dizayner'){
+    const rows = editingHistoryData.rows || [];
+    html = '<div style="font-size:12px;color:var(--text3);margin-bottom:10px">Dizayn ishlarini tahrirlang:</div>';
+    rows.forEach((r, i) => {
+      html += `<div style="display:grid;grid-template-columns:1fr 100px;gap:8px;margin-bottom:8px">
+        <input type="text" value="${r.nom||''}" oninput="editingHistoryData.rows[${i}].nom=this.value" placeholder="Ish nomi">
+        <input type="text" inputmode="numeric" value="${r.summa||''}" oninput="editingHistoryData.rows[${i}].summa=this.value" placeholder="Summa" style="text-align:right">
+      </div>`;
+    });
+  }
+
+  content.innerHTML = html;
+  modal.classList.remove('hidden');
+}
+
+async function saveEditedHistory(){
+  if(!editingHistoryId){ return; }
+
+  // Qayta hisoblaymiz
+  let total_zakaz=0, total_daromad=0, total_jami=0;
+  const d = editingHistoryData;
+  const h = allHistory.find(x => x.id === editingHistoryId);
+
+  if(h.type === 'admin'){
+    (d.rows||[]).forEach(r=>{ const s=parseInt(r.sum)||0; total_zakaz+=s; total_daromad+=Math.round(s*getFoiz(s)); });
+  } else if(h.type === 'ishlab'){
+    (d.prodRows||[]).forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m); total_jami+=m*np; });
+    (d.uvRows||[]).forEach(r=>{ const{jami}=calcUv(parseInt(r.sig),parseInt(r.don)); total_jami+=jami; });
+    (d.ekoRows||[]).forEach(r=>{ const{jami}=calcEko(parseFloat(r.kv)); total_jami+=jami; });
+  } else if(h.type === 'dizayner'){
+    (d.rows||[]).forEach(r=>{ total_jami+=parseInt(r.summa)||0; });
+  }
+
+  const updateData = { data: d };
+  if(h.type === 'admin'){ updateData.total_zakaz=total_zakaz; updateData.total_daromad=total_daromad; }
+  else { updateData.total_jami=total_jami; }
+
+  const { error } = await sb.from('zakazlar').update(updateData).eq('id', editingHistoryId);
+  if(error){ showNotify('❌ Xatolik: '+error.message); return; }
+
+  showNotify('✅ Yozuv yangilandi!');
+  document.getElementById('edit-history-modal').classList.add('hidden');
+  editingHistoryId = null;
+  await loadHistory();
 }
 
 async function deleteHistoryItem(id){
@@ -3009,7 +3131,9 @@ function openRasmModal(url){
 }
 
 // ── SKLAD ──
-const SKLAD_EDITOR = 'ra.ravshan1998+bayramali@gmail.com'; // faqat shu qo'sha/o'chira oladi
+const SKLAD_EDITOR = 'ra.ravshan1998+bayramali@gmail.com';
+const TG_BOT_TOKEN = '8636816129:AAE-sBNfcLy8e4EXqepHhDfhHG_p6PDZPxU';
+const TG_CHAT_ID = '-4273189072'; // faqat shu qo'sha/o'chira oladi
 let skladData = [];
 let skladFilter = '';
 
@@ -3025,6 +3149,8 @@ function hideSkladForm(){
   document.getElementById('sk-nom').value='';
   document.getElementById('sk-miq').value='';
   document.getElementById('sk-izoh').value='';
+  document.getElementById('sk-kategoriya').value='';
+  const skMin = document.getElementById('sk-min'); if(skMin) skMin.value='';
   document.getElementById('sk-rasm-input').value='';
   document.getElementById('sk-rasm-preview').innerHTML =
     '<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text3)"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>' +
@@ -3034,6 +3160,56 @@ function hideSkladForm(){
 function filterSklad(q){
   skladFilter = q.toLowerCase();
   renderSkladList();
+}
+
+
+async function sendTgMessage(text){
+  try {
+    await fetch('https://api.telegram.org/bot'+TG_BOT_TOKEN+'/sendMessage', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ chat_id: TG_CHAT_ID, text: text })
+    });
+  } catch(e){ console.log('TG error:', e); }
+}
+
+async function checkSkladAndNotify(){
+  const today = new Date();
+  const todayStr = today.toDateString();
+  if(localStorage.getItem('sklad_notif_sent') === todayStr) return;
+
+  const { data } = await sb.from('sklad').select('*, sklad_harakati(id,tur,miqdor)').order('nom');
+  if(!data) return;
+  const items = data.map(s => {
+    const h = s.sklad_harakati || [];
+    const p = h.filter(x=>x.tur==='prixod').reduce((a,x)=>a+(x.miqdor||0),0);
+    const r = h.filter(x=>x.tur==='rasxod').reduce((a,x)=>a+(x.miqdor||0),0);
+    return { ...s, hisob_miq: (s.miqdor||0)+p-r };
+  });
+
+  const tugagan = items.filter(s=>(s.hisob_miq||0)<=0);
+  const kam = items.filter(s=>{ const m=s.hisob_miq||0; return m>0 && m<=(s.min_miq||5); });
+  if(!tugagan.length && !kam.length) return;
+
+  const isFriday = today.getDay() === 5;
+  const parts = [];
+  parts.push(isFriday ? 'BOZORLIK KUNI — SKLAD' : 'KUNLIK SKLAD HISOBOTI');
+  parts.push(today.toLocaleDateString('uz-UZ'));
+  parts.push('');
+
+  if(tugagan.length){
+    parts.push('TUGAGAN:');
+    tugagan.forEach(s => parts.push('  - ' + s.nom + ': 0 ' + s.birlik));
+    parts.push('');
+  }
+  if(kam.length){
+    parts.push('KAM QOLGAN:');
+    kam.forEach(s => parts.push('  - ' + s.nom + ': ' + (s.hisob_miq||0) + ' ' + s.birlik + ' (min: ' + (s.min_miq||5) + ')'));
+  }
+  if(isFriday) parts.push(''); parts.push('Bozorga borishdan oldin sotib oling!');
+
+  await sendTgMessage(parts.join('\n'));
+  localStorage.setItem('sklad_notif_sent', todayStr);
 }
 
 async function loadSklad(){
@@ -3058,7 +3234,7 @@ function renderSkladList(){
   const el = document.getElementById('sklad-list');
   if(!el) return;
   const filtered = skladFilter
-    ? skladData.filter(s => s.nom.toLowerCase().includes(skladFilter))
+    ? skladData.filter(s => s.nom.toLowerCase().includes(skladFilter) || (s.kategoriya||'').toLowerCase().includes(skladFilter))
     : skladData;
 
   if(!filtered.length){
@@ -3069,44 +3245,72 @@ function renderSkladList(){
   }
 
   el.innerHTML = '';
+
+  // Kategoriya bo'yicha guruhlash
+  const KAT_ORDER = ['Beyjik','Futbolka','Kepka','Kraskalar','Materiallar','Boshqa',''];
+  const KAT_ICONS = {'Beyjik':'🏅','Futbolka':'👕','Kepka':'🧢','Kraskalar':'🎨','Materiallar':'📦','Boshqa':'📋','':'📋'};
+  const groups = {};
   filtered.forEach(s => {
-    const miq = s.hisob_miq || 0;
-    const isLow = miq > 0 && miq <= 5;
-    const isEmpty = miq <= 0;
-    const card = document.createElement('div');
-    card.className = 'sklad-card' + (isEmpty?' sklad-warning':isLow?' sklad-low':'');
+    const kat = s.kategoriya || '';
+    if(!groups[kat]) groups[kat] = [];
+    groups[kat].push(s);
+  });
 
-    const harakatiHtml = (s.harakati||[]).slice(0,5).map(h =>
-      '<div class="sklad-log-item">' +
-      '<span class="avans-chip '+(h.tur==="prixod"?"berildi":"kutilmoqda")+'" style="'+(h.tur==="rasxod"?"background:var(--red-light);color:var(--red)":"")+'">'+
-      (h.tur==="prixod"?"+ Prixod":"- Rasxod")+'</span>'+
-      '<span style="font-weight:600">'+h.miqdor+' '+s.birlik+'</span>'+
-      '<span style="color:var(--text3)">'+( h.sabab||'')+'</span>'+
-      '<span style="color:var(--text3)">'+( h.sana||'').split(' ').slice(0,2).join(' ')+'</span>'+
-      '</div>'
-    ).join('');
+  // Also add any categories not in KAT_ORDER
+  Object.keys(groups).forEach(kat => {
+    if(!KAT_ORDER.includes(kat)) KAT_ORDER.push(kat);
+  });
 
-    card.innerHTML =
-      (s.rasm_url ? '<div class="sklad-img-wrap" data-url="'+s.rasm_url+'" onclick="openRasmModal(this.dataset.url)"><img class="sklad-img" src="'+s.rasm_url+'" alt="'+s.nom+'"></div>' : '') +
-      '<div class="sklad-top">' +
-        '<div>' +
-          '<div class="sklad-nom">' + s.nom + (isEmpty ? ' <span style="color:var(--red);font-size:11px">TUGADI</span>' : isLow ? ' <span style="color:var(--amber);font-size:11px">OZ QOLDI</span>' : '') + '</div>' +
-          (s.izoh ? '<div style="font-size:12px;color:var(--text3);margin-top:2px">'+s.izoh+'</div>' : '') +
+  KAT_ORDER.forEach(kat => {
+    if(!groups[kat] || !groups[kat].length) return;
+
+    if(kat || Object.keys(groups).length > 1){
+      const header = document.createElement('div');
+      header.style.cssText = 'font-size:13px;font-weight:700;color:var(--text3);margin:12px 0 6px;padding:0 2px';
+      header.textContent = (KAT_ICONS[kat]||'📋') + ' ' + (kat || 'Kategoriyasiz');
+      el.appendChild(header);
+    }
+
+    groups[kat].forEach(s => {
+      const miq = s.hisob_miq || 0;
+      const minMiq = s.min_miq || 5;
+      const isLow = miq > 0 && miq <= minMiq;
+      const isEmpty = miq <= 0;
+      const card = document.createElement('div');
+      card.className = 'sklad-card' + (isEmpty?' sklad-warning':isLow?' sklad-low':'');
+
+      const harakatiHtml = (s.harakati||[]).slice(0,5).map(h =>
+        '<div class="sklad-log-item">' +
+        '<span class="avans-chip '+(h.tur==="prixod"?"berildi":"kutilmoqda")+'" style="'+(h.tur==="rasxod"?"background:var(--red-light);color:var(--red)":"")+'">'+
+        (h.tur==="prixod"?"+ Prixod":"- Rasxod")+'</span>'+
+        '<span style="font-weight:600">'+h.miqdor+' '+s.birlik+'</span>'+
+        '<span style="color:var(--text3)">'+(h.sabab||'')+'</span>'+
+        '<span style="color:var(--text3)">'+(h.sana||'').split(' ').slice(0,2).join(' ')+'</span>'+
+        '</div>'
+      ).join('');
+
+      card.innerHTML =
+        (s.rasm_url ? '<div class="sklad-img-wrap" data-url="'+s.rasm_url+'" onclick="openRasmModal(this.dataset.url)"><img class="sklad-img" src="'+s.rasm_url+'" alt="'+s.nom+'"></div>' : '') +
+        '<div class="sklad-top">' +
+          '<div>' +
+            '<div class="sklad-nom">'+s.nom+(isEmpty?' <span style="color:var(--red);font-size:11px">TUGADI</span>':isLow?' <span style="color:var(--amber);font-size:11px">OZ QOLDI</span>':'')+'</div>' +
+            (s.izoh ? '<div style="font-size:12px;color:var(--text3);margin-top:2px">'+s.izoh+'</div>' : '') +
+          '</div>' +
+          '<div style="text-align:right">' +
+            '<div class="sklad-miq" style="color:'+(isEmpty?'var(--red)':isLow?'var(--amber)':'var(--blue)')+'">'+fmt(miq)+'<span class="sklad-birlik">'+s.birlik+'</span></div>' +
+          '</div>' +
         '</div>' +
-        '<div style="text-align:right">' +
-          '<div class="sklad-miq" style="color:'+(isEmpty?'var(--red)':isLow?'var(--amber)':'var(--blue)')+'">'+fmt(miq)+'<span class="sklad-birlik">'+s.birlik+'</span></div>' +
+        '<div class="sklad-actions">' +
+          (canEditSklad() ?
+            '<button class="prixod-btn" data-id="'+s.id+'" data-nom="'+s.nom+'" data-birlik="'+s.birlik+'" onclick="openHarakatEl(this,\'prixod\')">+ Prixod</button>' +
+            '<button class="rasxod-btn" data-id="'+s.id+'" data-nom="'+s.nom+'" data-birlik="'+s.birlik+'" onclick="openHarakatEl(this,\'rasxod\')">- Rasxod</button>'
+          : '') +
+          '<button class="sklad-hist-btn" onclick="toggleSkladLog(this)">Tarix</button>' +
         '</div>' +
-      '</div>' +
-      '<div class="sklad-actions">' +
-        (canEditSklad() ?
-          '<button class="prixod-btn" data-id="'+s.id+'" data-nom="'+s.nom+'" data-birlik="'+s.birlik+'" onclick="openHarakatEl(this,\'prixod\')">+ Prixod</button>' +
-          '<button class="rasxod-btn" data-id="'+s.id+'" data-nom="'+s.nom+'" data-birlik="'+s.birlik+'" onclick="openHarakatEl(this,\'rasxod\')">- Rasxod</button>'
-        : '') +
-        '<button class="sklad-hist-btn" onclick="toggleSkladLog(this)">Tarix</button>' +
-      '</div>' +
-      '<div class="sklad-log">' + (harakatiHtml || '<div style="font-size:12px;color:var(--text3);padding:6px 0">Harakat yoq</div>') + '</div>';
+        '<div class="sklad-log">'+(harakatiHtml || '<div style="font-size:12px;color:var(--text3);padding:6px 0">Harakat yoq</div>')+'</div>';
 
-    el.appendChild(card);
+      el.appendChild(card);
+    });
   });
 }
 
@@ -3138,7 +3342,9 @@ async function saveSkladItem(){
   const nom = document.getElementById('sk-nom').value.trim();
   if(!nom){ showNotify("Nomi kiritilmagan"); return; }
   const birlik = document.getElementById('sk-birlik').value;
+  const kategoriya = document.getElementById('sk-kategoriya').value;
   const miqdor = parseFloat(document.getElementById('sk-miq').value)||0;
+  const min_miq = parseFloat(document.getElementById('sk-min').value)||5;
   const izoh = document.getElementById('sk-izoh').value.trim();
 
   const btn = document.getElementById('sk-save-btn');
@@ -3166,7 +3372,7 @@ async function saveSkladItem(){
     rasm_url = urlData.publicUrl;
   }
 
-  const { error } = await sb.from('sklad').insert({ nom, birlik, miqdor, izoh, rasm_url });
+  const { error } = await sb.from('sklad').insert({ nom, birlik, kategoriya, miqdor, min_miq, izoh, rasm_url });
   if(btn){ btn.disabled=false; btn.textContent='Saqlash'; }
   if(error){ showNotify("Xatolik: "+error.message); return; }
   showNotify("Mahsulot qo'shildi!");
