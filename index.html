@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_40.html -->
+<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_5.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -3237,10 +3237,29 @@ async function checkSkladAndNotify(){
     parts.push('KAM QOLGAN:');
     kam.forEach(s => parts.push('  - ' + s.nom + ': ' + (s.hisob_miq||0) + ' ' + s.birlik + ' (min: ' + (s.min_miq||5) + ')'));
   }
-  if(isFriday) parts.push(''); parts.push('Bozorga borishdan oldin sotib oling!');
+  if(isFriday){ parts.push(''); parts.push('Bozorga borishdan oldin sotib oling!'); }
 
   await sendTgMessage(parts.join('\n'));
   localStorage.setItem('sklad_notif_sent', todayStr);
+  showNotify('Guruhga xabar yuborildi!');
+}
+
+async function checkAfterHarakat(){
+  const { data } = await sb.from('sklad').select('*, sklad_harakati(id,tur,miqdor)').order('nom');
+  if(!data) return;
+  const items = data.map(s => {
+    const h = s.sklad_harakati || [];
+    const p = h.filter(x=>x.tur==='prixod').reduce((a,x)=>a+(x.miqdor||0),0);
+    const r = h.filter(x=>x.tur==='rasxod').reduce((a,x)=>a+(x.miqdor||0),0);
+    return { ...s, hisob_miq: (s.miqdor||0)+p-r };
+  });
+  const tugagan = items.filter(s=>(s.hisob_miq||0)<=0);
+  const kam = items.filter(s=>{ const m=s.hisob_miq||0; return m>0 && m<=(s.min_miq||5); });
+  if(!tugagan.length && !kam.length) return;
+  const parts = ['SKLAD OGOHLANTIRISH', new Date().toLocaleDateString('uz-UZ'), ''];
+  if(tugagan.length){ parts.push('QOLMADI:'); tugagan.forEach(s=>parts.push('  - '+s.nom+': 0 '+s.birlik)); parts.push(''); }
+  if(kam.length){ parts.push('KAM QOLDI:'); kam.forEach(s=>parts.push('  - '+s.nom+': '+(s.hisob_miq||0)+' '+s.birlik+' (min: '+(s.min_miq||5)+')')); }
+  await sendTgMessage(parts.join('\n'));
 }
 
 async function loadSklad(){
@@ -3308,7 +3327,7 @@ function renderSkladList(){
       const isLow = miq > 0 && miq <= minMiq;
       const isEmpty = miq <= 0;
       const card = document.createElement('div');
-      card.className = 'sklad-card' + (isEmpty?' sklad-warning':isLow?' sklad-low':'');
+      card.className = 'sklad-card' + (isEmpty?' sklad-empty':isLow?' sklad-warning':'');
 
       const harakatiHtml = (s.harakati||[]).slice(0,5).map(h =>
         '<div class="sklad-log-item">' +
@@ -3324,7 +3343,7 @@ function renderSkladList(){
         (s.rasm_url ? '<div class="sklad-img-wrap" data-url="'+s.rasm_url+'" onclick="openRasmModal(this.dataset.url)"><img class="sklad-img" src="'+s.rasm_url+'" alt="'+s.nom+'"></div>' : '') +
         '<div class="sklad-top">' +
           '<div>' +
-            '<div class="sklad-nom">'+s.nom+(isEmpty?' <span style="color:var(--red);font-size:11px">TUGADI</span>':isLow?' <span style="color:var(--amber);font-size:11px">OZ QOLDI</span>':'')+'</div>' +
+            '<div class="sklad-nom">'+s.nom+(isEmpty?' <span style="color:#fff;font-size:11px;background:var(--red);padding:1px 6px;border-radius:4px">QOLMADI</span>':isLow?' <span style="color:var(--red);font-size:11px">KAM QOLDI</span>':'')+'</div>' +
             (s.izoh ? '<div style="font-size:12px;color:var(--text3);margin-top:2px">'+s.izoh+'</div>' : '') +
           '</div>' +
           '<div style="text-align:right">' +
@@ -3477,6 +3496,8 @@ async function saveSkladHarakat(){
   showNotify(tur==="prixod" ? "+ Prixod saqlandi!" : "- Rasxod saqlandi!");
   document.getElementById('sklad-harakat-modal').classList.add('hidden');
   await loadSklad();
+  // Kam qolgan bo'lsa guruhga xabar
+  setTimeout(checkAfterHarakat, 500);
 }
 
 // ── STOPWATCH ──
