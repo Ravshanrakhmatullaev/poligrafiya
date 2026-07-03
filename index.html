@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/User/Downloads/index_5.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_10.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -578,6 +578,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         <span id="user-name-chip">—</span>
       </div>
       <span class="role-badge" id="role-badge-chip"></span>
+      <span id="shift-badge" style="font-size:11px;padding:3px 8px;border-radius:20px;background:var(--blue-light);color:var(--blue);font-weight:600;display:none"></span>
       <button class="bell-btn" onclick="showPanel(&#39;xabarlar&#39;)" id="bell-btn" title="Xabarlar">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         <span class="bell-badge hidden" id="bell-count">0</span>
@@ -636,6 +637,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div class="stat"><div class="stat-label">Jami zakaz</div><div class="stat-val" style="color:var(--blue)" id="ow-zakaz">0 so'm</div></div>
       <div class="stat"><div class="stat-label">Qolgan to'lov</div><div class="stat-val" style="color:var(--green)" id="ow-tolov">0 so'm</div></div>
       <div class="stat"><div class="stat-label">Yozuvlar soni</div><div class="stat-val" id="ow-soni">0 ta</div></div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-label">☀️ Kunduzgi</div><div class="stat-val" style="color:#92400e" id="ow-day">0 ta</div></div>
+      <div class="stat"><div class="stat-label">🌙 Tungi</div><div class="stat-val" style="color:var(--purple)" id="ow-night">0 ta</div></div>
+      <div class="stat"><div class="stat-label">Bugun</div><div class="stat-val" style="color:var(--blue)" id="ow-bugun">0 ta</div></div>
     </div>
 
     <div class="stat-row">
@@ -1069,8 +1075,9 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
             <option value="">— Tanlang —</option>
             <option value="Beyjik">Beyjik</option>
             <option value="Futbolka">Futbolka</option>
+            <option value="Finka">Finka</option>
             <option value="Kepka">Kepka</option>
-            <option value="Kraskalar">Kraskalar</option>
+            <option value="Kraska">Kraska</option>
             <option value="Materiallar">Materiallar</option>
             <option value="Boshqa">Boshqa</option>
           </select>
@@ -1295,6 +1302,17 @@ const ROLES = {
 };
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── SHIFT TIZIMI ──
+function getCurrentShift(){
+  const h = new Date().getHours();
+  // Kunduzgi: 08:00 - 20:00, Tungi: 20:00 - 08:00
+  return (h >= 8 && h < 20) ? 'day' : 'night';
+}
+
+function getShiftLabel(){
+  return getCurrentShift() === 'day' ? '☀️ Kunduzgi' : '🌙 Tungi';
+}
 const fmt = n => Math.round(n).toLocaleString('uz-UZ');
 
 let currentUser = null;
@@ -1353,7 +1371,16 @@ function onLogin(){
   document.getElementById('user-name-chip').textContent = name;
   const rb = document.getElementById('role-badge-chip');
   rb.className = 'role-badge ' + currentRole;
-  rb.textContent = currentRole === 'owner' ? 'Owner' : currentRole === 'admin' ? 'Admin' : 'Ishlab chiqarish';
+  rb.textContent = currentRole === 'owner' ? 'Owner' : currentRole === 'admin' ? 'Admin' : currentRole === 'dizayner' ? 'Dizayner' : 'Ishlab chiqarish';
+  
+  // Shift belgisi
+  const shiftBadge = document.getElementById('shift-badge');
+  if(shiftBadge && currentRole !== 'owner'){
+    shiftBadge.textContent = getShiftLabel();
+    shiftBadge.style.display = 'inline';
+    shiftBadge.style.background = getCurrentShift() === 'day' ? '#fef9c3' : '#1e293b';
+    shiftBadge.style.color = getCurrentShift() === 'day' ? '#92400e' : '#94a3b8';
+  }
 
   // Avval barchasini ko'rsat, keyin rolga qarab yashir
   const nbOwner  = document.getElementById('nb-owner');
@@ -1550,7 +1577,8 @@ function renderHistory(){
     div.innerHTML = `
       <div class="hist-top">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span class="type-pill ${h.type}">${isAdmin?'👤 Admin':'🏭 Ishlab chiqarish'}</span>
+          <span class="type-pill ${h.type}">${isAdmin?'👤 Admin':h.type==='dizayner'?'🎨 Dizayner':'🏭 Ishlab chiqarish'}</span>
+          ${h.shift ? '<span style="font-size:10px;padding:2px 6px;border-radius:20px;background:'+(h.shift==='day'?'#fef9c3':'#1e293b')+';color:'+(h.shift==='day'?'#92400e':'#94a3b8')+'">'+(h.shift==='day'?'☀️':'🌙')+'</span>' : ''}
           ${currentRole==='owner'?`<span class="hist-name">${name}</span>`:''}
           ${statusBadge}
         </div>
@@ -1720,6 +1748,18 @@ function renderOwnerPanel(){
   document.getElementById('ow-tolov').textContent = fmt(owQ)+" so'm";
   document.getElementById('ow-soni').textContent  = owC+' ta';
   
+  // Shift statistikasi
+  const today = new Date().toDateString();
+  const dayCount = allHistory.filter(h=>h.shift==='day').length;
+  const nightCount = allHistory.filter(h=>h.shift==='night').length;
+  const todayCount = allHistory.filter(h=>new Date(h.created_at).toDateString()===today).length;
+  const dayEl = document.getElementById('ow-day');
+  const nightEl = document.getElementById('ow-night');
+  const bugunEl = document.getElementById('ow-bugun');
+  if(dayEl) dayEl.textContent = dayCount+' ta';
+  if(nightEl) nightEl.textContent = nightCount+' ta';
+  if(bugunEl) bugunEl.textContent = todayCount+' ta';
+  
   renderOwnerStats();
   renderChart();
 }
@@ -1793,6 +1833,7 @@ async function saveOnly(type){
     total_daromad: totalDaromad,
     total_jami: totalJami,
     sana: sanaVaqt,
+    shift: getCurrentShift(),
   };
 
   const { error } = await sb.from('zakazlar').insert(row);
@@ -2553,8 +2594,27 @@ async function giveAvans(email, name){
 }
 
 async function approveAvans(id){
+  // Avans ma'lumotlarini olamiz
+  const { data: avans } = await sb.from('avanslar').select('*').eq('id', id).single();
+  
   await sb.from('avanslar').update({status:'berildi'}).eq('id', id);
-  showNotify('✅ Avans berildi deb belgilandi');
+  
+  // Xodimga xabar yuboramiz
+  if(avans){
+    const ownerName = 'Ravshan (Owner)';
+    await sb.from('xabarlar').insert({
+      from_id: currentUser.id,
+      from_email: currentUser.email,
+      from_name: ownerName,
+      to_email: avans.user_email,
+      to_name: avans.user_name,
+      text: 'Avans so\'rovingiz tasdiqlandi!\nSumma: '+fmt(avans.summa)+" so'm\nSabab: "+(avans.sabab||''),
+      o_qildi: false,
+      sana: getSanaVaqt(),
+    });
+  }
+  
+  showNotify('✅ Avans berildi va xodimga xabar yuborildi!');
   renderOwnerPanel();
 }
 
@@ -3296,9 +3356,8 @@ function renderSkladList(){
 
   el.innerHTML = '';
 
-  // Kategoriya bo'yicha guruhlash
-  const KAT_ORDER = ['Beyjik','Futbolka','Kepka','Kraskalar','Materiallar','Boshqa',''];
-  const KAT_ICONS = {'Beyjik':'🏅','Futbolka':'👕','Kepka':'🧢','Kraskalar':'🎨','Materiallar':'📦','Boshqa':'📋','':'📋'};
+  const KAT_ORDER = ['Beyjik','Futbolka','Finka','Kepka','Kraska','Materiallar','Boshqa',''];
+  const KAT_ICONS = {'Beyjik':'🏅','Futbolka':'👕','Finka':'👟','Kepka':'🧢','Kraska':'🎨','Materiallar':'📦','Boshqa':'📋','':'📋'};
   const groups = {};
   filtered.forEach(s => {
     const kat = s.kategoriya || '';
@@ -3306,20 +3365,53 @@ function renderSkladList(){
     groups[kat].push(s);
   });
 
-  // Also add any categories not in KAT_ORDER
   Object.keys(groups).forEach(kat => {
     if(!KAT_ORDER.includes(kat)) KAT_ORDER.push(kat);
   });
 
+  // Load open state from sessionStorage
+  const getOpen = kat => {
+    try { return sessionStorage.getItem('sklad_kat_'+kat) !== 'closed'; } catch(e){ return true; }
+  };
+
   KAT_ORDER.forEach(kat => {
     if(!groups[kat] || !groups[kat].length) return;
 
-    if(kat || Object.keys(groups).length > 1){
-      const header = document.createElement('div');
-      header.style.cssText = 'font-size:13px;font-weight:700;color:var(--text3);margin:12px 0 6px;padding:0 2px';
-      header.textContent = (KAT_ICONS[kat]||'📋') + ' ' + (kat || 'Kategoriyasiz');
-      el.appendChild(header);
-    }
+    const isOpen = getOpen(kat);
+    const katWrap = document.createElement('div');
+    katWrap.style.cssText = 'margin-bottom:8px';
+
+    // Accordion header
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fff;border-radius:10px;border:1.5px solid var(--gray-border);cursor:pointer;user-select:none;transition:all .15s';
+    header.innerHTML =
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        '<span style="font-size:18px">'+(KAT_ICONS[kat]||'📋')+'</span>' +
+        '<span style="font-size:13px;font-weight:700">'+(kat||'Kategoriyasiz')+'</span>' +
+        '<span style="font-size:11px;color:var(--text3);background:var(--gray-light);padding:1px 8px;border-radius:20px">'+groups[kat].length+' ta</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:6px">' +
+        // Count warnings
+        (groups[kat].filter(s=>(s.hisob_miq||0)<=0).length ? '<span style="font-size:11px;color:#fff;background:var(--red);padding:1px 8px;border-radius:20px">'+groups[kat].filter(s=>(s.hisob_miq||0)<=0).length+' qolmadi</span>' : '') +
+        (groups[kat].filter(s=>{ const m=s.hisob_miq||0; return m>0&&m<=(s.min_miq||5); }).length ? '<span style="font-size:11px;color:var(--red);background:#fef2f2;padding:1px 8px;border-radius:20px">'+groups[kat].filter(s=>{ const m=s.hisob_miq||0; return m>0&&m<=(s.min_miq||5); }).length+' kam</span>' : '') +
+        '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" style="transition:transform .2s;transform:'+(isOpen?'rotate(180deg)':'rotate(0deg)')+'"><polyline points="6 9 12 15 18 9"/></svg>' +
+      '</div>';
+
+    // Items container
+    const itemsDiv = document.createElement('div');
+    itemsDiv.style.cssText = 'margin-top:6px;' + (isOpen ? '' : 'display:none');
+
+    header.onclick = () => {
+      const nowOpen = itemsDiv.style.display === 'none';
+      itemsDiv.style.display = nowOpen ? 'block' : 'none';
+      const arrow = header.querySelector('svg');
+      if(arrow) arrow.style.transform = nowOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+      try { sessionStorage.setItem('sklad_kat_'+kat, nowOpen ? 'open' : 'closed'); } catch(e){}
+    };
+
+    katWrap.appendChild(header);
+    katWrap.appendChild(itemsDiv);
+    el.appendChild(katWrap);
 
     groups[kat].forEach(s => {
       const miq = s.hisob_miq || 0;
@@ -3347,7 +3439,7 @@ function renderSkladList(){
             (s.izoh ? '<div style="font-size:12px;color:var(--text3);margin-top:2px">'+s.izoh+'</div>' : '') +
           '</div>' +
           '<div style="text-align:right">' +
-            '<div class="sklad-miq" style="color:'+(isEmpty?'var(--red)':isLow?'var(--amber)':'var(--blue)')+'">'+fmt(miq)+'<span class="sklad-birlik">'+s.birlik+'</span></div>' +
+            '<div class="sklad-miq" style="color:'+(isEmpty?'#c00000':isLow?'var(--red)':'var(--blue)')+'">'+fmt(miq)+'<span class="sklad-birlik">'+s.birlik+'</span></div>' +
           '</div>' +
         '</div>' +
         '<div class="sklad-actions">' +
@@ -3360,10 +3452,11 @@ function renderSkladList(){
         '</div>' +
         '<div class="sklad-log">'+(harakatiHtml || '<div style="font-size:12px;color:var(--text3);padding:6px 0">Harakat yoq</div>')+'</div>';
 
-      el.appendChild(card);
+      itemsDiv.appendChild(card);
     });
   });
 }
+
 
 function toggleSkladLog(btn){
   const log = btn.parentElement.nextElementSibling;
@@ -3400,20 +3493,59 @@ async function saveSkladBrak(){
   if(!miqdor){ showNotify('Miqdor kiriting'); return; }
 
   const xodimNom = XODIMLAR[xodimEmail] || xodimEmail;
+  const sanaV = getSanaVaqt();
 
-  const { error } = await sb.from('sklad_brak').insert({
+  // 1. sklad_brak jadvaliga yozish
+  const { error: brakErr } = await sb.from('sklad_brak').insert({
     sklad_id: id,
     user_email: xodimEmail,
     user_name: xodimNom,
     miqdor,
     sabab,
-    sana: getSanaVaqt(),
+    sana: sanaV,
   });
+  if(brakErr){ showNotify('Xatolik: '+brakErr.message); return; }
 
-  if(error){ showNotify('Xatolik: '+error.message); return; }
-  showNotify('Brak kiritildi: '+miqdor+' ta — '+xodimNom);
+  // 2. sklad_harakati ga ham rasxod sifatida yozish (miqdor kamaysin)
+  const { error: harErr } = await sb.from('sklad_harakati').insert({
+    sklad_id: id,
+    tur: 'rasxod',
+    miqdor,
+    sabab: 'BRAK: '+(sabab||xodimNom),
+    user_email: xodimEmail,
+    user_name: xodimNom,
+    sana: sanaV,
+  });
+  if(harErr){ showNotify('Xatolik (harakat): '+harErr.message); return; }
+
+  // 3. Xodimning zakazlar tarixiga brak yozish
+  // Bugun shu xodimning oxirgi yozuvini topib brak belgilaymiz
+  const { data: lastZakaz } = await sb.from('zakazlar')
+    .select('id')
+    .eq('user_email', xodimEmail)
+    .eq('type', 'ishlab')
+    .order('created_at', { ascending: false })
+    .limit(1);
+
+  if(lastZakaz && lastZakaz.length){
+    // Brak ma'lumotini xabar sifatida owner ga yuboramiz
+    const ownerEmail = 'ra.ravshan1998@gmail.com';
+    await sb.from('xabarlar').insert({
+      from_id: currentUser.id,
+      from_email: currentUser.email,
+      from_name: 'Tizim',
+      to_email: ownerEmail,
+      to_name: 'Ravshan (Owner)',
+      text: 'SKLAD BRAK: '+xodimNom+' — '+(document.getElementById('sb-nom-show').textContent)+' dan '+miqdor+' ta brak qildi.\nSabab: '+(sabab||'Ko\'rsatilmagan'),
+      o_qildi: false,
+      sana: sanaV,
+    });
+  }
+
+  showNotify('Brak saqlandi: '+miqdor+' ta — '+xodimNom);
   document.getElementById('sklad-brak-modal').classList.add('hidden');
   await loadSklad();
+  setTimeout(checkAfterHarakat, 500);
 }
 
 function openHarakatEl(el, tur){
