@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_13.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_14.html -->
 <html lang="uz" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -134,7 +134,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .tbl-head{display:grid;grid-template-columns:1fr 130px 56px 96px 36px;gap:7px;font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:4px 2px 8px}
 .zakaz-row{display:grid;grid-template-columns:1fr 130px 56px 96px 36px;gap:7px;align-items:center;margin-bottom:7px}
 
-.hist-row{padding:12px 14px;background:#fff;border-radius:10px;margin-bottom:8px;border:1px solid var(--gray-border)}
+.hist-row{padding:12px 14px;background:var(--white);border-radius:10px;margin-bottom:8px;border:1px solid var(--gray-border);color:var(--text)}
 .hist-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px}
 .hist-name{font-size:13px;font-weight:700}
 .hist-date{font-size:11px;color:var(--text3);white-space:nowrap}
@@ -332,6 +332,12 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 [data-theme="dark"] .login-card{box-shadow:0 4px 24px rgba(0,0,0,0.5)}
 [data-theme="dark"] .rasm-upload-area{background:var(--gray-light);border-color:var(--gray-border)}
 [data-theme="dark"] .sklad-log{border-color:var(--gray-border)}
+[data-theme="dark"] .hist-row{background:var(--white);color:var(--text)}
+[data-theme="dark"] .hist-items{color:var(--text2)}
+[data-theme="dark"] .hist-items span[style*="color:#"]{color:var(--text2) !important}
+[data-theme="dark"] .msg-item{background:var(--white);color:var(--text)}
+[data-theme="dark"] .msg-from{color:var(--text3)}
+[data-theme="dark"] .msg-text{color:var(--text)}
 [data-theme="dark"] .sklad-log-item{border-color:var(--gray-border)}
 @media(max-width:600px){
   .stat-row{grid-template-columns:1fr 1fr}
@@ -623,7 +629,6 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         <span id="user-name-chip">—</span>
       </div>
       <span class="role-badge" id="role-badge-chip"></span>
-      <span id="shift-badge" style="font-size: 11px; padding: 3px 8px; border-radius: 20px; background: rgb(30, 41, 59); color: rgb(148, 163, 184); font-weight: 600; display: none;">🌙 Tungi</span>
       <label class="shift-toggle" id="shift-toggle-wrap" title="Kunduzgi / Tungi rejim">
         <input type="checkbox" id="shift-toggle-input" onchange="toggleShift(this.checked)">
         <span class="shift-slider">
@@ -997,6 +1002,46 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div style="position:relative;height:200px">
         <canvas id="db-chart"></canvas>
       </div>
+    </div>
+
+    <!-- KPI Progress (sotuvchilar uchun) -->
+    <div class="card hidden" id="db-kpi-card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+        <span id="db-kpi-daraja-label">Daraja</span>
+      </div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div style="padding:10px;background:var(--gray-light);border-radius:8px;text-align:center">
+          <div style="font-size:11px;color:var(--text3)">Joriy oy</div>
+          <div style="font-size:18px;font-weight:700;color:var(--blue)" id="db-kpi-current">0 so'm</div>
+        </div>
+        <div style="padding:10px;background:var(--gray-light);border-radius:8px;text-align:center">
+          <div style="font-size:11px;color:var(--text3)">Maqsad</div>
+          <div style="font-size:18px;font-weight:700;color:var(--text)" id="db-kpi-maqsad">0 so'm</div>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+          <span style="color:var(--text3)">Maqsadga</span>
+          <span style="font-weight:600" id="db-kpi-pct">0%</span>
+        </div>
+        <div style="height:12px;background:var(--gray-border);border-radius:6px;overflow:hidden">
+          <div id="db-kpi-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:6px;transition:width .5s"></div>
+        </div>
+      </div>
+
+      <!-- Bonus bosqichi -->
+      <div id="db-kpi-bonus-info" style="padding:10px;border-radius:8px;border:1.5px solid var(--green-border);background:var(--green-light)">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Joriy bonus bosqichi</div>
+        <div style="font-size:14px;font-weight:700;color:var(--green)" id="db-kpi-bonus-label">—</div>
+        <div style="font-size:13px;color:var(--text2);margin-top:2px">Fiks: <span id="db-kpi-fiks" style="font-weight:600"></span> + Bonus: <span id="db-kpi-bonus-sum" style="font-weight:600;color:var(--green)"></span></div>
+      </div>
+
+      <!-- Keyingi bosqich -->
+      <div id="db-kpi-next" style="margin-top:8px;padding:8px;border-radius:8px;background:var(--gray-light);font-size:12px;color:var(--text3)"></div>
     </div>
 
     <!-- So'nggi zakazlar -->
@@ -1378,13 +1423,7 @@ function applyShift(shift){
   // Toggle input holati
   const inp = document.getElementById('shift-toggle-input');
   if(inp) inp.checked = (shift === 'night');
-  // Badge yangilash
-  const badge = document.getElementById('shift-badge');
-  if(badge){
-    badge.textContent = shift === 'night' ? '🌙 Tungi' : '☀️ Kunduzgi';
-    badge.style.background = shift === 'night' ? '#1e293b' : '#fef9c3';
-    badge.style.color = shift === 'night' ? '#94a3b8' : '#92400e';
-  }
+
 }
 
 function toggleShift(isNight){
@@ -1462,14 +1501,7 @@ function onLogin(){
   rb.className = 'role-badge ' + currentRole;
   rb.textContent = currentRole === 'owner' ? 'Owner' : currentRole === 'admin' ? 'Admin' : currentRole === 'dizayner' ? 'Dizayner' : 'Ishlab chiqarish';
   
-  // Shift belgisi
-  const shiftBadge = document.getElementById('shift-badge');
-  if(shiftBadge && currentRole !== 'owner'){
-    shiftBadge.textContent = getShiftLabel();
-    shiftBadge.style.display = 'inline';
-    shiftBadge.style.background = getCurrentShift() === 'day' ? '#fef9c3' : '#1e293b';
-    shiftBadge.style.color = getCurrentShift() === 'day' ? '#92400e' : '#94a3b8';
-  }
+
 
   // Avval barchasini ko'rsat, keyin rolga qarab yashir
   const nbOwner  = document.getElementById('nb-owner');
@@ -2322,6 +2354,71 @@ function numInput(el,cb){ el.addEventListener('keydown',e=>{if(e.key==='Enter')e
 function delIcon(fn){ return `<button class="icon-btn" onclick="${fn}" title="O'chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>`; }
 
 // ── XABARLAR ──
+// ── KPI DARAJALAR ──
+const KPI_DARAJALAR = {
+  'ra.ravshan1998+umidjon@gmail.com':    { daraja: 'boshlangich',  maqsad: 30000000, fiks: 1500000 },
+  'ra.ravshan1998+ulugbek@gmail.com':    { daraja: 'boshlangich',  maqsad: 30000000, fiks: 1500000 },
+  'ra.ravshan1998+mohlaroy@gmail.com':   { daraja: 'boshlangich',  maqsad: 30000000, fiks: 1500000 },
+  'ra.ravshan1998+rashidulloh@gmail.com':{ daraja: 'tajriba',      maqsad: 45000000, fiks: 1800000 },
+  'ra.ravshan1998+abror@gmail.com':      { daraja: 'professional', maqsad: 60000000, fiks: 1000000 },
+};
+
+// Bonus jadvallar
+const KPI_BONUS = {
+  boshlangich: [
+    { min: 0,        max: 14999999,  bonus: 0,       label: 'Minimal natija' },
+    { min: 15000000, max: 24999999,  bonus: 300000,  label: "Boshlang'ich rag'bat" },
+    { min: 25000000, max: 29999999,  bonus: 500000,  label: 'Rejaga yaqin' },
+    { min: 30000000, max: 39999999,  bonus: 800000,  label: 'Reja bajarilgan' },
+    { min: 40000000, max: 59999999,  bonus: 1200000, label: 'Yuqori natija' },
+    { min: 60000000, max: Infinity,  bonus: 1500000, label: "A'lo darajadagi natija" },
+  ],
+  tajriba: [
+    { min: 0,        max: 24999999,  bonus: 0,       label: 'Minimal natija' },
+    { min: 25000000, max: 39999999,  bonus: 400000,  label: "Rag'bat darajasi" },
+    { min: 40000000, max: 49999999,  bonus: 800000,  label: 'Barqaror natija' },
+    { min: 50000000, max: 69999999,  bonus: 1200000, label: 'Reja bajarilgan' },
+    { min: 70000000, max: 89999999,  bonus: 1800000, label: 'Yuqori daraja' },
+    { min: 90000000, max: Infinity,  bonus: 2500000, label: 'Professionalga tayyor' },
+  ],
+  professional: [
+    { min: 0,        max: 29999999,  bonus: 0,       label: 'Minimal natija' },
+    { min: 30000000, max: 44999999,  bonus: 200000,  label: '40+ bitimga yaqinlashish' },
+    { min: 45000000, max: 59999999,  bonus: 400000,  label: "Qayta buyurtma ulushi 60%" },
+    { min: 60000000, max: 79999999,  bonus: 700000,  label: 'Reja bajarilgan' },
+    { min: 80000000, max: 99999999,  bonus: 1000000, label: 'Kross/apsell 20%' },
+    { min: 100000000, max: Infinity, bonus: 1500000, label: 'Elita daraja' },
+  ],
+};
+
+const DARAJA_LABELS = {
+  boshlangich: "🥉 Boshlang'ich",
+  tajriba: '🥈 Tajriba oshirgan',
+  professional: '🥇 Professional',
+};
+
+function getKpi(email){ return KPI_DARAJALAR[email] || null; }
+
+function getCurrentBonus(email, summa){
+  const kpi = getKpi(email);
+  if(!kpi) return null;
+  const jadval = KPI_BONUS[kpi.daraja] || [];
+  for(let i = jadval.length-1; i >= 0; i--){
+    if(summa >= jadval[i].min) return jadval[i];
+  }
+  return jadval[0];
+}
+
+function getNextBonus(email, summa){
+  const kpi = getKpi(email);
+  if(!kpi) return null;
+  const jadval = KPI_BONUS[kpi.daraja] || [];
+  for(let i = 0; i < jadval.length; i++){
+    if(summa < jadval[i].min) return jadval[i];
+  }
+  return null;
+}
+
 const XODIMLAR = {
   'ra.ravshan1998@gmail.com': 'Ravshan (Owner)',
   'ra.ravshan1998+bayramali@gmail.com': 'Bayramali',
@@ -3145,6 +3242,51 @@ function renderDashboard(){
 
   // Grafik
   renderDbChart(myData, thisMonth, thisYear);
+
+  // KPI progress (faqat sotuvchilar uchun)
+  const kpiCard = document.getElementById('db-kpi-card');
+  const kpi = getKpi(currentUser.email);
+  if(kpi && kpiCard && currentRole === 'admin'){
+    kpiCard.classList.remove('hidden');
+    
+    // Bu oylik summa
+    const now2 = new Date();
+    const oylikSumma = myData
+      .filter(h => { const d=new Date(h.created_at); return d.getMonth()===now2.getMonth()&&d.getFullYear()===now2.getFullYear(); })
+      .reduce((s,h)=>s+(h.total_zakaz||h.total_daromad||0), 0);
+    
+    const pct = Math.min(Math.round((oylikSumma/kpi.maqsad)*100), 100);
+    const curBonus = getCurrentBonus(currentUser.email, oylikSumma);
+    const nxtBonus = getNextBonus(currentUser.email, oylikSumma);
+    
+    const el2 = id => document.getElementById(id);
+    if(el2('db-kpi-daraja-label')) el2('db-kpi-daraja-label').textContent = DARAJA_LABELS[kpi.daraja] || kpi.daraja;
+    if(el2('db-kpi-current')) el2('db-kpi-current').textContent = fmt(oylikSumma)+" so'm";
+    if(el2('db-kpi-maqsad')) el2('db-kpi-maqsad').textContent = fmt(kpi.maqsad)+" so'm";
+    if(el2('db-kpi-pct')) el2('db-kpi-pct').textContent = pct+'%';
+    if(el2('db-kpi-bar')) el2('db-kpi-bar').style.width = pct+'%';
+    if(el2('db-kpi-bar')) el2('db-kpi-bar').style.background = pct>=100?'var(--green)':pct>=70?'linear-gradient(90deg,var(--blue),var(--green))':'linear-gradient(90deg,var(--amber),var(--blue))';
+    if(el2('db-kpi-fiks')) el2('db-kpi-fiks').textContent = fmt(kpi.fiks)+" so'm";
+    
+    if(curBonus){
+      if(el2('db-kpi-bonus-label')) el2('db-kpi-bonus-label').textContent = curBonus.label;
+      if(el2('db-kpi-bonus-sum')) el2('db-kpi-bonus-sum').textContent = fmt(curBonus.bonus)+" so'm";
+      const totalDaromad = kpi.fiks + curBonus.bonus;
+      if(el2('db-kpi-bonus-info')) el2('db-kpi-bonus-info').querySelector('div:last-child') && (el2('db-kpi-bonus-info').innerHTML = 
+        '<div style="font-size:11px;color:var(--text3);margin-bottom:4px">Joriy bonus bosqichi</div>'+
+        '<div style="font-size:14px;font-weight:700;color:var(--green)">'+curBonus.label+'</div>'+
+        '<div style="font-size:13px;color:var(--text2);margin-top:4px">Fiks: <b>'+fmt(kpi.fiks)+" so'm</b> + Bonus: <b style='color:var(--green)'>"+fmt(curBonus.bonus)+" so'm</b> = <b style='color:var(--blue)'>"+fmt(totalDaromad)+" so'm</b></div>");
+    }
+    
+    if(nxtBonus && el2('db-kpi-next')){
+      const qoldi = nxtBonus.min - oylikSumma;
+      el2('db-kpi-next').innerHTML = "⬆️ Keyingi bosqich (<b>"+nxtBonus.label+"</b>): yana <b style='color:var(--blue)'>"+fmt(qoldi)+" so'm</b> qoldi → bonus <b>"+fmt(nxtBonus.bonus)+" so'm</b> bo'ladi";
+    } else if(!nxtBonus && el2('db-kpi-next')){
+      el2('db-kpi-next').innerHTML = "🏆 <b style='color:var(--green)'>Eng yuqori bosqichdasiz!</b>";
+    }
+  } else if(kpiCard){
+    kpiCard.classList.add('hidden');
+  }
 
   // So'nggi 5 ta zakaz
   const recent = [...myData].slice(0, 5);
