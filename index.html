@@ -155,7 +155,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .owner-head{font-size:11px;font-weight:600;color:var(--text3);padding:4px 14px;letter-spacing:.05em;text-transform:uppercase}
 .av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
 
-.pi{margin-bottom:8px;padding:12px;background:var(--gray-light);border-radius:10px;border:1px solid var(--gray-border)}
+.pi{margin-bottom:6px;padding:10px 12px;background:var(--gray-light);border-radius:10px;border:1px solid var(--gray-border);transition:background .15s}
 .ui{margin-bottom:8px;padding:12px;background:var(--purple-light);border-radius:10px;border:1px solid var(--purple-border)}
 .ugrid{display:grid;grid-template-columns:1fr 80px 80px auto;gap:7px;align-items:center}
 .ugrid-wrap{display:grid;grid-template-columns:1fr;gap:8px}
@@ -210,6 +210,43 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .avans-chip.berildi{background:var(--green-light);color:var(--green)}
 .give-avans-row{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
 .give-avans-row input{width:140px}
+
+/* ── ISHLAB CHIQARISH — Modern SaaS ── */
+.ish-stat{background:var(--white);border-radius:12px;padding:14px 16px;border:1px solid var(--gray-border)}
+.ish-stat-label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.ish-stat-val{font-size:18px;font-weight:700;color:var(--text)}
+
+.ish-card{background:var(--white);border-radius:16px;padding:16px;border:1px solid var(--gray-border);margin-bottom:16px;border-top:2px solid var(--ish-accent,#3B82F6);box-shadow:0 1px 4px rgba(0,0,0,.04);transition:box-shadow .2s}
+.ish-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+
+.ish-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.ish-card-title{font-size:13px;font-weight:700;letter-spacing:-0.1px}
+.ish-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ish-close-btn{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;border-radius:6px;display:flex;transition:all .15s}
+.ish-close-btn:hover{background:var(--gray-light);color:var(--text)}
+
+.ish-price-info{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text3);margin-bottom:12px;line-height:1.6}
+
+.ish-add-btn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#3B82F6;background:none;border:1.5px dashed rgba(59,130,246,.3);border-radius:10px;padding:8px 14px;cursor:pointer;width:100%;justify-content:center;margin-top:10px;transition:all .15s}
+.ish-add-btn:hover{background:rgba(59,130,246,.06);border-color:rgba(59,130,246,.6)}
+
+.ish-total-bar{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-border);font-size:12px;color:var(--text3);font-weight:500}
+
+.ish-grand-footer{background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--gray-border);margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.ish-primary-btn{display:flex;align-items:center;gap:7px;background:#3B82F6;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.ish-primary-btn:hover{background:#2563EB;transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,130,246,.4)}
+.ish-secondary-btn{display:flex;align-items:center;gap:7px;background:var(--gray-light);color:var(--text2);border:1px solid var(--gray-border);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s}
+.ish-secondary-btn:hover{background:var(--gray-border);color:var(--text)}
+
+/* Dark mode */
+[data-theme="dark"] .ish-stat{background:#1E293B;border-color:#334155}
+[data-theme="dark"] .ish-card{background:#1E293B;border-color:#334155}
+[data-theme="dark"] .ish-grand-footer{background:#1E293B;border-color:#334155}
+[data-theme="dark"] .ish-secondary-btn{background:#273449;border-color:#334155;color:#94A3B8}
+[data-theme="dark"] .ish-secondary-btn:hover{background:#334155;color:#F8FAFC}
+[data-theme="dark"] .ish-add-btn:hover{background:rgba(59,130,246,.1)}
+[data-theme="dark"] .ish-price-info{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.2)}
+[data-theme="dark"] .ish-close-btn:hover{background:#273449}
 .ofset-blok{background:var(--gray-light);border-radius:8px;padding:12px;margin-bottom:8px}
 .ofset-blok-title{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px}
 .of-part-sum{font-size:13px;font-weight:700;color:var(--blue)}
@@ -885,259 +922,157 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 
   <!-- ISHLAB CHIQARISH -->
   <div class="panel" id="panel-ishlab">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 14px">
-      <div style="font-size:14px;font-weight:700">Ishlab chiqarish</div>
-      <div style="font-size:13px;color:var(--text3)">Jami: <strong id="ishlab-total-show" style="color:var(--text)">0 so'm</strong></div>
+
+    <!-- Page Header -->
+    <div style="padding:24px 0 16px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.3px">Ishlab chiqarish</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:2px">Bugungi zakaz va mahsulotlar</div>
+      </div>
+      <div style="font-size:13px;color:var(--text3)">Jami: <strong id="ishlab-total-show" style="color:var(--text);font-size:15px">0 so'm</strong></div>
     </div>
 
-    <div class="stat-row">
-      <div class="stat"><div class="stat-label">Zakazlar soni</div><div class="stat-val" style="color:var(--blue)" id="ish-soni">0 ta</div></div>
-      <div class="stat"><div class="stat-label">Braklar summasi</div><div class="stat-val" style="color:var(--red)" id="ish-brak">0 so'm</div></div>
-      <div class="stat"><div class="stat-label">Sof daromad</div><div class="stat-val" style="color:var(--green)" id="ish-sof">0 so'm</div></div>
+    <!-- Stats Row -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
+      <div class="ish-stat">
+        <div class="ish-stat-label">Zakazlar soni</div>
+        <div class="ish-stat-val" id="ish-stat-zakaz">0 ta</div>
+      </div>
+      <div class="ish-stat">
+        <div class="ish-stat-label">UV pechat</div>
+        <div class="ish-stat-val" id="ish-stat-uv" style="color:#6366F1">0 so'm</div>
+      </div>
+      <div class="ish-stat">
+        <div class="ish-stat-label">Jami summa</div>
+        <div class="ish-stat-val" id="ishlab-sum" style="color:#3B82F6">0 so'm</div>
+      </div>
     </div>
 
-    <div class="stat-row">
-      <div class="stat"><div class="stat-label">Oddiy mahsulotlar</div><div class="stat-val" style="color:var(--blue)" id="prod-sum">0 so'm</div></div>
-      <div class="stat"><div class="stat-label">UV pechat</div><div class="stat-val" style="color:var(--purple)" id="uv-sum">0 so'm</div></div>
-      <div class="stat"><div class="stat-label">Jami summa</div><div class="stat-val" id="ishlab-sum">0 so'm</div></div>
-    </div>
-    <div class="card" id="card-prod">
-      <div class="card-title" style="justify-content:space-between">
-        <div style="display:flex;align-items:center;gap:8px">
-          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-          Oddiy mahsulotlar
+    <!-- Oddiy mahsulotlar -->
+    <div class="ish-card" id="card-prod" style="--ish-accent:#3B82F6">
+      <div class="ish-card-header">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="ish-icon" style="background:rgba(59,130,246,.12)">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <span class="ish-card-title" style="color:#3B82F6">Oddiy mahsulotlar</span>
         </div>
-        <button class="card-close-btn" onclick="hideCard('prod','Oddiy mahsulotlar')" title="Bu bolimni yashirish">✕</button>
+        <button class="ish-close-btn" onclick="hideCard('prod','Oddiy mahsulotlar')" title="Yashirish">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="ish-price-info">
+        <span id="prod-price-info">Mahsulot tanlab miqdor kiriting</span>
       </div>
       <div id="prod-rows"></div>
-      <button class="add-btn" onclick="addProdRow()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <button class="ish-add-btn" onclick="addProdRow()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Mahsulot qo'shish
       </button>
-      <div class="tbar blue" style="margin-top:10px"><span class="tl blue">Oddiy jami</span><span class="tv blue" id="prod-grand">0 so'm</span></div>
+      <div class="ish-total-bar">
+        <span>Oddiy jami</span>
+        <span id="prod-grand" style="color:#3B82F6;font-size:16px;font-weight:700">0 so'm</span>
+      </div>
     </div>
-    <div class="card" style="border-color:var(--purple-border)" id="card-uv">
-      <div class="card-title" style="color:var(--purple);justify-content:space-between">
-        <div style="display:flex;align-items:center;gap:8px">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          UV pechat — 90×60 sm list
+
+    <!-- UV Pechat -->
+    <div class="ish-card" id="card-uv" style="--ish-accent:#6366F1">
+      <div class="ish-card-header">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="ish-icon" style="background:rgba(99,102,241,.12)">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#6366F1" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </div>
+          <span class="ish-card-title" style="color:#6366F1">UV Pechat</span>
         </div>
-        <button class="card-close-btn purple" onclick="hideCard('uv','UV pechat')" title="Bu bolimni yashirish">✕</button>
+        <button class="ish-close-btn" onclick="hideCard('uv','UV pechat')" title="Yashirish">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
-      <div class="uv-info">
-        1–5 list: <strong style="color:var(--purple)">40 000</strong> so'm/list &nbsp;·&nbsp;
-        6–10 list: <strong style="color:var(--purple)">25 000</strong> so'm/list &nbsp;·&nbsp;
-        11+ list: <strong style="color:var(--purple)">20 000</strong> so'm/list
+      <div class="ish-price-info" style="border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.06)">
+        1–5 list: <strong style="color:#6366F1">40 000</strong> so'm &nbsp;·&nbsp;
+        6–10 list: <strong style="color:#6366F1">25 000</strong> so'm &nbsp;·&nbsp;
+        11+ list: <strong style="color:#6366F1">20 000</strong> so'm
       </div>
-      <div class="ugrid" style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:0 2px 8px">
-        <div>Mahsulot nomi</div><div style="text-align:center">Sig'imi</div><div style="text-align:center">Dona</div><div style="text-align:center">Natija</div>
+      <div style="display:grid;grid-template-columns:1fr 60px 64px auto;gap:5px;font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:0 2px 6px">
+        <div>Mahsulot nomi</div><div style="text-align:center">Sig'im</div><div style="text-align:center">Dona</div><div style="text-align:right">Natija</div>
       </div>
       <div id="uv-rows"></div>
-      <button class="add-btn purple" onclick="addUvRow()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <button class="ish-add-btn" style="--ish-btn-color:#6366F1;border-color:rgba(99,102,241,.3);color:#6366F1" onclick="addUvRow()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         UV mahsulot qo'shish
       </button>
-      <div class="tbar purple" style="margin-top:10px"><span class="tl purple">UV pechat jami</span><span class="tv purple" id="uv-grand">0 so'm</span></div>
+      <div id="uv-sum" class="hidden"></div>
+      <div class="ish-total-bar" style="border-color:rgba(99,102,241,.2)">
+        <span>UV pechat jami</span>
+        <span id="uv-grand" style="color:#6366F1;font-size:16px;font-weight:700">0 so'm</span>
+      </div>
     </div>
 
-    <div class="card" style="border-color:var(--amber-border)" id="card-eko">
-      <div class="card-title" style="color:var(--amber);justify-content:space-between">
-        <div style="display:flex;align-items:center;gap:8px">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          Ekosalvent pechat
+    <!-- Ekosalvent -->
+    <div class="ish-card" id="card-eko" style="--ish-accent:#F59E0B">
+      <div class="ish-card-header">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="ish-icon" style="background:rgba(245,158,11,.12)">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#F59E0B" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <span class="ish-card-title" style="color:#F59E0B">Ekosalvent Pechat</span>
         </div>
-        <button class="card-close-btn amber" onclick="hideCard('eko','Ekosalvent')" title="Bu bolimni yashirish">✕</button>
+        <button class="ish-close-btn" onclick="hideCard('eko','Ekosalvent')" title="Yashirish">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
-      <div class="uv-info" style="border-color:var(--amber-border)">
-        10 kv.m gacha: <strong style="color:var(--amber)">5000</strong> so'm/kv.m &nbsp;·&nbsp;
-        1 rulon (~50 kv.m): <strong style="color:var(--amber)">4000</strong> so'm/kv.m<br>
-        2 rulon (~100 kv.m): <strong style="color:var(--amber)">3700</strong> so'm/kv.m &nbsp;·&nbsp;
-        3 rulon (~150 kv.m): <strong style="color:var(--amber)">3500</strong> so'm/kv.m
+      <div class="ish-price-info" style="border-color:rgba(245,158,11,.25);background:rgba(245,158,11,.06)">
+        10 kv.m gacha: <strong style="color:#F59E0B">5 000</strong> so'm/kv.m &nbsp;·&nbsp;
+        ~50 kv.m: <strong style="color:#F59E0B">4 000</strong> so'm/kv.m &nbsp;·&nbsp;
+        ~100 kv.m: <strong style="color:#F59E0B">3 700</strong> so'm/kv.m &nbsp;·&nbsp;
+        ~150 kv.m: <strong style="color:#F59E0B">3 500</strong> so'm/kv.m
       </div>
-      <div style="display:grid;grid-template-columns:1fr 100px 110px;gap:6px;font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:0 2px 8px">
-        <div>Mahsulot nomi</div><div style="text-align:center">Kv.metr</div><div style="text-align:center">Natija</div>
+      <div style="display:grid;grid-template-columns:1fr 80px auto;gap:5px;font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:0 2px 6px">
+        <div>Mahsulot nomi</div><div style="text-align:center">Kv.metr</div><div style="text-align:right">Natija</div>
       </div>
       <div id="eko-rows"></div>
-      <button class="add-btn" style="border-color:var(--amber-border);color:var(--amber)" onclick="addEkoRow()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <button class="ish-add-btn" style="border-color:rgba(245,158,11,.3);color:#F59E0B" onclick="addEkoRow()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Ekosalvent qo'shish
       </button>
-      <div class="tbar" style="background:var(--amber-light);margin-top:10px"><span class="tl" style="color:var(--amber)">Ekosalvent jami</span><span class="tv" style="color:var(--amber)" id="eko-grand">0 so'm</span></div>
+      <div class="ish-total-bar" style="border-color:rgba(245,158,11,.2)">
+        <span>Ekosalvent jami</span>
+        <span id="eko-grand" style="color:#F59E0B;font-size:16px;font-weight:700">0 so'm</span>
+      </div>
     </div>
 
-    <div id="hidden-sections-bar" class="hidden" style="margin-top:10px;padding:10px 14px;background:var(--gray-light);border-radius:10px;border:1px dashed var(--gray-border);font-size:12px;color:var(--text3)">
-      <span>Yashirilgan bolimlar: </span><span id="hidden-sections-list"></span>
+    <!-- Yashirilgan bo'limlar -->
+    <div id="hidden-sections-bar" class="hidden" style="margin-top:8px;padding:10px 14px;background:var(--gray-light);border-radius:10px;border:1px dashed var(--gray-border);font-size:12px;color:var(--text3)">
+      <span>Yashirilgan bo'limlar: </span><span id="hidden-sections-list"></span>
     </div>
 
-    <div class="tbar dark"><span class="tl dark" style="font-size:14px">Umumiy jami</span><span class="tv dark" style="font-size:22px" id="ishlab-grand">0 so'm</span></div>
-    <button class="savebtn" onclick="saveOnly('ishlab')">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-      Saqlash
-    </button>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
-      <button class="tgbtn" style="margin-top:0" onclick="sendWeekly('ishlab')">
-        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        Telegram
-      </button>
-      <button class="savebtn" style="margin-top:0;background:var(--purple)" onclick="copyWeekly('ishlab')">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        Nusxa olish
-      </button>
+    <!-- Umumiy jami footer -->
+    <div class="ish-grand-footer">
+      <div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:2px">Umumiy jami</div>
+        <div style="font-size:28px;font-weight:700;color:var(--text);letter-spacing:-0.5px" id="ishlab-grand">0 so'm</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="ish-primary-btn" onclick="saveOnly('ishlab')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Saqlash
+        </button>
+        <button class="ish-secondary-btn" onclick="sendWeekly('ishlab')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Telegram
+        </button>
+        <button class="ish-secondary-btn" onclick="copyWeekly('ishlab')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Nusxa
+        </button>
+      </div>
     </div>
-    <button class="avans-btn" onclick="showAvansForm()" style="margin-top:6px">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+
+    <button class="avans-btn" onclick="showAvansForm()" style="margin-top:8px">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       Avans so'rash
     </button>
-  </div>
 
-  <!-- XABARLAR -->
-  <div class="panel" id="panel-xabarlar">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 14px">
-      <div style="font-size:14px;font-weight:700">Xabarlar</div>
-      <button class="add-btn" style="width:auto;margin:0;padding:7px 14px" onclick="showSendMsg()" id="yangi-xabar-btn">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Yangi xabar
-      </button>
-    </div>
-
-    <!-- Xabar yozish -->
-    <div class="card hidden" id="send-msg-card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        Xabar yuborish
-      </div>
-      <div class="form-group" style="margin-bottom:10px" id="receiver-group">
-        <label class="form-label">Kimga</label>
-        <select id="msg-receiver" style="width:100%">
-          <option value="">Tanlang...</option>
-        </select>
-      </div>
-      <div class="form-group" style="margin-bottom:10px">
-        <label class="form-label">Xabar</label>
-        <textarea id="msg-text" rows="3" style="width:100%;padding:8px 11px;border:1.5px solid var(--gray-border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical" placeholder="Xabar yozing..."></textarea>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="savebtn" style="flex:1" onclick="sendMsg()">Yuborish</button>
-        <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="hideSendMsg()">Bekor</button>
-      </div>
-    </div>
-
-    <div id="xabarlar-list">
-      <div class="empty-state">
-        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <p>Xabarlar yo'q</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- DASHBOARD -->
-  <div class="panel" id="panel-dashboard">
-    <div style="margin:16px 0 14px">
-      <div style="font-size:14px;font-weight:700" id="db-title">Dashboard</div>
-      <div style="font-size:12px;color:var(--text3)" id="db-subtitle">Shaxsiy hisobot</div>
-    </div>
-
-    <!-- Stat kartalar -->
-    <div class="stat-row" id="db-stats-row">
-      <div class="stat"><div class="stat-label">Jami zakaz</div><div class="stat-val" style="color:var(--blue)" id="db-jami">0</div></div>
-      <div class="stat"><div class="stat-label">Sof daromad</div><div class="stat-val" style="color:var(--green)" id="db-daromad">0 so'm</div></div>
-      <div class="stat"><div class="stat-label">Bu oy</div><div class="stat-val" style="color:var(--purple)" id="db-bu-oy">0 so'm</div></div>
-    </div>
-    <div class="stat-row">
-      <div class="stat"><div class="stat-label">O'tgan oy</div><div class="stat-val" id="db-utgan-oy">0 so'm</div></div>
-      <div class="stat"><div class="stat-label">O'sish</div><div class="stat-val" id="db-osish">0%</div></div>
-      <div class="stat"><div class="stat-label">Brak</div><div class="stat-val" style="color:var(--red)" id="db-brak">0 ta</div></div>
-    </div>
-
-    <!-- Grafik -->
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-        <div class="card-title" style="margin:0">
-          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Daromad dinamikasi
-        </div>
-        <div style="display:flex;gap:6px">
-          <button class="filter-btn active" id="db-btn-oylik" onclick="setDbMode('oylik',this)">Oylik</button>
-          <button class="filter-btn" id="db-btn-haftalik" onclick="setDbMode('haftalik',this)">Haftalik</button>
-          <button class="filter-btn" id="db-btn-yillik" onclick="setDbMode('yillik',this)">Yillik</button>
-        </div>
-      </div>
-      <div style="position:relative;height:200px">
-        <canvas id="db-chart"></canvas>
-      </div>
-    </div>
-
-    <!-- KPI Progress (sotuvchilar uchun) -->
-    <div class="card hidden" id="db-kpi-card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        <span id="db-kpi-daraja-label">Daraja</span>
-      </div>
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-        <div style="padding:10px;background:var(--gray-light);border-radius:8px;text-align:center">
-          <div style="font-size:11px;color:var(--text3)">Joriy oy</div>
-          <div style="font-size:18px;font-weight:700;color:var(--blue)" id="db-kpi-current">0 so'm</div>
-        </div>
-        <div style="padding:10px;background:var(--gray-light);border-radius:8px;text-align:center">
-          <div style="font-size:11px;color:var(--text3)">Maqsad</div>
-          <div style="font-size:18px;font-weight:700;color:var(--text)" id="db-kpi-maqsad">0 so'm</div>
-        </div>
-      </div>
-
-      <!-- Progress bar -->
-      <div style="margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-          <span style="color:var(--text3)">Maqsadga</span>
-          <span style="font-weight:600" id="db-kpi-pct">0%</span>
-        </div>
-        <div style="height:12px;background:var(--gray-border);border-radius:6px;overflow:hidden">
-          <div id="db-kpi-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:6px;transition:width .5s"></div>
-        </div>
-      </div>
-
-      <!-- Bonus bosqichi -->
-      <div id="db-kpi-bonus-info" style="padding:10px;border-radius:8px;border:1.5px solid var(--green-border);background:var(--green-light)">
-        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Joriy bonus bosqichi</div>
-        <div style="font-size:14px;font-weight:700;color:var(--green)" id="db-kpi-bonus-label">—</div>
-        <div style="font-size:13px;color:var(--text2);margin-top:2px">Fiks: <span id="db-kpi-fiks" style="font-weight:600"></span> + Bonus: <span id="db-kpi-bonus-sum" style="font-weight:600;color:var(--green)"></span></div>
-      </div>
-
-      <!-- Keyingi bosqich -->
-      <div id="db-kpi-next" style="margin-top:8px;padding:8px;border-radius:8px;background:var(--gray-light);font-size:12px;color:var(--text3)"></div>
-    </div>
-
-    <!-- So'nggi zakazlar -->
-    <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        So'nggi zakazlar
-      </div>
-      <div id="db-recent-list"></div>
-    </div>
-  </div>
-
-  <!-- TARIX / HISOBOTLAR -->
-  <div class="panel active" id="panel-tarix">
-    <div style="margin-top:16px;margin-bottom:14px;font-size:14px;font-weight:700">Hisobotlar</div>
-
-    <div class="stat-row" id="hist-owner-stats" style="display:none">
-      <div class="stat"><div class="stat-label">Jami zakaz</div><div class="stat-val" style="color:var(--blue)" id="hs-jami">0 so'm</div></div>
-      <div class="stat"><div class="stat-label">Qolgan to'lov</div><div class="stat-val" style="color:var(--red)" id="hs-qoldiq">0 so'm</div></div>
-      <div class="stat"><div class="stat-label">To'langan</div><div class="stat-val" style="color:var(--green)" id="hs-tolandi">0 so'm</div></div>
-    </div>
-
-    <div class="filter-row" id="hist-filters" style="display:none">
-      <button class="filter-btn active" onclick="setFilter('all',this)">Barchasi</button>
-      <button class="filter-btn" onclick="setFilter('admin',this)">Admin</button>
-      <button class="filter-btn" onclick="setFilter('ishlab',this)">Ishlab chiqarish</button>
-    </div>
-    <div id="history-list">
-      <div class="empty-state">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <p>Hali yozuvlar yo'q</p>
-      </div>
-    </div>
   </div>
 
   <!-- DIZAYNER -->
@@ -3137,6 +3072,36 @@ const DARAJA_LABELS = {
   professional: '🥇 Professional',
 };
 
+// Jarima tizimi (uch daraja uchun bir xil asosiy jarimalar)
+const KPI_JARIMA = {
+  boshlangich: [
+    { sabab: "Oxirgi xabar mijozni bo'lsa yoki yozilgan xabarga javob berilmay qolib ketgan bo'lsa", miqdor: -100000 },
+    { sabab: "3 kun davomida yangi mijoz bilan aloqa qilinmagan", miqdor: -100000 },
+    { sabab: "Buyurtmani kechiktirgan yoki noto'g'ri ma'lumot bergan", miqdor: -200000 },
+    { sabab: "Mijoz shikoyati (yozma tarzda tushgan)", miqdor: -300000 },
+    { sabab: "Yolg'on narx yoki va'da bergan", miqdor: -400000 },
+  ],
+  tajriba: [
+    { sabab: "3 kun davomida yangi mijoz bilan aloqa qilinmagan", miqdor: -100000 },
+    { sabab: "Buyurtmani kechiktirgan yoki noto'g'ri ma'lumot bergan", miqdor: -200000 },
+    { sabab: "Mijoz shikoyati (rasmiy)", miqdor: -300000 },
+    { sabab: "Qasddan noto'g'ri narx yoki soxta ma'lumot bergan", miqdor: -500000 },
+  ],
+  professional: [
+    { sabab: "2 kun davomida mavjud mijozlar bilan rejalangan aloqa qilinmagan", miqdor: -150000 },
+    { sabab: "Buyurtma yoki yetkazib berishda kechikish (aybi sotuvchida)", miqdor: -300000 },
+    { sabab: "Mijoz shikoyati (rasmiy)", miqdor: -400000 },
+    { sabab: "Noto'g'ri narx yoki noto'g'ri va'da bergan", miqdor: -600000 },
+  ],
+};
+
+// Qo'shimcha mukofotlar
+const KPI_MUKOFOT = [
+  { sabab: "Oy davomida eng ko'p yangi mijoz olib kelgan", miqdor: 300000 },
+  { sabab: "10 ta va undan ortiq ijobiy fikr olgan", miqdor: 200000 },
+  { sabab: "O'tgan oydan 15% yuqori sotuv qilgan", miqdor: "10% qo'shimcha bonus" },
+];
+
 function getKpi(email){ return KPI_DARAJALAR[email] || null; }
 
 function getCurrentBonus(email, summa){
@@ -3813,7 +3778,8 @@ function renderIshlab(){
     if(isQolda && div.querySelector('#pnarx'+i)) numInput(div.querySelector('#pnarx'+i),v=>{prD[i].qolda_narx=v;renderIshlab();});
   });
   document.getElementById('prod-grand').textContent=fmt(pt)+" so'm";
-  document.getElementById('prod-sum').textContent=fmt(pt)+" so'm";
+  const prodSumEl = document.getElementById('prod-sum');
+  if(prodSumEl) prodSumEl.textContent=fmt(pt)+" so'm";
 
   const pelU=document.getElementById('uv-rows'); pelU.innerHTML=''; let ut=0;
   uvD.forEach((r,i)=>{
@@ -3861,23 +3827,27 @@ function renderIshlab(){
   ekoD.forEach((r,i)=>{
     const kv=parseFloat(r.kv)||0;
     const{narx,jami}=calcEko(kv); if(kv>0)et+=jami;
-    const div=document.createElement('div'); div.className='ui'; div.style.background='var(--amber-light)'; div.style.borderColor='var(--amber-border)';
-    div.innerHTML=`<div class="ugrid-wrap">
-      <input type="text" placeholder="Mahsulot nomi (banner, ustanovka...)" value="${r.nom}" oninput="ekoD[${i}].nom=this.value">
-      <div class="ugrid-bottom" style="grid-template-columns:1fr auto">
-        <input type="text" inputmode="decimal" placeholder="10" value="${r.kv}" style="text-align:center" id="ekv${i}">
-        <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
-          ${kv>0?`<span class="badge" style="background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)">${kv} kv.m</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
-          ${delIcon(`delEko(${i})`)}
-        </div>
-      </div>
-    </div>
-      ${kv>0?`<div class="ures" style="border-color:var(--amber-border)"><span class="badge" style="background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)">${kv} kv.m</span><span style="font-size:11px;color:var(--text3)">×</span><span class="badge bw">${fmt(narx)} so'm/kv.m</span><span style="font-size:11px;color:var(--text3)">=</span><span class="badge bo">${fmt(jami)} so'm</span></div>`:''}
-      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
-        <label style="font-size:12px;color:var(--text3)">Brak:</label>
-        <input type="text" inputmode="numeric" placeholder="0" value="${r.brak||''}" style="width:70px;text-align:center;${parseInt(r.brak)>0?'border-color:var(--red-border);background:var(--red-light)':''}" id="ebrak${i}">
-        ${parseInt(r.brak)>0?`<span class="badge" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-border)">⚠️ ${r.brak} kv.m brak</span>`:''}
-      </div>`;
+     const div=document.createElement('div'); div.className='ui'; div.style.cssText='border-radius:10px;padding:10px;margin-bottom:6px;background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.2)';
+     div.innerHTML=`<div style="display:grid;grid-template-columns:1fr 80px auto;gap:5px;align-items:center;margin-bottom:4px">
+       <input type="text" placeholder="Mahsulot nomi..." value="${r.nom}" oninput="ekoD[${i}].nom=this.value" style="font-size:12px">
+       <input type="text" inputmode="decimal" placeholder="Kv.m" value="${r.kv}" style="text-align:center;font-size:12px" id="ekv${i}">
+       <div style="display:flex;gap:4px;align-items:center;justify-content:flex-end">
+         ${kv>0?`<span class="badge" style="background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border);font-size:11px;white-space:nowrap">${fmt(jami)} so'm</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
+         ${delIcon(`delEko(${i})`)}
+       </div>
+     </div>
+     ${kv>0?`<div class="ures" style="border-color:var(--amber-border)">
+       <span class="badge" style="background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)">${kv} kv.m</span>
+       <span style="font-size:11px;color:var(--text3)">×</span>
+       <span class="badge bw">${fmt(narx)} so'm/kv.m</span>
+       <span style="font-size:11px;color:var(--text3)">=</span>
+       <span class="badge bo">${fmt(jami)} so'm</span>
+     </div>`:''}
+     <div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap">
+       <label style="font-size:11px;color:var(--text3)">Brak:</label>
+       <input type="text" inputmode="numeric" placeholder="0" value="${r.brak||''}" style="width:58px;text-align:center;font-size:12px;${parseInt(r.brak)>0?'border-color:var(--red-border);background:var(--red-light)':''}" id="ebrak${i}">
+       ${parseInt(r.brak)>0?`<span class="badge" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-border)">⚠️ ${r.brak} ta brak</span>`:''}
+     </div>`;
     pelE.appendChild(div);
     numInput(div.querySelector(`#ekv${i}`),v=>{ekoD[i].kv=v;renderIshlab();});
     if(div.querySelector(`#ebrak${i}`)) numInput(div.querySelector(`#ebrak${i}`),v=>{ekoD[i].brak=v;renderIshlab();});
@@ -4020,6 +3990,18 @@ function renderDashboard(){
       el2('db-kpi-next').innerHTML = "⬆️ Keyingi bosqich (<b>"+nxtBonus.label+"</b>): yana <b style='color:var(--blue)'>"+fmt(qoldi)+" so'm</b> qoldi → bonus <b>"+fmt(nxtBonus.bonus)+" so'm</b> bo'ladi";
     } else if(!nxtBonus && el2('db-kpi-next')){
       el2('db-kpi-next').innerHTML = "🏆 <b style='color:var(--green)'>Eng yuqori bosqichdasiz!</b>";
+    }
+
+    // Jarima tizimini ko'rsatish
+    const jarimalar = KPI_JARIMA[kpi.daraja] || [];
+    const jarimarEl = el2('db-kpi-jarima-list');
+    if(jarimarEl){
+      jarimarEl.innerHTML = jarimalar.map(j =>
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:4px 8px;border-radius:6px;background:var(--red-light);border:1px solid var(--red-border);font-size:11px">'+
+          '<span style="color:var(--text2);flex:1;margin-right:8px">'+j.sabab+'</span>'+
+          '<span style="font-weight:700;color:var(--red);white-space:nowrap">'+fmt(j.miqdor)+" so'm</span>"+
+        '</div>'
+      ).join('');
     }
   } else if(kpiCard){
     kpiCard.classList.add('hidden');
