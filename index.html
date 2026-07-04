@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_24.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_25.html -->
 <html lang="uz" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <meta name="theme-color" content="#2563eb">
@@ -233,62 +233,69 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .rp-stat-val{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-0.3px}
 
 /* Report cards */
-.rp-card{background:var(--white);border-radius:14px;border:1px solid var(--gray-border);margin-bottom:10px;overflow:hidden;transition:box-shadow .2s}
-.rp-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.08)}
-.rp-card-top{display:flex;justify-content:space-between;align-items:flex-start;padding:14px 16px;flex-wrap:wrap;gap:8px}
-.rp-card-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.rp-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
-.rp-badge.admin{background:rgba(59,130,246,.1);color:#3B82F6}
-.rp-badge.ishlab{background:rgba(99,102,241,.1);color:#6366F1}
-.rp-badge.dizayner{background:rgba(168,85,247,.1);color:#a855f7}
-.rp-badge.paid{background:rgba(34,197,94,.1);color:#22C55E}
-.rp-badge.wait{background:rgba(245,158,11,.1);color:#F59E0B}
-.rp-badge.brak{background:rgba(239,68,68,.1);color:#EF4444}
-.rp-badge.day{background:rgba(250,204,21,.15);color:#92400e}
-.rp-badge.night{background:rgba(30,41,59,.8);color:#94A3B8}
-.rp-card-name{font-size:12px;color:var(--text3)}
-.rp-card-date{font-size:11px;color:var(--text3)}
-.rp-card-actions{display:flex;gap:4px;align-items:center}
-.rp-action-btn{background:none;border:1px solid var(--gray-border);border-radius:8px;padding:5px 8px;cursor:pointer;color:var(--text3);font-size:12px;display:flex;align-items:center;gap:4px;transition:all .15s;font-family:inherit}
-.rp-action-btn:hover{background:var(--gray-light);color:var(--text)}
-.rp-action-btn.danger:hover{background:var(--red-light);color:var(--red);border-color:var(--red-border)}
-.rp-action-btn.primary{background:#3B82F6;color:#fff;border-color:#3B82F6}
-.rp-action-btn.primary:hover{background:#2563EB}
-
-.rp-items{padding:0 16px 12px}
-.rp-item-row{display:grid;grid-template-columns:1fr 80px 80px 90px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--gray-border);font-size:12px}
+.rp-card{background:var(--white);border-radius:16px;border:1px solid var(--gray-border);margin-bottom:20px;overflow:hidden;transition:box-shadow .25s,transform .25s}
+.rp-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.09);transform:translateY(-1px)}
+.rp-card-top{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;flex-wrap:wrap;gap:10px;border-bottom:1px solid var(--gray-border)}
+.rp-card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rp-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;white-space:nowrap;height:24px;letter-spacing:.01em}
+.rp-badge.admin{background:rgba(59,130,246,.1);color:#3B82F6;border:1px solid rgba(59,130,246,.2)}
+.rp-badge.ishlab{background:rgba(99,102,241,.1);color:#6366F1;border:1px solid rgba(99,102,241,.2)}
+.rp-badge.dizayner{background:rgba(168,85,247,.1);color:#a855f7;border:1px solid rgba(168,85,247,.2)}
+.rp-badge.paid{background:rgba(34,197,94,.1);color:#22C55E;border:1px solid rgba(34,197,94,.2)}
+.rp-badge.wait{background:rgba(245,158,11,.1);color:#F59E0B;border:1px solid rgba(245,158,11,.2)}
+.rp-badge.brak{background:rgba(239,68,68,.1);color:#EF4444;border:1px solid rgba(239,68,68,.2)}
+.rp-badge.day{background:rgba(250,204,21,.12);color:#92400e;border:1px solid rgba(250,204,21,.3)}
+.rp-badge.night{background:rgba(30,41,59,.6);color:#94A3B8;border:1px solid rgba(148,163,184,.2)}
+.rp-card-name{font-size:13px;font-weight:600;color:var(--text)}
+.rp-card-date{font-size:12px;color:var(--text3);font-variant-numeric:tabular-nums}
+.rp-card-right{display:flex;align-items:center;gap:8px}
+.rp-action-btn{background:none;border:1px solid var(--gray-border);border-radius:8px;padding:6px 10px;cursor:pointer;color:var(--text3);font-size:12px;display:flex;align-items:center;gap:4px;transition:all .15s;font-family:inherit;height:32px}
+.rp-action-btn:hover{background:var(--gray-light);color:var(--text);border-color:var(--text3)}
+.rp-action-btn.danger:hover{background:rgba(239,68,68,.08);color:#EF4444;border-color:rgba(239,68,68,.3)}
+.rp-action-btn.primary{background:#3B82F6;color:#fff;border-color:#3B82F6;font-weight:600}
+.rp-action-btn.primary:hover{background:#2563EB;box-shadow:0 2px 8px rgba(59,130,246,.4)}
+.rp-items{padding:0}
+.rp-items-header{display:grid;grid-template-columns:1fr 90px 80px 110px;gap:0;padding:10px 24px;background:var(--gray-light);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--gray-border)}
+.rp-items-header>div:nth-child(2){text-align:right}
+.rp-items-header>div:nth-child(3){text-align:center}
+.rp-items-header>div:nth-child(4){text-align:right}
+.rp-item-row{display:grid;grid-template-columns:1fr 90px 80px 110px;gap:0;align-items:center;padding:0 24px;min-height:48px;border-bottom:1px solid var(--gray-border);transition:background .12s}
 .rp-item-row:last-child{border-bottom:none}
-.rp-item-name{color:var(--text2);font-weight:500}
-.rp-item-val{color:var(--text3);text-align:right}
-.rp-item-price{color:var(--text);font-weight:600;text-align:right}
-.rp-item-brak{color:#EF4444;font-size:11px}
-.rp-item-header{color:var(--text3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding-bottom:6px;border-bottom:1px solid var(--gray-border);margin-bottom:2px}
-.rp-items-header{display:grid;grid-template-columns:1fr 80px 80px 90px;gap:8px;font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:8px 16px 4px}
-
-.rp-card-footer{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--gray-light);border-top:1px solid var(--gray-border);flex-wrap:wrap;gap:8px}
-.rp-total{font-size:15px;font-weight:700;color:var(--text)}
+.rp-item-row:nth-child(even){background:rgba(0,0,0,.015)}
+.rp-item-row:hover{background:var(--gray-light)}
+.rp-item-name{display:flex;flex-direction:column;gap:1px;padding:10px 0}
+.rp-item-name-main{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.rp-item-name-sub{font-size:11px;color:var(--text3)}
+.rp-item-qty{font-size:12px;color:var(--text2);text-align:right;font-variant-numeric:tabular-nums}
+.rp-item-brak-val{font-size:12px;text-align:center;font-variant-numeric:tabular-nums}
+.rp-item-brak-val.zero{color:var(--text3)}
+.rp-item-brak-val.pos{color:#EF4444;font-weight:600}
+.rp-item-price{font-size:13px;font-weight:700;color:var(--text);text-align:right;font-variant-numeric:tabular-nums}
+.rp-card-footer{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-top:1px solid var(--gray-border);flex-wrap:wrap;gap:12px}
+.rp-total-label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.rp-total{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-0.5px;font-variant-numeric:tabular-nums}
 .rp-card-owner-actions{display:flex;gap:6px;flex-wrap:wrap}
-
-.rp-show-more{background:none;border:none;color:#3B82F6;font-size:12px;cursor:pointer;padding:6px 16px;font-family:inherit;width:100%;text-align:center;border-top:1px solid var(--gray-border)}
+.rp-show-more{background:none;border:none;color:#3B82F6;font-size:12px;font-weight:500;cursor:pointer;padding:12px 24px;font-family:inherit;width:100%;text-align:center;border-top:1px solid var(--gray-border);transition:background .15s}
 .rp-show-more:hover{background:rgba(59,130,246,.05)}
-
-/* Pagination */
-.rp-page-btn{background:var(--white);border:1px solid var(--gray-border);border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--text2);transition:all .15s}
-.rp-page-btn:hover{background:var(--gray-light)}
-.rp-page-btn.active{background:#3B82F6;color:#fff;border-color:#3B82F6}
-
-/* Dark mode */
+.rp-page-btn{background:var(--white);border:1px solid var(--gray-border);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--text2);transition:all .15s;min-width:36px}
+.rp-page-btn:hover{background:var(--gray-light);color:var(--text)}
+.rp-page-btn.active{background:#3B82F6;color:#fff;border-color:#3B82F6;font-weight:600}
 [data-theme="dark"] .rp-stat-card{background:#1E293B;border-color:#334155}
 [data-theme="dark"] .rp-card{background:#1E293B;border-color:#334155}
-[data-theme="dark"] .rp-card-footer{background:#273449;border-color:#334155}
+[data-theme="dark"] .rp-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.3)}
+[data-theme="dark"] .rp-card-top{border-color:#334155}
+[data-theme="dark"] .rp-card-footer{border-color:#334155}
+[data-theme="dark"] .rp-items-header{background:#273449;border-color:#334155}
+[data-theme="dark"] .rp-item-row{border-color:#334155}
+[data-theme="dark"] .rp-item-row:nth-child(even){background:rgba(255,255,255,.015)}
+[data-theme="dark"] .rp-item-row:hover{background:#273449}
+[data-theme="dark"] .rp-show-more{border-color:#334155}
 [data-theme="dark"] .rp-search-box{background:#1E293B;border-color:#334155}
 [data-theme="dark"] .rp-select{background:#1E293B;border-color:#334155;color:#F8FAFC}
-[data-theme="dark"] .rp-item-row{border-color:#334155}
-[data-theme="dark"] .rp-items-header{border-bottom-color:#334155}
-[data-theme="dark"] .rp-show-more{border-top-color:#334155}
 [data-theme="dark"] .rp-page-btn{background:#1E293B;border-color:#334155;color:#94A3B8}
-[data-theme="dark"] .rp-action-btn{background:none;border-color:#334155;color:#94A3B8}
-[data-theme="dark"] .rp-action-btn:hover{background:#273449;color:#F8FAFC}
+[data-theme="dark"] .rp-action-btn{border-color:#334155;color:#94A3B8}
+[data-theme="dark"] .rp-action-btn:hover{background:#273449;color:#F8FAFC;border-color:#475569}
+
 
 /* ── BI DASHBOARD ── */
 .bi-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;padding:20px 0 16px}
@@ -2921,16 +2928,35 @@ function renderHistoryCards(list){
     const hasMore = items.length > SHOW_LIMIT;
     const cardId = 'rpc-'+h.id;
 
+    // Split long product names into main + subtitle
+    function splitName(name){
+      // Check for parentheses: "Rangli printer (old+orqa, 1-500ta)" -> main + sub
+      const match = name.match(/^([^(]+)\(([^)]+)\)(.*)$/);
+      if(match) return {main: match[1].trim(), sub: match[2].trim()+(match[3]?match[3].trim():'')};
+      // Check for dash separator
+      const dashIdx = name.indexOf(' — ');
+      if(dashIdx>0) return {main: name.slice(0,dashIdx), sub: name.slice(dashIdx+3)};
+      return {main: name, sub: ''};
+    }
+
     const itemsHtml = (showAll) => {
       const shown = showAll ? items : items.slice(0, SHOW_LIMIT);
-      if(!shown.length) return '<div style="padding:8px 16px;font-size:12px;color:var(--text3)">—</div>';
-      return '<div class="rp-items-header"><div>Mahsulot</div><div style="text-align:right">Miqdor</div><div style="text-align:right">Brak</div><div style="text-align:right">Summa</div></div>'+
-        shown.map(it => '<div class="rp-item-row">'+
-          '<div class="rp-item-name">'+it.name+(it.extra?'<div style="font-size:10px;color:var(--text3)">'+it.extra+'</div>':'')+'</div>'+
-          '<div class="rp-item-val">'+it.qty+'</div>'+
-          '<div class="rp-item-val'+(it.brak?' rp-item-brak':'')+'">'+it.brak+'</div>'+
-          '<div class="rp-item-price">'+it.price+'</div>'+
-        '</div>').join('');
+      if(!shown.length) return '<div style="padding:12px 24px;font-size:13px;color:var(--text3)">—</div>';
+      return '<div class="rp-items-header"><div>Mahsulot</div><div>Miqdor</div><div>Brak</div><div>Summa</div></div>'+
+        shown.map(it => {
+          const nm = splitName(it.name);
+          const brakZero = !it.brak || it.brak === '0 brak' || it.brak === '';
+          return '<div class="rp-item-row">'+
+            '<div class="rp-item-name">'+
+              '<div class="rp-item-name-main">'+nm.main+'</div>'+
+              (nm.sub?'<div class="rp-item-name-sub">'+nm.sub+'</div>':'')+
+              (it.extra?'<div class="rp-item-name-sub">'+it.extra+'</div>':'')+
+            '</div>'+
+            '<div class="rp-item-qty">'+it.qty+'</div>'+
+            '<div class="rp-item-brak-val '+(brakZero?'zero':'pos')+'">'+(brakZero?'—':it.brak)+'</div>'+
+            '<div class="rp-item-price">'+it.price+'</div>'+
+          '</div>';
+        }).join('');
     };
 
     // Owner actions
@@ -2956,7 +2982,7 @@ function renderHistoryCards(list){
           typeBadge + statusBadge + shiftBadge +
           (currentRole==='owner'?'<span class="rp-card-name">'+name+'</span>':'')+
         '</div>'+
-        '<div style="display:flex;align-items:center;gap:8px">'+
+        '<div class="rp-card-right">'+
           '<span class="rp-card-date">'+sana+'</span>'+
           (canEdit?'<button class="rp-action-btn" onclick="editHistoryItem('+h.id+')" title="Tahrirlash"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>':'')+
           (canDel?'<button class="rp-action-btn danger" onclick="deleteHistoryItemCountdown('+h.id+',this)" title="Ochirish"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>':'')+
@@ -2965,7 +2991,10 @@ function renderHistoryCards(list){
       '<div id="'+cardId+'-items">'+itemsHtml(false)+'</div>'+
       (hasMore?'<button class="rp-show-more" id="'+cardId+'-more" onclick="rpToggleMore(this.dataset.id)" data-id="'+cardId+'">↓ Ko\'proq ko\'rsatish ('+items.length+' ta)</button>':'')+
       '<div class="rp-card-footer">'+
-        '<div class="rp-total">Jami: '+fmt(total)+" so'm"+'</div>'+
+        '<div>'+
+          '<div class="rp-total-label">Jami summa</div>'+
+          '<div class="rp-total">'+fmt(total)+" so'm</div>"+
+        '</div>'+
         ownerActionsHtml+
       '</div>';
 
