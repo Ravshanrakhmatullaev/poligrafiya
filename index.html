@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_41.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_44.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -332,6 +332,23 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 [data-theme="dark"] .login-card{box-shadow:0 4px 24px rgba(0,0,0,0.5)}
 [data-theme="dark"] .rasm-upload-area{background:var(--gray-light);border-color:var(--gray-border)}
 [data-theme="dark"] .sklad-log{border-color:var(--gray-border)}
+[data-theme="dark"] .sklad-card{background:var(--white);color:var(--text)}
+[data-theme="dark"] .sklad-nom{color:var(--text)}
+[data-theme="dark"] .sklad-actions button{background:var(--gray-light)}
+[data-theme="dark"] .sklad-log-item{border-color:var(--gray-border);color:var(--text2)}
+[data-theme="dark"] .sw-mini{background:var(--gray-light);border-color:var(--gray-border);color:var(--text)}
+[data-theme="dark"] .diz-row{background:var(--white);color:var(--text)}
+[data-theme="dark"] .pi{background:var(--white);color:var(--text)}
+[data-theme="dark"] .ui{background:var(--white);color:var(--text)}
+[data-theme="dark"] input[type=checkbox]{accent-color:var(--blue)}
+[data-theme="dark"] .foiz-table td,[data-theme="dark"] .foiz-table th{border-color:var(--gray-border);color:var(--text)}
+[data-theme="dark"] .foiz-table tr:nth-child(even){background:var(--gray-light)}
+[data-theme="dark"] .agree-row{color:var(--text)}
+[data-theme="dark"] .rule-card{background:var(--white);color:var(--text)}
+[data-theme="dark"] .rule-body{color:var(--text2)}
+[data-theme="dark"] .note-box{background:#1e3a2f;border-color:#166534;color:#86efac}
+[data-theme="dark"] .nav-badge{background:var(--red);color:#fff}
+[data-theme="dark"] .bozorlik-card{background:var(--white);color:var(--text)}
 [data-theme="dark"] .hist-row{background:var(--white);color:var(--text)}
 [data-theme="dark"] .hist-items{color:var(--text2)}
 [data-theme="dark"] .hist-items span[style*="color:#"]{color:var(--text2) !important}
@@ -1139,10 +1156,24 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <!-- Yangi mahsulot formasi -->
     <div class="card hidden" id="bozorlik-form-card">
       <div class="card-title">Yangi bozorlik elementi</div>
+      <!-- Kraska tanlash (faqat kraska bo'lganda chiqadi) -->
+      <div class="hidden" id="bz-kraska-wrap" style="margin-bottom:10px;padding:12px;background:var(--gray-light);border-radius:8px;border:1px solid var(--gray-border)">
+        <label class="form-label" style="margin-bottom:8px">Kraska turini tanlang:</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="bz-k-c" onchange="updateKraskaName()"> C (Cyan)</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="bz-k-m" onchange="updateKraskaName()"> M (Magenta)</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="bz-k-y" onchange="updateKraskaName()"> Y (Yellow)</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="bz-k-k" onchange="updateKraskaName()"> K (Black)</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="bz-k-lc" onchange="updateKraskaName()"> LC (Light Cyan)</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="bz-k-lm" onchange="updateKraskaName()"> LM (Light Magenta)</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="bz-k-w" onchange="updateKraskaName()"> W (White)</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="bz-k-v" onchange="updateKraskaName()"> Varnish</label>
+        </div>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div>
           <label class="form-label">Mahsulot nomi *</label>
-          <input type="text" id="bz-nom" placeholder="Masalan: Beyjik lenta ko&#39;k">
+          <input type="text" id="bz-nom" placeholder="Masalan: Beyjik lenta ko&#39;k" oninput="const kw=document.getElementById(&#39;bz-kraska-wrap&#39;);if(kw)kw.classList.toggle(&#39;hidden&#39;,!this.value.toLowerCase().includes(&#39;kraska&#39;))">
         </div>
         <div>
           <label class="form-label">Sklad dan tanlash</label>
@@ -1171,6 +1202,15 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div style="margin-bottom:10px">
         <label class="form-label">Izoh</label>
         <input type="text" id="bz-izoh" placeholder="Masalan: oq rang, L o&#39;lcham">
+      </div>
+      <div style="margin-bottom:10px" id="bz-rasm-wrap">
+        <label class="form-label">Rasm (ixtiyoriy)</label>
+        <div class="rasm-upload-area" id="bz-rasm-area" onclick="document.getElementById(&#39;bz-rasm-input&#39;).click()" ondragover="event.preventDefault();this.classList.add(&#39;drag-over&#39;)" ondragleave="this.classList.remove(&#39;drag-over&#39;)" ondrop="event.preventDefault();this.classList.remove(&#39;drag-over&#39;);bozorlikRasmDrop(event)">
+          <input type="file" id="bz-rasm-input" accept="image/*" style="display:none" onchange="bozorlikRasmPreview(this)">
+          <div id="bz-rasm-preview" style="text-align:center;padding:10px;color:var(--text3);font-size:12px">
+            📷 Rasm tanlash yoki shu yerga tashlang
+          </div>
+        </div>
       </div>
       <div style="display:flex;gap:8px">
         <button class="savebtn" style="flex:1" onclick="saveBozorlikItem()">Ro'yxatga qo'shish</button>
@@ -3548,14 +3588,63 @@ function hideBozorlikForm(){
   document.getElementById('bz-miq').value = '';
   document.getElementById('bz-izoh').value = '';
   document.getElementById('bz-sklad-sel').value = '';
+  document.getElementById('bz-rasm-input').value = '';
+  const preview = document.getElementById('bz-rasm-preview');
+  if(preview) preview.innerHTML = '📷 Rasm tanlash yoki shu yerga tashlang';
+  const rasmWrap = document.getElementById('bz-rasm-wrap');
+  if(rasmWrap) rasmWrap.style.display = 'block';
+  const kraskaWrap = document.getElementById('bz-kraska-wrap');
+  if(kraskaWrap) kraskaWrap.classList.add('hidden');
+  ['bz-k-c','bz-k-m','bz-k-y','bz-k-k','bz-k-lc','bz-k-lm','bz-k-w','bz-k-v'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.checked = false;
+  });
+}
+
+function updateKraskaName(){
+  const checks = ['C','M','Y','K','LC','LM','W','Varnish'];
+  const ids = ['bz-k-c','bz-k-m','bz-k-y','bz-k-k','bz-k-lc','bz-k-lm','bz-k-w','bz-k-v'];
+  const selected = ids.map((id,i) => document.getElementById(id).checked ? checks[i] : null).filter(Boolean);
+  const nomEl = document.getElementById('bz-nom');
+  if(selected.length && nomEl){
+    nomEl.value = 'Kraska: ' + selected.join(' + ');
+  }
 }
 
 function bozorlikFromSklad(sel){
   const opt = sel.options[sel.selectedIndex];
+  const rasmWrap = document.getElementById('bz-rasm-wrap');
+  const kraskaWrap = document.getElementById('bz-kraska-wrap');
   if(opt.value){
     document.getElementById('bz-nom').value = opt.dataset.nom || '';
     document.getElementById('bz-birlik').value = opt.dataset.birlik || 'dona';
+    if(rasmWrap) rasmWrap.style.display = 'none';
+    // Kraska kategoriyasida kraska selector chiqsin
+    const sItem = skladData.find(s => s.id === parseInt(opt.value));
+    if(kraskaWrap) kraskaWrap.classList.toggle('hidden', !(sItem && sItem.kategoriya === 'Kraska'));
+  } else {
+    if(rasmWrap) rasmWrap.style.display = 'block';
+    if(kraskaWrap) kraskaWrap.classList.add('hidden');
   }
+}
+
+function bozorlikRasmPreview(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('bz-rasm-preview');
+    if(preview) preview.innerHTML = '<img src="'+e.target.result+'" style="width:100%;max-height:120px;object-fit:cover;border-radius:8px"><p style="margin:4px 0 0;font-size:11px;color:var(--text3)">'+file.name+'</p>';
+  };
+  reader.readAsDataURL(file);
+}
+
+function bozorlikRasmDrop(event){
+  const file = event.dataTransfer.files[0];
+  if(!file || !file.type.startsWith('image/')) return;
+  const input = document.getElementById('bz-rasm-input');
+  try { const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files; } catch(e){}
+  bozorlikRasmPreview({files: [file]});
 }
 
 async function saveBozorlikItem(){
@@ -3569,11 +3658,26 @@ async function saveBozorlikItem(){
   if(!nom){ showNotify('Nomi kiriting'); return; }
   if(!miq){ showNotify('Miqdor kiriting'); return; }
 
-  // Sklad rasmini olish
+  // Rasm olish: sklad dan yoki qo'lda yuklangan
   let rasm_url = null;
   if(sklad_id){
     const sItem = skladData.find(s => s.id === sklad_id);
     if(sItem) rasm_url = sItem.rasm_url;
+  } else {
+    // Qo'lda yuklangan rasm
+    const fileInput = document.getElementById('bz-rasm-input');
+    if(fileInput && fileInput.files && fileInput.files.length > 0){
+      const file = fileInput.files[0];
+      const ext = file.name.split('.').pop().toLowerCase();
+      const fileName = 'bozorlik_' + Date.now() + '.' + ext;
+      const { data: upData, error: upErr } = await sb.storage
+        .from('sklad-rasmlar')
+        .upload(fileName, file, { cacheControl: '3600', upsert: false });
+      if(!upErr){
+        const { data: urlData } = sb.storage.from('sklad-rasmlar').getPublicUrl(fileName);
+        rasm_url = urlData.publicUrl;
+      }
+    }
   }
 
   const { error } = await sb.from('bozorlik_list').insert({
@@ -3868,7 +3972,7 @@ function renderSkladList(){
 
     // Accordion header
     const header = document.createElement('div');
-    header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fff;border-radius:10px;border:1.5px solid var(--gray-border);cursor:pointer;user-select:none;transition:all .15s';
+    header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--white);border-radius:10px;border:1.5px solid var(--gray-border);cursor:pointer;user-select:none;transition:all .15s;color:var(--text)';
     header.innerHTML =
       '<div style="display:flex;align-items:center;gap:8px">' +
         '<span style="font-size:18px">'+(KAT_ICONS[kat]||'📋')+'</span>' +
@@ -3905,6 +4009,7 @@ function renderSkladList(){
       const isEmpty = miq <= 0;
       const card = document.createElement('div');
       card.className = 'sklad-card' + (isEmpty?' sklad-empty':isLow?' sklad-warning':'');
+      card.style.color = 'var(--text)';
 
       const harakatiHtml = (s.harakati||[]).slice(0,5).map(h =>
         '<div class="sklad-log-item">' +
