@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_55.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_58.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -3806,68 +3806,94 @@ function calcBanner(){
   }
 
   function getRulo(olcham){
-    if(olcham <= 1.2)  return { rulo: 1.32, nom: '1.32m rulo' };
-    if(olcham <= 2.0)  return { rulo: 2.1,  nom: '2.1m rulo' };
-    if(olcham <= 2.5)  return { rulo: 2.6,  nom: '2.6m rulo' };
-    if(olcham <= 3.1)  return { rulo: 3.2,  nom: '3.2m rulo' };
+    if(olcham <= 1.2)  return { rulo: 1.32, nom: '1.32m' };
+    if(olcham <= 2.0)  return { rulo: 2.1,  nom: '2.1m' };
+    if(olcham <= 2.5)  return { rulo: 2.6,  nom: '2.6m' };
+    if(olcham <= 3.1)  return { rulo: 3.2,  nom: '3.2m' };
     return null;
   }
 
-  // Kichikroq o'lcham = rulo kengligi, kattaroq = uzunlik
-  const kichik = Math.min(eniInput, boyiInput);
-  const katta  = Math.max(eniInput, boyiInput);
-  const ruloInfo = getRulo(kichik);
-
-  let isOversized = false;
-  let haqiqiyRulo, haqiqiyUzunlik, ruloNom, format;
-
-  if(!ruloInfo){
-    isOversized = true;
-    haqiqiyRulo = kichik;
-    haqiqiyUzunlik = katta;
-    format = 'Maxsus pechat — kichik tomon ham ' + kichik + 'm > 3.1m!';
-    ruloNom = 'Maxsus';
-  } else {
-    haqiqiyRulo = ruloInfo.rulo;
-    haqiqiyUzunlik = katta;
-    ruloNom = ruloInfo.nom;
-    format = ruloInfo.nom + ' (' + kichik + 'm kenglik → ' + ruloInfo.rulo + 'm rulo)';
+  function getNarx(kv, extraNarx){
+    let n;
+    if(kv < 1)        n = 100000;
+    else if(kv < 5)   n = 50000;
+    else if(kv < 10)  n = 40000;
+    else if(kv < 20)  n = 35000;
+    else if(kv < 30)  n = 30000;
+    else if(kv < 50)  n = 28000;
+    else if(kv < 100) n = 27000;
+    else              n = 25000;
+    if(podloshka) n += 4000;
+    if(extraNarx) n += extraNarx;
+    return n;
   }
 
-  const kv = haqiqiyRulo * haqiqiyUzunlik;
+  // Variant 1: eniInput kenglik, boyiInput uzunlik
+  // Variant 2: boyiInput kenglik, eniInput uzunlik
+  function calcVariant(kenglik, uzunlik){
+    const r = getRulo(kenglik);
+    if(!r) return null; // kenglik 3.1 dan katta
+    const kv = r.rulo * uzunlik;
+    const narx = getNarx(kv, 0);
+    const jami = Math.round(kv * narx);
+    return { rulo: r.rulo, ruloNom: r.nom, uzunlik, kv, narx, jami, isOversized: false };
+  }
+
+  const v1 = calcVariant(eniInput, boyiInput);  // eni = kenglik
+  const v2 = calcVariant(boyiInput, eniInput);  // boyi = kenglik
+
+  let best, other, isOversized = false, format;
+
+  if(!v1 && !v2){
+    // Ikkala tomon ham 3.1m dan katta
+    isOversized = true;
+    const kv = eniInput * boyiInput;
+    const narx = getNarx(kv, 10000);
+    const jami = Math.round(kv * narx);
+    best = { rulo: eniInput, ruloNom: 'Maxsus', uzunlik: boyiInput, kv, narx, jami, isOversized: true };
+    format = 'Maxsus pechat — ikkala tomon 3.1m dan katta!';
+  } else if(!v1){
+    best = v2;
+    format = v2.ruloNom + ' rulo (boyi kenglik, eni uzunlik)';
+  } else if(!v2){
+    best = v1;
+    format = v1.ruloNom + ' rulo (eni kenglik, boyi uzunlik)';
+  } else {
+    // Ikkala variant ham mumkin — arzonini tanla
+    if(v1.jami <= v2.jami){
+      best = v1;
+      other = v2;
+      format = v1.ruloNom + ' rulo (eni kenglik) — arzon variant';
+    } else {
+      best = v2;
+      other = v1;
+      format = v2.ruloNom + ' rulo (boyi kenglik) — arzon variant';
+    }
+  }
+
   const mijozKv = eniInput * boyiInput;
-
-  let narxKv;
-  if(kv < 1)        narxKv = 100000;
-  else if(kv < 5)   narxKv = 50000;
-  else if(kv < 10)  narxKv = 40000;
-  else if(kv < 20)  narxKv = 35000;
-  else if(kv < 30)  narxKv = 30000;
-  else if(kv < 50)  narxKv = 28000;
-  else if(kv < 100) narxKv = 27000;
-  else              narxKv = 25000;
-
-  if(podloshka) narxKv += 4000;
-  if(isOversized) narxKv += 10000;
-
-  const jami = Math.round(kv * narxKv);
 
   if(formatEl){ formatEl.style.display = 'block'; document.getElementById('kalk-format-text').textContent = 'Formatlar: ' + format; }
   if(warnEl) warnEl.style.display = isOversized ? 'block' : 'none';
 
-  kalkLastResult = 'Banner: ' + eniInput + 'm x ' + boyiInput + 'm\nRulo: ' + haqiqiyRulo + 'm x ' + haqiqiyUzunlik + 'm = ' + kv.toFixed(2) + ' kv.m\nNarx: ' + fmt(narxKv) + " so'm/kv.m\nJami: " + fmt(jami) + " so'm";
+  kalkLastResult = 'Banner: ' + eniInput + 'm x ' + boyiInput + 'm' +
+    '\nRulo: ' + best.rulo + 'm x ' + best.uzunlik + 'm = ' + best.kv.toFixed(2) + ' kv.m' +
+    '\nNarx: ' + fmt(best.narx) + " so\'m/kv.m" +
+    '\nJami: ' + fmt(best.jami) + " so\'m";
 
   const el = document.getElementById('kalk-banner-result');
   if(!el) return;
   el.innerHTML =
     '<div style="font-size:12px;color:var(--text3);margin-bottom:8px">' +
       'Mijoz: <b>' + eniInput + 'm x ' + boyiInput + 'm</b> = ' + mijozKv.toFixed(2) + ' kv.m<br>' +
-      'Hisob: <b style="color:var(--blue)">' + haqiqiyRulo + 'm x ' + haqiqiyUzunlik + 'm = ' + kv.toFixed(2) + ' kv.m</b>' +
-      ' <span style="color:var(--green);font-size:11px">(' + ruloNom + ')</span>' +
+      'Hisob: <b style="color:var(--blue)">' + best.rulo + 'm x ' + best.uzunlik + 'm = ' + best.kv.toFixed(2) + ' kv.m</b>' +
+      ' <span style="color:var(--green);font-size:11px">(' + best.ruloNom + ' rulo)</span>' +
     '</div>' +
-    '<div style="font-size:11px;color:var(--text3);margin-bottom:8px">' + fmt(narxKv) + " so'm/kv.m" + (podloshka ? ' + Podloshka' : '') + (isOversized ? ' + Maxsus' : '') + '</div>' +
-    '<div style="font-size:30px;font-weight:700;color:' + (isOversized ? 'var(--red)' : 'var(--blue)') + '">' + fmt(jami) + " so'm</div>";
+    (other ? '<div style="font-size:11px;color:var(--text3);margin-bottom:4px">Boshqa variant: ' + other.rulo + 'm x ' + other.uzunlik + 'm = ' + other.kv.toFixed(2) + ' kv.m → ' + fmt(other.jami) + " so\'m</div>" : '') +
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:8px">' + fmt(best.narx) + " so\'m/kv.m" + (podloshka ? ' + Podloshka' : '') + (isOversized ? ' + Maxsus' : '') + '</div>' +
+    '<div style="font-size:30px;font-weight:700;color:' + (isOversized ? 'var(--red)' : 'var(--blue)') + '">' + fmt(best.jami) + " so\'m</div>";
 }
+
 
 
 function calcBekprint(){
