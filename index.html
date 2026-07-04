@@ -3760,64 +3760,50 @@ function showKalkResult(elId, kvM, narxKv, jami, izoh){
 }
 
 function calcBanner(){
-  const eni = parseFloat(document.getElementById('kalk-eni').value)||0;
-  const boyi = parseFloat(document.getElementById('kalk-boyi').value)||0;
+  const eniInput = parseFloat(document.getElementById('kalk-eni').value)||0;
+  const boyiInput = parseFloat(document.getElementById('kalk-boyi').value)||0;
   const podloshka = document.getElementById('kalk-podloshka').checked;
   const formatEl = document.getElementById('kalk-banner-format');
   const warnEl = document.getElementById('kalk-banner-warn');
 
-  if(!eni || !boyi){
+  if(!eniInput || !boyiInput){
     if(formatEl) formatEl.style.display='none';
     if(warnEl) warnEl.style.display='none';
     return;
   }
 
-  // Har bir o'lcham uchun rulo kengligi aniqlash
   function getRulo(olcham){
-    if(olcham <= 1.2)  return 1.32;
-    if(olcham <= 2.0)  return 2.1;
-    if(olcham <= 2.5)  return 2.6;
-    if(olcham <= 3.1)  return 3.2;
-    return null; // 3.1 dan katta
+    if(olcham <= 1.2)  return { rulo: 1.32, nom: '1.32m rulo' };
+    if(olcham <= 2.0)  return { rulo: 2.1,  nom: '2.1m rulo' };
+    if(olcham <= 2.5)  return { rulo: 2.6,  nom: '2.6m rulo' };
+    if(olcham <= 3.1)  return { rulo: 3.2,  nom: '3.2m rulo' };
+    return null;
   }
 
-  // Eni va bo'yi uchun rulo aniqlash
-  // Kattaroq o'lcham rulo kengligi bo'ladi, kichigi uzunlik
-  const kattaOlcham = Math.max(eni, boyi);
-  const kichikOlcham = Math.min(eni, boyi);
-  const eniKattami = eni >= boyi;
+  // Kichikroq o'lcham = rulo kengligi, kattaroq = uzunlik
+  const kichik = Math.min(eniInput, boyiInput);
+  const katta  = Math.max(eniInput, boyiInput);
+  const ruloInfo = getRulo(kichik);
 
-  const ruloKengligi = getRulo(kattaOlcham);
   let isOversized = false;
-  let format = '';
-  let haqiqiyEni, haqiqiyBoyi;
+  let haqiqiyRulo, haqiqiyUzunlik, ruloNom, format;
 
-  if(ruloKengligi === null){
-    // Katta o'lcham 3.1 dan oshgan
-    if(eni > 3.1 && boyi > 3.1){
-      // IKKALA tomon katta — maxsus pechat
-      isOversized = true;
-      haqiqiyEni = eni;
-      haqiqiyBoyi = boyi;
-      format = 'Maxsus pechat — ikkala tomon ham 3.1m oshgan!';
-    } else {
-      // Faqat bittasi katta — 3.2 rulosiga sig'maydi, maxsus
-      isOversized = true;
-      haqiqiyEni = eni;
-      haqiqiyBoyi = boyi;
-      format = 'Maxsus pechat — ' + kattaOlcham + 'm > 3.1m rulo chegarasi';
-    }
+  if(!ruloInfo){
+    isOversized = true;
+    haqiqiyRulo = kichik;
+    haqiqiyUzunlik = katta;
+    format = 'Maxsus pechat — kichik tomon ham ' + kichik + 'm > 3.1m!';
+    ruloNom = 'Maxsus';
   } else {
-    // Katta o'lcham rulo kengligi bo'ladi
-    haqiqiyEni = eniKattami ? ruloKengligi : kichikOlcham;
-    haqiqiyBoyi = eniKattami ? kichikOlcham : ruloKengligi;
-    format = ruloKengligi + 'm ruloga ketadi';
+    haqiqiyRulo = ruloInfo.rulo;
+    haqiqiyUzunlik = katta;
+    ruloNom = ruloInfo.nom;
+    format = ruloInfo.nom + ' (' + kichik + 'm kenglik → ' + ruloInfo.rulo + 'm rulo)';
   }
 
-  const kv = haqiqiyEni * haqiqiyBoyi;
-  const mijozKv = eni * boyi;
+  const kv = haqiqiyRulo * haqiqiyUzunlik;
+  const mijozKv = eniInput * boyiInput;
 
-  // Narx jadvali
   let narxKv;
   if(kv < 1)        narxKv = 100000;
   else if(kv < 5)   narxKv = 50000;
@@ -3833,29 +3819,23 @@ function calcBanner(){
 
   const jami = Math.round(kv * narxKv);
 
-  const el = document.getElementById('kalk-banner-result');
-  if(formatEl){
-    formatEl.style.display = 'block';
-    document.getElementById('kalk-format-text').textContent = '📐 ' + format;
-  }
+  if(formatEl){ formatEl.style.display = 'block'; document.getElementById('kalk-format-text').textContent = 'Formatlar: ' + format; }
   if(warnEl) warnEl.style.display = isOversized ? 'block' : 'none';
 
-  kalkLastResult =
-    'Banner: ' + eni + 'm × ' + boyi + 'm\n' +
-    'Rulo: ' + haqiqiyEni + 'm × ' + haqiqiyBoyi + 'm = ' + kv.toFixed(2) + ' kv.m\n' +
-    'Narx: ' + fmt(narxKv) + " so'm/kv.m\n" +
-    'Jami: ' + fmt(jami) + " so'm";
+  kalkLastResult = 'Banner: ' + eniInput + 'm x ' + boyiInput + 'm\nRulo: ' + haqiqiyRulo + 'm x ' + haqiqiyUzunlik + 'm = ' + kv.toFixed(2) + ' kv.m\nNarx: ' + fmt(narxKv) + " so'm/kv.m\nJami: " + fmt(jami) + " so'm";
 
+  const el = document.getElementById('kalk-banner-result');
   if(!el) return;
   el.innerHTML =
     '<div style="font-size:12px;color:var(--text3);margin-bottom:8px">' +
-      '<b>Mijoz o\'lchami:</b> ' + eni + 'm × ' + boyi + 'm = ' + mijozKv.toFixed(2) + ' kv.m<br>' +
-      '<b>Hisob o\'lchami:</b> ' + haqiqiyEni + 'm × ' + haqiqiyBoyi + 'm = <span style="color:var(--blue);font-weight:700">' + kv.toFixed(2) + ' kv.m</span>' +
-      (ruloKengligi ? ' <span style="color:var(--green)">('+ruloKengligi+'m rulo)</span>' : '') +
+      'Mijoz: <b>' + eniInput + 'm x ' + boyiInput + 'm</b> = ' + mijozKv.toFixed(2) + ' kv.m<br>' +
+      'Hisob: <b style="color:var(--blue)">' + haqiqiyRulo + 'm x ' + haqiqiyUzunlik + 'm = ' + kv.toFixed(2) + ' kv.m</b>' +
+      ' <span style="color:var(--green);font-size:11px">(' + ruloNom + ')</span>' +
     '</div>' +
-    '<div style="font-size:11px;color:var(--text3);margin-bottom:8px">' + fmt(narxKv) + " so'm/kv.m" + (podloshka?' + Podloshka':'') + (isOversized?' + Maxsus':'') + '</div>' +
-    '<div style="font-size:30px;font-weight:700;color:'+(isOversized?'var(--red)':'var(--blue)')+'">'+fmt(jami)+" so'm</div>";
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:8px">' + fmt(narxKv) + " so'm/kv.m" + (podloshka ? ' + Podloshka' : '') + (isOversized ? ' + Maxsus' : '') + '</div>' +
+    '<div style="font-size:30px;font-weight:700;color:' + (isOversized ? 'var(--red)' : 'var(--blue)') + '">' + fmt(jami) + " so'm</div>";
 }
+
 
 function calcBekprint(){
   const eni = parseFloat(document.getElementById('kalk-bek-eni').value)||0;
