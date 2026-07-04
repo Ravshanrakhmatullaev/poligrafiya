@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_71.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_72.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <meta name="theme-color" content="#2563eb">
@@ -1431,16 +1431,27 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <!-- UV DTF -->
     <div class="card hidden" id="kalk-uvdtf">
       <div class="card-title">UV DTF hisoblash</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div><label class="form-label">Eni (sm)</label><input type="text" inputmode="decimal" id="kalk-uv-eni" placeholder="10" oninput="calcUvDtf()"></div>
-        <div><label class="form-label">Bo'yi (sm)</label><input type="text" inputmode="decimal" id="kalk-uv-boyi" placeholder="10" oninput="calcUvDtf()"></div>
+
+      <div style="margin-bottom:12px;padding:10px;background:var(--gray-light);border-radius:8px;font-size:11px">
+        <div style="font-weight:700;margin-bottom:6px;color:var(--text2)">Narx jadvali (pogonometr — metr):</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;color:var(--text3)">
+          <span>0.5 metrgacha</span><span style="font-weight:700;color:var(--text)">150 000 so'm</span>
+          <span>0.5 — 5 metr</span><span style="font-weight:700;color:var(--text)">250 000 so'm</span>
+          <span>5 — 10 metr</span><span style="font-weight:700;color:var(--text)">230 000 so'm</span>
+          <span>10 — 20 metr</span><span style="font-weight:700;color:var(--text)">200 000 so'm</span>
+          <span>20 — 50 metr</span><span style="font-weight:700;color:var(--text)">180 000 so'm</span>
+          <span>50 — 100 metr</span><span style="font-weight:700;color:var(--text)">150 000 so'm</span>
+        </div>
+        <div style="margin-top:6px;color:var(--text3)">Rulo: 30sm | Pechat zonasi: 29sm</div>
       </div>
+
       <div style="margin-bottom:12px">
-        <label class="form-label">Soni</label>
-        <input type="text" inputmode="numeric" id="kalk-uv-son" placeholder="50" oninput="calcUvDtf()">
+        <label class="form-label">Uzunlik (metr) — bo'yi cheksiz</label>
+        <input type="text" inputmode="decimal" id="kalk-uv-uzunlik" placeholder="2.5" oninput="calcUvDtf()">
       </div>
+
       <div class="kalk-result" id="kalk-uv-result">
-        <div style="font-size:12px;color:var(--text3)">Natija</div>
+        <div style="font-size:12px;color:var(--text3)">Uzunlikni kiriting</div>
         <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
       </div>
     </div>
@@ -4376,17 +4387,31 @@ function calcBekprint(){
 }
 
 function calcUvDtf(){
-  const eni = parseFloat(document.getElementById('kalk-uv-eni').value)||0;
-  const boyi = parseFloat(document.getElementById('kalk-uv-boyi').value)||0;
-  const son = parseInt(document.getElementById('kalk-uv-son').value)||0;
-  if(!eni||!boyi||!son) return;
-  const kvSm = eni * boyi;
-  const kvM = kvSm / 10000;
-  // UV DTF: min 5000, keyin 15000 so'm/kv.m
-  const birlikNarx = Math.max(5000, Math.round(kvM * 15000));
-  const jami = birlikNarx * son;
-  const izoh = eni+'×'+boyi+' sm, '+son+' dona';
-  showKalkResult('kalk-uv-result', null, birlikNarx, jami, izoh);
+  const uzunlik = parseFloat(document.getElementById('kalk-uv-uzunlik').value)||0;
+  if(!uzunlik) return;
+
+  // Pogonometr narxi (metr asosida)
+  let narx;
+  if(uzunlik <= 0.5)  narx = 150000;
+  else if(uzunlik < 5)   narx = 250000;
+  else if(uzunlik < 10)  narx = 230000;
+  else if(uzunlik < 20)  narx = 200000;
+  else if(uzunlik < 50)  narx = 180000;
+  else                   narx = 150000;
+
+  // Jami: uzunlik × narx (metr narxi)
+  const jami = Math.round(uzunlik * narx);
+
+  kalkLastResult = 'UV DTF: '+uzunlik+' metr\nNarx: '+fmt(narx)+" so'm/metr\nJami: "+fmt(jami)+" so'm";
+
+  const el = document.getElementById('kalk-uv-result');
+  if(!el) return;
+  el.innerHTML =
+    '<div style="font-size:12px;color:var(--text3);margin-bottom:6px">'+
+      uzunlik+' metr pogonometr | '+fmt(narx)+" so'm/metr"+
+    '</div>'+
+    '<div style="font-size:30px;font-weight:700;color:var(--blue)">'+fmt(jami)+" so'm</div>"+
+    '<div style="font-size:11px;color:var(--text3);margin-top:4px">Rulo: 30sm, pechat zonasi: 29sm</div>';
 }
 
 function calcDtf(){
