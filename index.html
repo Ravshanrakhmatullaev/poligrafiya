@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="uz">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_51.html -->
+<html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poligrafiya — Boshqaruv tizimi</title>
 <style>
@@ -371,7 +371,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 </head>
 <body>
 
-<div id="loading">
+<div id="loading" class="hidden">
   <div class="spinner"></div>
   <p>Yuklanmoqda...</p>
 </div>
@@ -380,25 +380,25 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   <div class="login-card">
     <div class="login-logo">
       <div class="login-icon">
-        <svg width="24" height="24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <svg width="24" height="24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg>
       </div>
       <h1 style="color:var(--green)">Ads uz</h1>
       <p>Boshqaruv tizimiga kiring</p>
     </div>
     <div class="form-group">
       <label class="form-label">Email</label>
-      <input class="form-input" type="email" id="login-email" placeholder="email@example.com" onkeydown="if(event.key==='Enter')doLogin()">
+      <input class="form-input" type="email" id="login-email" placeholder="email@example.com" onkeydown="if(event.key===&#39;Enter&#39;)doLogin()">
     </div>
     <div class="form-group">
       <label class="form-label">Parol</label>
-      <input class="form-input" type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      <input class="form-input" type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key===&#39;Enter&#39;)doLogin()">
     </div>
     <div class="form-error hidden" id="login-error">Email yoki parol noto'g'ri</div>
     <button class="btn btn-primary" id="login-btn" onclick="doLogin()" style="margin-top:8px">Kirish</button>
   </div>
 </div>
 
-<div id="yoriq-screen" class="hidden">
+<div id="yoriq-screen" class="">
   <div class="yoriq-wrap">
     <div class="yoriq-header">
       <div style="font-size:40px;margin-bottom:10px">📋</div>
@@ -445,10 +445,10 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       </div>
     </div>
     <label class="agree-row">
-      <input type="checkbox" id="agree-chk" onchange="document.getElementById('agree-btn').disabled=!this.checked">
+      <input type="checkbox" id="agree-chk" onchange="document.getElementById(&#39;agree-btn&#39;).disabled=!this.checked">
       <span>Yuqoridagi barcha qoidalar bilan tanishdim va roziman. Jarima tizimini tushundim.</span>
     </label>
-    <button class="agree-btn" id="agree-btn" disabled onclick="enterApp()">Tizimga kirish</button>
+    <button class="agree-btn" id="agree-btn" disabled="" onclick="enterApp()">Tizimga kirish</button>
   </div>
 </div>
 
@@ -477,10 +477,10 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div class="rule-body">
         <p style="margin-bottom:8px">Buyurtma qabul qilishdan oldin quyidagilarni aniqlash <strong>majburiy:</strong></p>
         <ul style="margin-left:18px">
-          <li>Mahsulot turi &bull; Soni &bull; O'lchami &bull; Materiali &bull; Bosma turi</li>
+          <li>Mahsulot turi • Soni • O'lchami • Materiali • Bosma turi</li>
           <li>Tayyor bo'lish muddati</li>
           <li>Dizayn bormi yoki yo'q</li>
-          <li>Yetkazib berish kerakmi &bull; To'lov turi</li>
+          <li>Yetkazib berish kerakmi • To'lov turi</li>
         </ul>
         <p style="margin-top:8px;color:var(--red);font-weight:600">Hech bir buyurtma to'liq ma'lumotlarsiz ishlab chiqarishga yuborilmaydi.</p>
       </div>
@@ -501,8 +501,8 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div class="rule-body">
         <p style="margin-bottom:8px">Topshiriqda quyidagilar bo'lishi shart:</p>
         <ul style="margin-left:18px">
-          <li>Mijoz nomi &bull; Telefon raqami &bull; Mahsulot turi &bull; O'lcham</li>
-          <li>Matn &bull; Logo &bull; Ranglar &bull; Izohlar &bull; Muddat</li>
+          <li>Mijoz nomi • Telefon raqami • Mahsulot turi • O'lcham</li>
+          <li>Matn • Logo • Ranglar • Izohlar • Muddat</li>
         </ul>
         <p style="margin-top:8px;color:var(--red);font-weight:600">"Noaniq qilib bering", "o'zingiz chiroyli qiling" kabi topshiriqlar berilmaydi.</p>
       </div>
@@ -549,10 +549,10 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     </div>
 
     <label class="agree-row">
-      <input type="checkbox" id="admin-agree-chk" onchange="document.getElementById('admin-agree-btn').disabled=!this.checked">
+      <input type="checkbox" id="admin-agree-chk" onchange="document.getElementById(&#39;admin-agree-btn&#39;).disabled=!this.checked">
       <span>Barcha qoidalar bilan tanishdim va roziman.</span>
     </label>
-    <button class="agree-btn" id="admin-agree-btn" disabled onclick="enterAdminApp()">Tizimga kirish</button>
+    <button class="agree-btn" id="admin-agree-btn" disabled="" onclick="enterAdminApp()">Tizimga kirish</button>
   </div>
 </div>
 
@@ -627,10 +627,10 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     </div>
 
     <label class="agree-row">
-      <input type="checkbox" id="diz-agree-chk" onchange="document.getElementById('diz-agree-btn').disabled=!this.checked">
+      <input type="checkbox" id="diz-agree-chk" onchange="document.getElementById(&#39;diz-agree-btn&#39;).disabled=!this.checked">
       <span>Barcha qoidalar bilan tanishdim va roziman.</span>
     </label>
-    <button class="agree-btn" id="diz-agree-btn" disabled onclick="enterDizaynerApp()">Tizimga kirish</button>
+    <button class="agree-btn" id="diz-agree-btn" disabled="" onclick="enterDizaynerApp()">Tizimga kirish</button>
   </div>
 </div>
 
@@ -638,16 +638,16 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   <div class="topbar">
     <div class="topbar-left">
       <div class="topbar-icon">
-        <svg width="18" height="18" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <svg width="18" height="18" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg>
       </div>
       <span class="topbar-title">Ads uz</span>
     </div>
     <div class="topbar-right">
       <div class="user-chip">
         <div class="user-dot"></div>
-        <span id="user-name-chip">—</span>
+        <span id="user-name-chip">bayramali</span>
       </div>
-      <span class="role-badge" id="role-badge-chip"></span>
+      <span class="role-badge ishlab" id="role-badge-chip">Ishlab chiqarish</span>
       <label class="shift-toggle" id="shift-toggle-wrap" title="Kunduzgi / Tungi rejim">
         <input type="checkbox" id="shift-toggle-input" onchange="toggleShift(this.checked)">
         <span class="shift-slider">
@@ -655,8 +655,8 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
           <span class="shift-icon night">🌙</span>
         </span>
       </label>
-      <button class="bell-btn" onclick="showPanel('xabarlar')" id="bell-btn" title="Xabarlar">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <button class="bell-btn" onclick="showPanel(&#39;xabarlar&#39;)" id="bell-btn" title="Xabarlar">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         <span class="bell-badge hidden" id="bell-count">0</span>
       </button>
       <button class="logout-btn" onclick="doLogout()">Chiqish</button>
@@ -664,53 +664,53 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 
   <div class="nav" id="main-nav">
-    <button class="nav-btn" onclick="showPanel('owner')" id="nb-owner">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <button class="nav-btn hidden" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
       Umumiy
     </button>
-    <button class="nav-btn" onclick="showPanel('admin')" id="nb-admin">
-      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <button class="nav-btn hidden" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       Admin
     </button>
-    <button class="nav-btn" onclick="showPanel('ishlab')" id="nb-ishlab">
-      <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    <button class="nav-btn" onclick="showPanel(&#39;ishlab&#39;)" id="nb-ishlab">
+      <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
       Ishlab chiqarish
     </button>
-    <button class="nav-btn" onclick="showPanel('dashboard')" id="nb-dashboard">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <button class="nav-btn" onclick="showPanel(&#39;dashboard&#39;)" id="nb-dashboard">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
       Dashboard
     </button>
-    <button class="nav-btn active" onclick="showPanel('tarix')" id="nb-tarix">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <button class="nav-btn active" onclick="showPanel(&#39;tarix&#39;)" id="nb-tarix">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
       Hisobotlar
     </button>
-    <button class="nav-btn" onclick="showPanel('xabarlar')" id="nb-xabarlar">
-      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <button class="nav-btn" onclick="showPanel(&#39;xabarlar&#39;)" id="nb-xabarlar">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
       Xabarlar
       <span class="nav-badge hidden" id="nav-bell-count">0</span>
     </button>
-    <button class="nav-btn" onclick="showPanel('sklad')" id="nb-sklad">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <button class="nav-btn" onclick="showPanel(&#39;sklad&#39;)" id="nb-sklad">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
       Sklad
     </button>
-    <button class="nav-btn" onclick="showPanel('kalk')" id="nb-kalk">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/></svg>
+    <button class="nav-btn" onclick="showPanel(&#39;kalk&#39;)" id="nb-kalk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="10" x2="10" y2="10"></line><line x1="14" y1="10" x2="16" y2="10"></line><line x1="8" y1="14" x2="10" y2="14"></line><line x1="14" y1="14" x2="16" y2="14"></line><line x1="8" y1="18" x2="10" y2="18"></line><line x1="14" y1="18" x2="16" y2="18"></line></svg>
       Kalk
     </button>
-    <button class="nav-btn hidden" onclick="showPanel('bozorlik')" id="nb-bozorlik">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <button class="nav-btn" onclick="showPanel(&#39;bozorlik&#39;)" id="nb-bozorlik">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 01-8 0"></path></svg>
       Bozorlik
     </button>
-    <button class="nav-btn" onclick="showPanel('dizayner')" id="nb-dizayner">
-      <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><circle cx="11" cy="11" r="2"/></svg>
+    <button class="nav-btn hidden" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
+      <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><circle cx="11" cy="11" r="2"></circle></svg>
       Dizayn
     </button>
-    <button class="nav-btn hidden" onclick="showPanel('stopwatch')" id="nb-stopwatch">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><polyline points="12 9 12 13 14.5 15.5"/><path d="M16.51 3.51L19 1M7.49 3.51L5 1"/></svg>
+    <button class="nav-btn hidden" onclick="showPanel(&#39;stopwatch&#39;)" id="nb-stopwatch">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14.5 15.5"></polyline><path d="M16.51 3.51L19 1M7.49 3.51L5 1"></path></svg>
       Taymer
     </button>
-    <button class="nav-btn" onclick="showPanel('foiz')" id="nb-foiz">
-      <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+    <button class="nav-btn hidden" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
+      <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
       Foiz jadvali
     </button>
   </div>
@@ -737,12 +737,12 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <div class="card-title" style="margin:0">
-          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
           Daromad dinamikasi
         </div>
         <div style="display:flex;gap:6px">
-          <button class="filter-btn active" onclick="setChartMode('oylik',this)">Oylik (2026)</button>
-          <button class="filter-btn" onclick="setChartMode('yillik',this)">Yillik</button>
+          <button class="filter-btn active" onclick="setChartMode(&#39;oylik&#39;,this)">Oylik (2026)</button>
+          <button class="filter-btn" onclick="setChartMode(&#39;yillik&#39;,this)">Yillik</button>
         </div>
       </div>
       <div style="position:relative;height:220px;width:100%">
@@ -752,7 +752,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 
     <div class="card">
       <div class="card-title">
-        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
         Xodimlar bo'yicha hisobot
       </div>
       <div class="owner-row owner-head" style="background:transparent;border:none">
@@ -775,33 +775,48 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     </div>
     <div class="card">
       <div class="card-title">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
         Zakazlar ro'yxati
       </div>
       <div class="tbl-head"><div>Mahsulot nomi</div><div style="text-align:right">Summa</div><div style="text-align:center">Foiz</div><div style="text-align:right">Daromad</div><div></div></div>
-      <div id="admin-rows"></div>
+      <div id="admin-rows"><div class="zakaz-row">
+      <input type="text" placeholder="Mahsulot nomi" value="" oninput="adD[0].nom=this.value">
+      <input type="text" inputmode="numeric" placeholder="Summa" value="" style="text-align:right" id="asum0">
+      <div class="fzbadge">—</div>
+      <div class="drbadge">—</div>
+      <button class="icon-btn" onclick="delAdmin(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button></div><div class="zakaz-row">
+      <input type="text" placeholder="Mahsulot nomi" value="" oninput="adD[1].nom=this.value">
+      <input type="text" inputmode="numeric" placeholder="Summa" value="" style="text-align:right" id="asum1">
+      <div class="fzbadge">—</div>
+      <div class="drbadge">—</div>
+      <button class="icon-btn" onclick="delAdmin(1)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button></div><div class="zakaz-row">
+      <input type="text" placeholder="Mahsulot nomi" value="" oninput="adD[2].nom=this.value">
+      <input type="text" inputmode="numeric" placeholder="Summa" value="" style="text-align:right" id="asum2">
+      <div class="fzbadge">—</div>
+      <div class="drbadge">—</div>
+      <button class="icon-btn" onclick="delAdmin(2)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button></div></div>
       <button class="add-btn" onclick="addAdminRow()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Zakaz qo'shish
       </button>
       <div class="tbar green" style="margin-top:12px"><span class="tl green">Sof daromad</span><span class="tv green" id="admin-grand">0 so'm</span></div>
     </div>
-    <button class="savebtn" onclick="saveOnly('admin')">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    <button class="savebtn" onclick="saveOnly(&#39;admin&#39;)">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
       Saqlash
     </button>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
-      <button class="tgbtn" style="margin-top:0" onclick="sendWeekly('admin')">
-        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      <button class="tgbtn" style="margin-top:0" onclick="sendWeekly(&#39;admin&#39;)">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         Telegram
       </button>
-      <button class="savebtn" style="margin-top:0;background:var(--purple)" onclick="copyWeekly('admin')">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <button class="savebtn" style="margin-top:0;background:var(--purple)" onclick="copyWeekly(&#39;admin&#39;)">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         Nusxa olish
       </button>
     </div>
     <button class="avans-btn" onclick="showAvansForm()" style="margin-top:6px">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
       Avans so'rash
     </button>
   </div>
@@ -827,14 +842,14 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div class="card" id="card-prod">
       <div class="card-title" style="justify-content:space-between">
         <div style="display:flex;align-items:center;gap:8px">
-          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
           Oddiy mahsulotlar
         </div>
-        <button class="card-close-btn" onclick="hideCard('prod','Oddiy mahsulotlar')" title="Bu bolimni yashirish">✕</button>
+        <button class="card-close-btn" onclick="hideCard(&#39;prod&#39;,&#39;Oddiy mahsulotlar&#39;)" title="Bu bolimni yashirish">✕</button>
       </div>
-      <div id="prod-rows"></div>
+      <div id="prod-rows"><div class="pi"><div class="prod-grid"><select onchange="prD[0].key=this.value;prD[0].ex=false;prD[0].qolda_nom=&#39;&#39;;prD[0].qolda_narx=&#39;&#39;;renderIshlab()"><optgroup label="🔥 Termopress"><option value="Futbolka DTF (old)" selected="">Futbolka DTF (old)</option><option value="Futbolka DTF (old+orqa)">Futbolka DTF (old+orqa)</option><option value="Futbolka Vinil (old)">Futbolka Vinil (old)</option><option value="Futbolka Vinil (old+orqa)">Futbolka Vinil (old+orqa)</option><option value="Lenta press">Lenta press</option><option value="Kepka DTF">Kepka DTF</option></optgroup><optgroup label="🖨️ Ekosalvent"><option value="Konturniy (pechat+kesish)">Konturniy (pechat+kesish)</option></optgroup><optgroup label="🖨️ Printer"><option value="Rangli printer (old+orqa, 1-500ta)">Rangli printer (old+orqa, 1-500ta)</option><option value="Rangli printer (old, 1-500ta)">Rangli printer (old, 1-500ta)</option><option value="Bloknot ichi (80gr qog&#39;oz)">Bloknot ichi (80gr qog'oz)</option><option value="Krujka sublimatsiya">Krujka sublimatsiya</option><option value="Sifra pechat">Sifra pechat</option></optgroup><optgroup label="📦 Boshqa"><option value="Lenta aparat pechat (Godex)">Lenta aparat pechat (Godex)</option><option value="Roll-up ustanovka">Roll-up ustanovka</option><option value="UF Ruchka">UF Ruchka</option><option value="Pauk rezka">Pauk rezka</option><option value="Znachok yasash">Znachok yasash</option><option value="Beyjik yasash/tikish">Beyjik yasash/tikish</option></optgroup><optgroup label="✏️ Qo&#39;lda kiritish"><option value="__qolda__">✏️ Qo'lda kiritish</option></optgroup></select><div class="prod-row-bottom"><input type="text" inputmode="numeric" placeholder="Miqdor (dona)" value="" style="text-align:right" id="pmiq0"><div class="badge bw">—</div><div style="display:flex;gap:5px;align-items:center"><div class="badge bo">—</div><button class="icon-btn" onclick="delProd(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button></div></div><div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap"><label style="font-size:12px;color:var(--text3)">Brak soni:</label><input type="text" inputmode="numeric" placeholder="0" value="" style="width:70px;text-align:center;" id="pbrak0"></div></div></div></div>
       <button class="add-btn" onclick="addProdRow()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Mahsulot qo'shish
       </button>
       <div class="tbar blue" style="margin-top:10px"><span class="tl blue">Oddiy jami</span><span class="tv blue" id="prod-grand">0 so'm</span></div>
@@ -842,10 +857,10 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div class="card" style="border-color:var(--purple-border)" id="card-uv">
       <div class="card-title" style="color:var(--purple);justify-content:space-between">
         <div style="display:flex;align-items:center;gap:8px">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
           UV pechat — 90×60 sm list
         </div>
-        <button class="card-close-btn purple" onclick="hideCard('uv','UV pechat')" title="Bu bolimni yashirish">✕</button>
+        <button class="card-close-btn purple" onclick="hideCard(&#39;uv&#39;,&#39;UV pechat&#39;)" title="Bu bolimni yashirish">✕</button>
       </div>
       <div class="uv-info">
         1–5 list: <strong style="color:var(--purple)">40 000</strong> so'm/list &nbsp;·&nbsp;
@@ -855,9 +870,25 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div class="ugrid" style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:0 2px 8px">
         <div>Mahsulot nomi</div><div style="text-align:center">Sig'imi</div><div style="text-align:center">Dona</div><div style="text-align:center">Natija</div>
       </div>
-      <div id="uv-rows"></div>
+      <div id="uv-rows"><div class="ui"><div class="ugrid-wrap">
+      <input type="text" placeholder="Bloknot, daftar, termoz..." value="" oninput="uvD[0].nom=this.value">
+      <div class="ugrid-bottom">
+        <input type="text" inputmode="numeric" placeholder="8" value="" style="text-align:center" id="usig0">
+        <input type="text" inputmode="numeric" placeholder="100" value="" style="text-align:center" id="udon0">
+        <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
+          <span style="font-size:12px;color:var(--text3)">—</span>
+          <button class="icon-btn" onclick="delUv(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
+        </div>
+      </div>
+    </div>
+      
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+        <label style="font-size:12px;color:var(--text3)">Brak soni:</label>
+        <input type="text" inputmode="numeric" placeholder="0" value="" style="width:70px;text-align:center;" id="ubrak0">
+        
+      </div></div></div>
       <button class="add-btn purple" onclick="addUvRow()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         UV mahsulot qo'shish
       </button>
       <div class="tbar purple" style="margin-top:10px"><span class="tl purple">UV pechat jami</span><span class="tv purple" id="uv-grand">0 so'm</span></div>
@@ -866,10 +897,10 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div class="card" style="border-color:var(--amber-border)" id="card-eko">
       <div class="card-title" style="color:var(--amber);justify-content:space-between">
         <div style="display:flex;align-items:center;gap:8px">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
           Ekosalvent pechat
         </div>
-        <button class="card-close-btn amber" onclick="hideCard('eko','Ekosalvent')" title="Bu bolimni yashirish">✕</button>
+        <button class="card-close-btn amber" onclick="hideCard(&#39;eko&#39;,&#39;Ekosalvent&#39;)" title="Bu bolimni yashirish">✕</button>
       </div>
       <div class="uv-info" style="border-color:var(--amber-border)">
         10 kv.m gacha: <strong style="color:var(--amber)">5000</strong> so'm/kv.m &nbsp;·&nbsp;
@@ -880,9 +911,24 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div style="display:grid;grid-template-columns:1fr 100px 110px;gap:6px;font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:0 2px 8px">
         <div>Mahsulot nomi</div><div style="text-align:center">Kv.metr</div><div style="text-align:center">Natija</div>
       </div>
-      <div id="eko-rows"></div>
+      <div id="eko-rows"><div class="ui" style="background: var(--amber-light); border-color: var(--amber-border);"><div class="ugrid-wrap">
+      <input type="text" placeholder="Mahsulot nomi (banner, ustanovka...)" value="" oninput="ekoD[0].nom=this.value">
+      <div class="ugrid-bottom" style="grid-template-columns:1fr auto">
+        <input type="text" inputmode="decimal" placeholder="10" value="" style="text-align:center" id="ekv0">
+        <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
+          <span style="font-size:12px;color:var(--text3)">—</span>
+          <button class="icon-btn" onclick="delEko(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
+        </div>
+      </div>
+    </div>
+      
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+        <label style="font-size:12px;color:var(--text3)">Brak:</label>
+        <input type="text" inputmode="numeric" placeholder="0" value="" style="width:70px;text-align:center;" id="ebrak0">
+        
+      </div></div></div>
       <button class="add-btn" style="border-color:var(--amber-border);color:var(--amber)" onclick="addEkoRow()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Ekosalvent qo'shish
       </button>
       <div class="tbar" style="background:var(--amber-light);margin-top:10px"><span class="tl" style="color:var(--amber)">Ekosalvent jami</span><span class="tv" style="color:var(--amber)" id="eko-grand">0 so'm</span></div>
@@ -893,22 +939,22 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     </div>
 
     <div class="tbar dark"><span class="tl dark" style="font-size:14px">Umumiy jami</span><span class="tv dark" style="font-size:22px" id="ishlab-grand">0 so'm</span></div>
-    <button class="savebtn" onclick="saveOnly('ishlab')">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    <button class="savebtn" onclick="saveOnly(&#39;ishlab&#39;)">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
       Saqlash
     </button>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
-      <button class="tgbtn" style="margin-top:0" onclick="sendWeekly('ishlab')">
-        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      <button class="tgbtn" style="margin-top:0" onclick="sendWeekly(&#39;ishlab&#39;)">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         Telegram
       </button>
-      <button class="savebtn" style="margin-top:0;background:var(--purple)" onclick="copyWeekly('ishlab')">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <button class="savebtn" style="margin-top:0;background:var(--purple)" onclick="copyWeekly(&#39;ishlab&#39;)">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         Nusxa olish
       </button>
     </div>
     <button class="avans-btn" onclick="showAvansForm()" style="margin-top:6px">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
       Avans so'rash
     </button>
   </div>
@@ -918,7 +964,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 14px">
       <div style="font-size:14px;font-weight:700">Xabarlar</div>
       <button class="add-btn" style="width:auto;margin:0;padding:7px 14px" onclick="showSendMsg()" id="yangi-xabar-btn">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Yangi xabar
       </button>
     </div>
@@ -926,7 +972,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <!-- Xabar yozish -->
     <div class="card hidden" id="send-msg-card">
       <div class="card-title">
-        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         Xabar yuborish
       </div>
       <div class="form-group" style="margin-bottom:10px" id="receiver-group">
@@ -945,12 +991,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       </div>
     </div>
 
-    <div id="xabarlar-list">
-      <div class="empty-state">
-        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <p>Xabarlar yo'q</p>
-      </div>
-    </div>
+    <div id="xabarlar-list"><div class="empty-state"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><p>Xabarlar mavjud emas</p></div></div>
   </div>
 
   <!-- DASHBOARD -->
@@ -976,13 +1017,13 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <div class="card-title" style="margin:0">
-          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
           Daromad dinamikasi
         </div>
         <div style="display:flex;gap:6px">
-          <button class="filter-btn active" id="db-btn-oylik" onclick="setDbMode('oylik',this)">Oylik</button>
-          <button class="filter-btn" id="db-btn-haftalik" onclick="setDbMode('haftalik',this)">Haftalik</button>
-          <button class="filter-btn" id="db-btn-yillik" onclick="setDbMode('yillik',this)">Yillik</button>
+          <button class="filter-btn active" id="db-btn-oylik" onclick="setDbMode(&#39;oylik&#39;,this)">Oylik</button>
+          <button class="filter-btn" id="db-btn-haftalik" onclick="setDbMode(&#39;haftalik&#39;,this)">Haftalik</button>
+          <button class="filter-btn" id="db-btn-yillik" onclick="setDbMode(&#39;yillik&#39;,this)">Yillik</button>
         </div>
       </div>
       <div style="position:relative;height:200px">
@@ -993,7 +1034,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <!-- KPI Progress (sotuvchilar uchun) -->
     <div class="card hidden" id="db-kpi-card">
       <div class="card-title">
-        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
         <span id="db-kpi-daraja-label">Daraja</span>
       </div>
       
@@ -1033,7 +1074,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <!-- So'nggi zakazlar -->
     <div class="card">
       <div class="card-title">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         So'nggi zakazlar
       </div>
       <div id="db-recent-list"></div>
@@ -1051,13 +1092,13 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     </div>
 
     <div class="filter-row" id="hist-filters" style="display:none">
-      <button class="filter-btn active" onclick="setFilter('all',this)">Barchasi</button>
-      <button class="filter-btn" onclick="setFilter('admin',this)">Admin</button>
-      <button class="filter-btn" onclick="setFilter('ishlab',this)">Ishlab chiqarish</button>
+      <button class="filter-btn active" onclick="setFilter(&#39;all&#39;,this)">Barchasi</button>
+      <button class="filter-btn" onclick="setFilter(&#39;admin&#39;,this)">Admin</button>
+      <button class="filter-btn" onclick="setFilter(&#39;ishlab&#39;,this)">Ishlab chiqarish</button>
     </div>
     <div id="history-list">
       <div class="empty-state">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         <p>Hali yozuvlar yo'q</p>
       </div>
     </div>
@@ -1076,32 +1117,32 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     </div>
     <div class="card">
       <div class="card-title">
-        <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
         Dizayn ishlari ro'yxati
       </div>
-      <div id="diz-rows"></div>
+      <div id="diz-rows"><div class="diz-row"><div class="diz-grid"><input type="text" placeholder="Mahsulot / ish nomi" value="" oninput="dizD[0].nom=this.value"><input type="text" inputmode="numeric" placeholder="Summa" value="" style="text-align:right" id="dsum0"><select class="tolov-select" onchange="dizD[0].tolovchi=this.value;renderDizayner()"><option value="offis" selected="">Offis</option><option value="mijoz">Mijoz</option></select><button class="icon-btn" onclick="delDiz(0)" title="O&#39;chirish"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button></div><div class="diz-mijoz"><input type="text" placeholder="Tel/Telegram" value="" oninput="dizD[0].kontakt=this.value" style="margin-bottom:0"></div><div class="diz-row-tools"><div class="sw-mini" id="sw-mini-0"><span class="sw-mini-time">00:00:00</span><span class="sw-mini-price">0 so'm</span><button class="sw-mini-btn " onclick="swRowToggle(0)">▶</button><button class="sw-mini-btn" onclick="swRowReset(0)" title="Qayta">↻</button></div><button class="tasdiq-btn" onclick="showTasdiqXat(0)">📋 Tasdiq xati</button></div><div class="tolov-toggle"><button class="tolov-btn" onclick="dizD[0].tolov=true;renderDizayner()">To'landi</button><button class="tolov-btn" onclick="dizD[0].tolov=false;renderDizayner()">To'lanmadi</button></div></div></div>
       <button class="add-btn" onclick="addDizRow()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Ish qo'shish
       </button>
       <div class="tbar green" style="margin-top:12px"><span class="tl green">Jami summa</span><span class="tv green" id="diz-grand">0 so'm</span></div>
     </div>
     <button class="savebtn" onclick="saveDizayner()">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
       Saqlash
     </button>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
       <button class="tgbtn" style="margin-top:0" onclick="sendWeeklyDizayner()">
-        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         Telegram
       </button>
       <button class="savebtn" style="margin-top:0;background:var(--purple)" onclick="copyWeeklyDizayner()">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         Nusxa olish
       </button>
     </div>
     <button class="avans-btn" onclick="showAvansForm()" style="margin-top:6px">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
       Avans so'rash
     </button>
   </div>
@@ -1138,7 +1179,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div>
           <label class="form-label">Mahsulot nomi *</label>
-          <input type="text" id="bz-nom" placeholder="Masalan: Beyjik lenta ko'k" oninput="const kw=document.getElementById('bz-kraska-wrap');if(kw)kw.classList.toggle('hidden',!this.value.toLowerCase().includes('kraska'))">
+          <input type="text" id="bz-nom" placeholder="Masalan: Beyjik lenta ko&#39;k" oninput="const kw=document.getElementById(&#39;bz-kraska-wrap&#39;);if(kw)kw.classList.toggle(&#39;hidden&#39;,!this.value.toLowerCase().includes(&#39;kraska&#39;))">
         </div>
         <div>
           <label class="form-label">Sklad dan tanlash</label>
@@ -1166,15 +1207,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       </div>
       <div style="margin-bottom:10px">
         <label class="form-label">Izoh</label>
-        <input type="text" id="bz-izoh" placeholder="Masalan: oq rang, L o'lcham">
+        <input type="text" id="bz-izoh" placeholder="Masalan: oq rang, L o&#39;lcham">
       </div>
       <div style="margin-bottom:10px" id="bz-rasm-wrap">
         <label class="form-label">Rasm (ixtiyoriy)</label>
-        <div class="rasm-upload-area" id="bz-rasm-area"
-          onclick="document.getElementById('bz-rasm-input').click()"
-          ondragover="event.preventDefault();this.classList.add('drag-over')"
-          ondragleave="this.classList.remove('drag-over')"
-          ondrop="event.preventDefault();this.classList.remove('drag-over');bozorlikRasmDrop(event)">
+        <div class="rasm-upload-area" id="bz-rasm-area" onclick="document.getElementById(&#39;bz-rasm-input&#39;).click()" ondragover="event.preventDefault();this.classList.add(&#39;drag-over&#39;)" ondragleave="this.classList.remove(&#39;drag-over&#39;)" ondrop="event.preventDefault();this.classList.remove(&#39;drag-over&#39;);bozorlikRasmDrop(event)">
           <input type="file" id="bz-rasm-input" accept="image/*" style="display:none" onchange="bozorlikRasmPreview(this)">
           <div id="bz-rasm-preview" style="text-align:center;padding:10px;color:var(--text3);font-size:12px">
             📷 Rasm tanlash yoki shu yerga tashlang
@@ -1190,7 +1227,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <!-- Ro'yxat -->
     <div id="bozorlik-list">
       <div class="empty-state">
-        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"></path></svg>
         <p>Ro'yxat bo'sh</p>
       </div>
     </div>
@@ -1198,7 +1235,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <!-- Telegram yuborish tugmasi -->
     <div id="bozorlik-send-wrap" class="hidden" style="margin-top:12px">
       <button class="tgbtn" id="bz-send-btn" onclick="sendBozorlikToTelegram()">
-        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         Bozorlikka yuborish (Telegram)
       </button>
     </div>
@@ -1209,11 +1246,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div style="margin:16px 0 14px;font-size:14px;font-weight:700">Narx kalkulyatori</div>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-      <button class="filter-btn active" onclick="setKalkType('banner',this)">Banner/Orakal</button>
-      <button class="filter-btn" onclick="setKalkType('bekprint',this)">Bek print</button>
-      <button class="filter-btn" onclick="setKalkType('uvdtf',this)">UV DTF</button>
-      <button class="filter-btn" onclick="setKalkType('dtf',this)">DTF</button>
-      <button class="filter-btn" onclick="setKalkType('pechat',this)">Pechat</button>
+      <button class="filter-btn active" onclick="setKalkType(&#39;banner&#39;,this)">Banner/Orakal</button>
+      <button class="filter-btn" onclick="setKalkType(&#39;bekprint&#39;,this)">Bek print</button>
+      <button class="filter-btn" onclick="setKalkType(&#39;uvdtf&#39;,this)">UV DTF</button>
+      <button class="filter-btn" onclick="setKalkType(&#39;dtf&#39;,this)">DTF</button>
+      <button class="filter-btn" onclick="setKalkType(&#39;pechat&#39;,this)">Pechat</button>
     </div>
 
     <!-- Banner / Orakal -->
@@ -1371,11 +1408,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div style="font-size:14px;font-weight:700">Sklad</div>
       <div style="display:flex;gap:8px;align-items:center">
         <div class="sklad-search-wrap">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           <input type="text" id="sklad-search" placeholder="Qidirish..." oninput="filterSklad(this.value)" style="border:none;outline:none;font-size:13px;width:140px;font-family:inherit">
         </div>
         <button class="add-btn hidden" id="sklad-add-btn" style="width:auto;padding:7px 14px" onclick="showSkladForm()">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           Mahsulot qo'shish
         </button>
       </div>
@@ -1384,7 +1421,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <!-- Yangi mahsulot formasi -->
     <div class="card hidden" id="sklad-form-card">
       <div class="card-title">
-        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         Yangi mahsulot
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
@@ -1438,14 +1475,10 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       </div>
       <div class="form-group" style="margin-bottom:10px">
         <label class="form-label">Mahsulot rasmi</label>
-        <div class="rasm-upload-area" id="sk-rasm-area"
-          onclick="document.getElementById('sk-rasm-input').click()"
-          ondragover="event.preventDefault();this.classList.add('drag-over')"
-          ondragleave="this.classList.remove('drag-over')"
-          ondrop="event.preventDefault();this.classList.remove('drag-over');handleRasmDrop(event)">
+        <div class="rasm-upload-area" id="sk-rasm-area" onclick="document.getElementById(&#39;sk-rasm-input&#39;).click()" ondragover="event.preventDefault();this.classList.add(&#39;drag-over&#39;)" ondragleave="this.classList.remove(&#39;drag-over&#39;)" ondrop="event.preventDefault();this.classList.remove(&#39;drag-over&#39;);handleRasmDrop(event)">
           <input type="file" id="sk-rasm-input" accept="image/*" style="display:none" onchange="previewRasm(this)">
           <div id="sk-rasm-preview">
-            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text3)"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text3)"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             <p style="margin:6px 0 0;font-size:12px;color:var(--text3)">Rasm tanlang yoki shu yerga tashlang</p>
             <p style="margin:2px 0 0;font-size:11px;color:var(--text3);opacity:0.7">JPG, PNG, WEBP</p>
           </div>
@@ -1474,7 +1507,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         <input type="hidden" id="sh-tur">
         <div style="display:flex;gap:8px">
           <button class="savebtn" style="flex:1" id="sh-save-btn" onclick="saveSkladHarakat()">Saqlash</button>
-          <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById('sklad-harakat-modal').classList.add('hidden')">Bekor</button>
+          <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById(&#39;sklad-harakat-modal&#39;).classList.add(&#39;hidden&#39;)">Bekor</button>
         </div>
       </div>
     </div>
@@ -1501,7 +1534,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         <input type="hidden" id="sb-sklad-id">
         <div style="display:flex;gap:8px">
           <button class="savebtn" style="flex:1;background:var(--red)" onclick="saveSkladBrak()">Brak kiritish</button>
-          <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById('sklad-brak-modal').classList.add('hidden')">Bekor</button>
+          <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById(&#39;sklad-brak-modal&#39;).classList.add(&#39;hidden&#39;)">Bekor</button>
         </div>
       </div>
     </div>
@@ -1509,7 +1542,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <!-- Sklad mahsulotlar ro'yxati -->
     <div id="sklad-list">
       <div class="empty-state">
-        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         <p>Sklad bo'sh</p>
       </div>
     </div>
@@ -1519,7 +1552,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   <div class="panel" id="panel-foiz">
     <div class="card" style="margin-top:16px">
       <div class="card-title">
-        <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+        <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
         Foiz jadvali (adminlar uchun)
       </div>
       <table class="ft">
@@ -1529,7 +1562,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     </div>
     <div class="card">
       <div class="card-title">
-        <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+        <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="10" x2="16" y2="10"></line><line x1="8" y1="14" x2="12" y2="14"></line></svg>
         Tezkor hisoblash
       </div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
@@ -1548,7 +1581,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div id="edit-modal-content"></div>
     <div style="display:flex;gap:8px;margin-top:14px">
       <button class="savebtn" style="flex:1" onclick="saveEditedHistory()">Saqlash</button>
-      <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById('edit-history-modal').classList.add('hidden')">Bekor</button>
+      <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById(&#39;edit-history-modal&#39;).classList.add(&#39;hidden&#39;)">Bekor</button>
     </div>
   </div>
 </div>
@@ -1560,7 +1593,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <textarea id="tasdiq-text" rows="14" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-border);border-radius:8px;font-size:12px;font-family:monospace;resize:vertical;line-height:1.6;background:var(--gray-light)"></textarea>
     <div style="display:flex;gap:8px;margin-top:10px">
       <button class="savebtn" style="flex:1" onclick="copyTasdiqXat()">Nusxa olish</button>
-      <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById('tasdiq-modal').classList.add('hidden')">Yopish</button>
+      <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:#fff;cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById(&#39;tasdiq-modal&#39;).classList.add(&#39;hidden&#39;)">Yopish</button>
     </div>
   </div>
 </div>
@@ -3772,7 +3805,7 @@ function calcBanner(){
     return;
   }
 
-  // Banner formati aniqlash (eng katta o'lcham asosida)
+  // Banner formati aniqlash - ENG KATTA o'lcham asosida
   const maxOlcham = Math.max(eni, boyi);
   let format = '';
   let isOversized = false;
@@ -3784,8 +3817,14 @@ function calcBanner(){
   } else if(maxOlcham <= 3.1){
     format = '3.2 metrlik banner (3.0m pechat)';
   } else {
-    isOversized = true;
-    format = 'Maxsus o\'lcham (3.2m dan katta)';
+    // Faqat IKKALA o'lcham ham 3.1 dan katta bo'lsa ogohlantirish
+    if(eni > 3.1 && boyi > 3.1){
+      isOversized = true;
+      format = 'Maxsus o\'lcham — ikkala tomoni ham 3.1m dan katta!';
+    } else {
+      // Bittasi katta — maxsus kenglik bor
+      format = 'Maxsus kenglik (3.2m dan katta)';
+    }
   }
 
   if(formatEl){
@@ -4725,5 +4764,6 @@ function copyTasdiqXat(){
   navigator.clipboard.writeText(t.value).then(()=>showNotify('Tasdiq xati nusxa olindi!')).catch(()=>{t.select();document.execCommand('copy');showNotify('Nusxa olindi!');});
 }
 </script>
-</body>
-</html>
+
+
+</body></html>
