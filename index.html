@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_17.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_18.html -->
 <html lang="uz" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <meta name="theme-color" content="#2563eb">
@@ -376,6 +376,16 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 [data-theme="dark"] .nav-badge{background:var(--red);color:#fff}
 [data-theme="dark"] .bozorlik-card{background:var(--white);color:var(--text)}
 [data-theme="dark"] .hist-row{background:var(--white);color:var(--text)}
+[data-theme="dark"] .topbar{background:var(--white);border-color:var(--gray-border)}
+[data-theme="dark"] .role-badge{background:var(--blue-light);color:var(--blue)}
+[data-theme="dark"] .logout-btn{background:var(--gray-light);border-color:var(--gray-border);color:var(--text)}
+[data-theme="dark"] .bell-btn{background:var(--white);border-color:var(--gray-border);color:var(--text)}
+[data-theme="dark"] .shift-slider{background:#334155;border-color:#475569}
+[data-theme="dark"] .db-recent-item{background:var(--white);color:var(--text)}
+[data-theme="dark"] .db-recent-label{color:var(--text)}
+[data-theme="dark"] .db-recent-date{color:var(--text3)}
+[data-theme="dark"] #db-kpi-card{background:var(--white)}
+[data-theme="dark"] #db-kpi-card .stat{background:var(--white)}
 [data-theme="dark"] .hist-items{color:var(--text2)}
 [data-theme="dark"] .hist-items span[style*="color:#"]{color:var(--text2) !important}
 [data-theme="dark"] .msg-item{background:var(--white);color:var(--text)}
@@ -5068,7 +5078,7 @@ function renderSkladList(){
     header.innerHTML =
       '<div style="display:flex;align-items:center;gap:8px">' +
         '<span style="font-size:18px">'+(KAT_ICONS[kat]||'📋')+'</span>' +
-        '<span style="font-size:13px;font-weight:700">'+(kat||'Kategoriyasiz')+'</span>' +
+        '<span style="font-size:13px;font-weight:700;color:var(--text)">'+(kat||'Kategoriyasiz')+'</span>' +
         '<span style="font-size:11px;color:var(--text3);background:var(--gray-light);padding:1px 8px;border-radius:20px">'+groups[kat].length+' ta</span>' +
       '</div>' +
       '<div style="display:flex;align-items:center;gap:6px">' +
@@ -5130,7 +5140,9 @@ function renderSkladList(){
             '<button class="rasxod-btn" data-id="'+s.id+'" data-nom="'+s.nom+'" data-birlik="'+s.birlik+'" onclick="openHarakatEl(this,\'rasxod\')">- Rasxod</button>'
           : '') +
           '<button class="sklad-hist-btn" onclick="toggleSkladLog(this)">Tarix</button>' +
-          '<button class="rasxod-btn" style="background:var(--amber-light);color:var(--amber);border-color:var(--amber-border)" data-id="'+s.id+'" data-nom="'+s.nom+'" onclick="openSkladBrak(this)">Brak</button>' +
+          (currentRole === 'owner' || (currentUser && currentUser.email === SKLAD_EDITOR) ?
+            '<button class="rasxod-btn" style="background:var(--amber-light);color:var(--amber);border-color:var(--amber-border)" data-id="'+s.id+'" data-nom="'+s.nom+'" onclick="openSkladBrak(this)">Brak</button>'
+          : '') +
         '</div>' +
         '<div class="sklad-log">'+(harakatiHtml || '<div style="font-size:12px;color:var(--text3);padding:6px 0">Harakat yoq</div>')+'</div>';
 
