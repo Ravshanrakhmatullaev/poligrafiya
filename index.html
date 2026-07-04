@@ -3772,37 +3772,52 @@ function calcBanner(){
     return;
   }
 
-  // Banner formati aniqlash - ENG KATTA o'lcham asosida
-  const maxOlcham = Math.max(eni, boyi);
-  let format = '';
+  // Har bir o'lcham uchun rulo kengligi aniqlash
+  function getRulo(olcham){
+    if(olcham <= 1.2)  return 1.32;
+    if(olcham <= 2.0)  return 2.1;
+    if(olcham <= 2.5)  return 2.6;
+    if(olcham <= 3.1)  return 3.2;
+    return null; // 3.1 dan katta
+  }
+
+  // Eni va bo'yi uchun rulo aniqlash
+  // Kattaroq o'lcham rulo kengligi bo'ladi, kichigi uzunlik
+  const kattaOlcham = Math.max(eni, boyi);
+  const kichikOlcham = Math.min(eni, boyi);
+  const eniKattami = eni >= boyi;
+
+  const ruloKengligi = getRulo(kattaOlcham);
   let isOversized = false;
+  let format = '';
+  let haqiqiyEni, haqiqiyBoyi;
 
-  if(maxOlcham <= 1.2){
-    format = '1.3 metrlik banner (1.2m pechat)';
-  } else if(maxOlcham <= 2.5){
-    format = '2.6 metrlik banner (2.5m pechat)';
-  } else if(maxOlcham <= 3.1){
-    format = '3.2 metrlik banner (3.0m pechat)';
-  } else {
-    // Faqat IKKALA o'lcham ham 3.1 dan katta bo'lsa ogohlantirish
+  if(ruloKengligi === null){
+    // Katta o'lcham 3.1 dan oshgan
     if(eni > 3.1 && boyi > 3.1){
+      // IKKALA tomon katta — maxsus pechat
       isOversized = true;
-      format = 'Maxsus o\'lcham — ikkala tomoni ham 3.1m dan katta!';
+      haqiqiyEni = eni;
+      haqiqiyBoyi = boyi;
+      format = 'Maxsus pechat — ikkala tomon ham 3.1m oshgan!';
     } else {
-      // Bittasi katta — maxsus kenglik bor
-      format = 'Maxsus kenglik (3.2m dan katta)';
+      // Faqat bittasi katta — 3.2 rulosiga sig'maydi, maxsus
+      isOversized = true;
+      haqiqiyEni = eni;
+      haqiqiyBoyi = boyi;
+      format = 'Maxsus pechat — ' + kattaOlcham + 'm > 3.1m rulo chegarasi';
     }
+  } else {
+    // Katta o'lcham rulo kengligi bo'ladi
+    haqiqiyEni = eniKattami ? ruloKengligi : kichikOlcham;
+    haqiqiyBoyi = eniKattami ? kichikOlcham : ruloKengligi;
+    format = ruloKengligi + 'm ruloga ketadi';
   }
 
-  if(formatEl){
-    formatEl.style.display = 'block';
-    document.getElementById('kalk-format-text').textContent = '📐 ' + format;
-  }
-  if(warnEl) warnEl.style.display = isOversized ? 'block' : 'none';
+  const kv = haqiqiyEni * haqiqiyBoyi;
+  const mijozKv = eni * boyi;
 
-  const kv = eni * boyi;
-
-  // Narx jadvali (1 kv.m asosida)
+  // Narx jadvali
   let narxKv;
   if(kv < 1)        narxKv = 100000;
   else if(kv < 5)   narxKv = 50000;
@@ -3813,23 +3828,33 @@ function calcBanner(){
   else if(kv < 100) narxKv = 27000;
   else              narxKv = 25000;
 
-  // Qo'shimchalar
   if(podloshka) narxKv += 4000;
-  if(isOversized) narxKv += 10000; // Maxsus o'lcham uchun
+  if(isOversized) narxKv += 10000;
 
   const jami = Math.round(kv * narxKv);
 
-  const izoh = eni+'m × '+boyi+'m = '+kv.toFixed(2)+' kv.m'+
-    (podloshka?' + Podloshka':'') + (isOversized?' + Maxsus':'') +
-    ' | ' + format;
-
   const el = document.getElementById('kalk-banner-result');
+  if(formatEl){
+    formatEl.style.display = 'block';
+    document.getElementById('kalk-format-text').textContent = '📐 ' + format;
+  }
+  if(warnEl) warnEl.style.display = isOversized ? 'block' : 'none';
+
+  kalkLastResult =
+    'Banner: ' + eni + 'm × ' + boyi + 'm\n' +
+    'Rulo: ' + haqiqiyEni + 'm × ' + haqiqiyBoyi + 'm = ' + kv.toFixed(2) + ' kv.m\n' +
+    'Narx: ' + fmt(narxKv) + " so'm/kv.m\n" +
+    'Jami: ' + fmt(jami) + " so'm";
+
   if(!el) return;
-  kalkLastResult = izoh + '\nNarx: ' + fmt(jami) + " so'm";
   el.innerHTML =
-    '<div style="font-size:11px;color:var(--text3);margin-bottom:4px">'+eni+'m × '+boyi+'m = '+kv.toFixed(2)+' kv.m | '+fmt(narxKv)+" so'm/kv.m"+'</div>'+
-    '<div style="font-size:28px;font-weight:700;color:'+(isOversized?'var(--red)':'var(--blue)')+'">'+fmt(jami)+" so'm</div>"+
-    '<div style="font-size:12px;color:var(--text3);margin-top:4px">'+format+'</div>';
+    '<div style="font-size:12px;color:var(--text3);margin-bottom:8px">' +
+      '<b>Mijoz o\'lchami:</b> ' + eni + 'm × ' + boyi + 'm = ' + mijozKv.toFixed(2) + ' kv.m<br>' +
+      '<b>Hisob o\'lchami:</b> ' + haqiqiyEni + 'm × ' + haqiqiyBoyi + 'm = <span style="color:var(--blue);font-weight:700">' + kv.toFixed(2) + ' kv.m</span>' +
+      (ruloKengligi ? ' <span style="color:var(--green)">('+ruloKengligi+'m rulo)</span>' : '') +
+    '</div>' +
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:8px">' + fmt(narxKv) + " so'm/kv.m" + (podloshka?' + Podloshka':'') + (isOversized?' + Maxsus':'') + '</div>' +
+    '<div style="font-size:30px;font-weight:700;color:'+(isOversized?'var(--red)':'var(--blue)')+'">'+fmt(jami)+" so'm</div>";
 }
 
 function calcBekprint(){
