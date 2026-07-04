@@ -1,7 +1,14 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_62.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_66.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Ads uz">
+  <link rel="manifest" href="file:///C:/Users/User/Downloads/manifest.json">
+  <link rel="apple-touch-icon" href="file:///C:/Users/User/Downloads/icon-192.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poligrafiya — Boshqaruv tizimi</title>
 <style>
@@ -205,7 +212,12 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .ofset-blok{background:var(--gray-light);border-radius:8px;padding:12px;margin-bottom:8px}
 .ofset-blok-title{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px}
 .of-part-sum{font-size:13px;font-weight:700;color:var(--blue)}
-[data-theme="dark"] .ofset-blok{background:var(--gray-light)}
+[data-theme="dark"] .ofset-blok{background:#1e293b;border:1px solid var(--gray-border)}
+[data-theme="dark"] .ofset-blok-title{color:var(--text3)}
+[data-theme="dark"] .of-part-sum{color:var(--blue)}
+[data-theme="dark"] #panel-kalk .card{background:var(--white)}
+[data-theme="dark"] .kalk-result{background:var(--blue-light);border-color:var(--blue-border)}
+[data-theme="dark"] #sig-result > div > div{background:#1e3a5f;border-color:var(--blue-border)}
 .kalk-result{padding:14px;background:var(--blue-light);border-radius:10px;border:1px solid var(--blue-border);text-align:center;margin-top:4px}
 [data-theme="dark"] .kalk-result{background:var(--blue-light);border-color:var(--blue-border)}
 .db-recent-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;margin-bottom:6px;border:1px solid var(--gray-border);background:var(--white)}
@@ -1250,7 +1262,8 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div style="margin:16px 0 14px;font-size:14px;font-weight:700">Narx kalkulyatori</div>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-      <button class="filter-btn active" onclick="setKalkType(&#39;banner&#39;,this)">Banner/Orakal</button>
+      <button class="filter-btn active" onclick="setKalkType(&#39;sigim&#39;,this)">🧮 Sig'im</button>
+      <button class="filter-btn" onclick="setKalkType(&#39;banner&#39;,this)">Banner/Orakal</button>
       <button class="filter-btn" onclick="setKalkType(&#39;bekprint&#39;,this)">Bek print</button>
       <button class="filter-btn" onclick="setKalkType(&#39;uvdtf&#39;,this)">UV DTF</button>
       <button class="filter-btn" onclick="setKalkType(&#39;dtf&#39;,this)">DTF</button>
@@ -1258,8 +1271,69 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <button class="filter-btn" onclick="setKalkType(&#39;ofset&#39;,this)">Ofset</button>
     </div>
 
+    <!-- Sig'im hisoblash -->
+    <div class="card" id="kalk-sigim">
+      <div class="card-title">🧮 Sig'im hisoblash</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Materialga mahsulot nechta sig'ishini hisoblaydi</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <label class="form-label">Mahsulot eni (sm)</label>
+          <input type="text" inputmode="decimal" id="sig-mah-eni" placeholder="9" oninput="calcSigim()">
+        </div>
+        <div>
+          <label class="form-label">Mahsulot bo'yi (sm)</label>
+          <input type="text" inputmode="decimal" id="sig-mah-boyi" placeholder="5" oninput="calcSigim()">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <label class="form-label">Material eni (sm)</label>
+          <input type="text" inputmode="decimal" id="sig-mat-eni" placeholder="44" oninput="calcSigim()">
+        </div>
+        <div>
+          <label class="form-label">Material bo'yi (sm)</label>
+          <input type="text" inputmode="decimal" id="sig-mat-boyi" placeholder="31" oninput="calcSigim()">
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--gray-light);border-radius:8px;border:1.5px solid var(--gray-border)">
+          <input type="checkbox" id="sig-kesish" onchange="calcSigim()" style="width:18px;height:18px;cursor:pointer;accent-color:var(--blue)">
+          <span>✂️ Kesish uchun joy (+0.5 sm oraliq)</span>
+        </label>
+        <div id="sig-kesish-info" style="display:none;font-size:11px;color:var(--text3);margin-top:4px;padding:0 4px">
+          Mahsulotlar orasiga 0.5 sm oraliq qo'shiladi (oxirida yo'q)
+        </div>
+      </div>
+
+      <div id="sig-result" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div style="padding:12px;background:var(--blue-light);border-radius:8px;text-align:center;border:1px solid var(--blue-border)">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">To'g'ri joylashganda</div>
+            <div style="font-size:28px;font-weight:700;color:var(--blue)" id="sig-normal">0</div>
+            <div style="font-size:11px;color:var(--text3)" id="sig-normal-info"></div>
+          </div>
+          <div style="padding:12px;background:var(--green-light);border-radius:8px;text-align:center;border:1px solid var(--green-border)">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Aylantirib joylashganda</div>
+            <div style="font-size:28px;font-weight:700;color:var(--green)" id="sig-rotated">0</div>
+            <div style="font-size:11px;color:var(--text3)" id="sig-rotated-info"></div>
+          </div>
+        </div>
+        <div style="padding:10px;background:var(--gray-light);border-radius:8px;font-size:13px;text-align:center">
+          <span style="color:var(--text3)">Eng ko'p sig'adi: </span>
+          <span style="font-weight:700;font-size:16px;color:var(--blue)" id="sig-best">0 ta</span>
+          <span style="font-size:11px;color:var(--text3)" id="sig-best-way"></span>
+        </div>
+      </div>
+
+      <div id="sig-empty" style="padding:16px;text-align:center;color:var(--text3);font-size:13px">
+        O'lchamlarni kiriting
+      </div>
+    </div>
+
     <!-- Banner / Orakal -->
-    <div class="card" id="kalk-banner">
+    <div class="card hidden" id="kalk-banner">
       <div class="card-title">Banner hisoblash</div>
 
       <!-- Narx jadvali -->
@@ -1577,10 +1651,77 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         </div>
       </div>
 
+      <!-- 11. Zborka (ixtiyoriy) -->
+      <div class="ofset-blok">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div class="ofset-blok-title" style="margin:0">11. ZBORKA</div>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="of-zbor-check" onchange="toggleOfBlok(&#39;zbor&#39;);calcOfset()" style="width:auto"> Qo'shish</label>
+        </div>
+        <div id="of-zbor-body" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div><label class="form-label">Soni</label><input type="text" inputmode="numeric" id="of-zbor-son" placeholder="0" oninput="calcOfset()"></div>
+          <div><label class="form-label">Narx (so'm/dona)</label><input type="text" inputmode="numeric" id="of-zbor-narx" value="500" oninput="calcOfset()"></div>
+          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-zbor-jami">—</div></div>
+        </div>
+      </div>
+
+      <!-- 12. Rezka va Upakovka (ixtiyoriy) -->
+      <div class="ofset-blok">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div class="ofset-blok-title" style="margin:0">12. REZKA VA UPAKOVKA</div>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="of-rezka-check" onchange="toggleOfBlok(&#39;rezka&#39;);calcOfset()" style="width:auto"> Qo'shish</label>
+        </div>
+        <div id="of-rezka-body" style="display:none;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label class="form-label">Summa (so'm)</label><input type="text" inputmode="numeric" id="of-rezka-sum" placeholder="0" oninput="calcOfset()"></div>
+          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-rezka-jami">—</div></div>
+        </div>
+      </div>
+
+      <!-- 13. Qo'shimcha rasxod (ixtiyoriy) -->
+      <div class="ofset-blok">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div class="ofset-blok-title" style="margin:0">13. QO'SHIMCHA RASXOD</div>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="of-rasxod-check" onchange="toggleOfBlok(&#39;rasxod&#39;);calcOfset()" style="width:auto"> Qo'shish</label>
+        </div>
+        <div id="of-rasxod-body" style="display:none;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label class="form-label">Summa (so'm)</label><input type="text" inputmode="numeric" id="of-rasxod-sum" placeholder="0" oninput="calcOfset()"></div>
+          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-rasxod-jami">—</div></div>
+        </div>
+      </div>
+
+      <!-- 14. Foyda -->
+      <div class="ofset-blok" style="border:1.5px solid var(--green-border);background:var(--green-light)">
+        <div class="ofset-blok-title" style="color:var(--green)">💰 FOYDA (NAЦЕНКА)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:flex-end">
+          <div>
+            <label class="form-label">Foiz (%)</label>
+            <input type="text" inputmode="decimal" id="of-foyda-foiz" placeholder="38" oninput="calcOfset()" style="border-color:var(--green-border)">
+          </div>
+          <div style="padding-bottom:9px">
+            <div style="font-size:11px;color:var(--text3)">Mijozga narx</div>
+            <div style="font-size:18px;font-weight:700;color:var(--green)" id="of-foyda-jami">—</div>
+          </div>
+        </div>
+      </div>
+
       <!-- JAMI -->
       <div class="kalk-result" id="kalk-of-result">
         <div style="font-size:12px;color:var(--text3)">Ma'lumotlarni kiriting</div>
         <div style="font-size:28px;font-weight:700;color:var(--blue)">—</div>
+      </div>
+
+      <!-- FOYDA -->
+      <div class="ofset-blok" style="margin-top:10px">
+        <div class="ofset-blok-title">FOYDA (ixtiyoriy)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:flex-end">
+          <div>
+            <label class="form-label">Foyda foizi (%)</label>
+            <input type="text" inputmode="decimal" id="of-foyda-pct" placeholder="38" oninput="calcOfsetFoyda()">
+          </div>
+          <div style="padding-bottom:9px">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:2px">Mijozga narx:</div>
+            <div style="font-size:20px;font-weight:700;color:var(--green)" id="of-foyda-jami">—</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -3701,7 +3842,7 @@ function renderFoizTable(){ if(ftBuilt)return; ftBuilt=true; const tb=document.g
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
 function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','admin-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',admin_yoriq:'admin-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
-function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} if(id==='kalk'){setKalkType('banner');} saveCurrentPanel(id); }
+function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} if(id==='kalk'){setKalkType('sigim');} saveCurrentPanel(id); }
 function showNotify(msg){ const el=document.getElementById('notify'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2800); }
 
 renderAdmin();
@@ -3980,7 +4121,7 @@ function setKalkType(type, el){
   kalkType = type;
   document.querySelectorAll('#panel-kalk .filter-btn').forEach(b=>b.classList.remove('active'));
   if(el) el.classList.add('active');
-  ['banner','bekprint','uvdtf','dtf','pechat','ofset'].forEach(t => {
+  ['sigim','banner','bekprint','uvdtf','dtf','pechat','ofset'].forEach(t => {
     const el2 = document.getElementById('kalk-'+t);
     if(el2) el2.classList.toggle('hidden', t !== type);
   });
@@ -3995,6 +4136,66 @@ function showKalkResult(elId, kvM, narxKv, jami, izoh){
     '<div style="font-size:12px;color:var(--text3);margin-bottom:4px">' + izoh + '</div>' +
     '<div style="font-size:28px;font-weight:700;color:var(--blue)">' + fmt(jami) + " so'm</div>" +
     (narxKv ? '<div style="font-size:12px;color:var(--text3);margin-top:4px">Birlik narxi: ' + fmt(narxKv) + " so'm</div>" : '');
+}
+
+function calcSigim(){
+  const mahEni  = parseFloat(document.getElementById('sig-mah-eni').value)||0;
+  const mahBoyi = parseFloat(document.getElementById('sig-mah-boyi').value)||0;
+  const matEni  = parseFloat(document.getElementById('sig-mat-eni').value)||0;
+  const matBoyi = parseFloat(document.getElementById('sig-mat-boyi').value)||0;
+  const kesish  = document.getElementById('sig-kesish').checked;
+  const oraliq  = kesish ? 0.5 : 0;
+
+  const resEl   = document.getElementById('sig-result');
+  const emptyEl = document.getElementById('sig-empty');
+  const infoEl  = document.getElementById('sig-kesish-info');
+  if(infoEl) infoEl.style.display = kesish ? 'block' : 'none';
+
+  if(!mahEni || !mahBoyi || !matEni || !matBoyi){
+    if(resEl) resEl.style.display = 'none';
+    if(emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+
+  // Oraliq bilan nechta sig'adi: n*mahsulot + (n-1)*oraliq <= material
+  // n*(mahsulot + oraliq) - oraliq <= material
+  // n <= (material + oraliq) / (mahsulot + oraliq)
+  function sigDir(matO, mahO){
+    if(oraliq === 0) return Math.floor(matO / mahO);
+    return Math.floor((matO + oraliq) / (mahO + oraliq));
+  }
+
+  // To'g'ri joylashganda
+  const normEni  = sigDir(matEni, mahEni);
+  const normBoyi = sigDir(matBoyi, mahBoyi);
+  const normSon  = normEni * normBoyi;
+
+  // To'g'ri haqiqiy o'lcham
+  const normEniFiz  = normEni  > 0 ? normEni  * mahEni  + (normEni -1)*oraliq : 0;
+  const normBoyiFiz = normBoyi > 0 ? normBoyi * mahBoyi + (normBoyi-1)*oraliq : 0;
+
+  // Aylantirib joylashganda
+  const rotEni  = sigDir(matEni, mahBoyi);
+  const rotBoyi = sigDir(matBoyi, mahEni);
+  const rotSon  = rotEni * rotBoyi;
+
+  const rotEniFiz  = rotEni  > 0 ? rotEni  * mahBoyi + (rotEni -1)*oraliq : 0;
+  const rotBoyiFiz = rotBoyi > 0 ? rotBoyi * mahEni  + (rotBoyi-1)*oraliq : 0;
+
+  const best    = Math.max(normSon, rotSon);
+  const bestWay = normSon >= rotSon ? "(to'g'ri)" : "(aylantirib)";
+
+  if(resEl) resEl.style.display = 'block';
+  if(emptyEl) emptyEl.style.display = 'none';
+
+  const set = (id, val) => { const e=document.getElementById(id); if(e) e.textContent=val; };
+
+  set('sig-normal',   normSon + ' ta');
+  set('sig-normal-info', normEni+'×'+normBoyi + (kesish?' ('+normEniFiz.toFixed(1)+'×'+normBoyiFiz.toFixed(1)+' sm)':''));
+  set('sig-rotated',  rotSon + ' ta');
+  set('sig-rotated-info', rotEni+'×'+rotBoyi + (kesish?' ('+rotEniFiz.toFixed(1)+'×'+rotBoyiFiz.toFixed(1)+' sm)':''));
+  set('sig-best',     best + ' ta');
+  set('sig-best-way', ' ' + bestWay);
 }
 
 function calcBanner(){
@@ -4293,7 +4494,37 @@ function calcOfset(){
     setSum('of-term-jami', termJami);
   }
 
-  const jami = formaJami+pechatJami+qogozJami+lamJami+visJami+pichJami+perJami+termJami;
+  // ZBORKA
+  let zborJami = 0;
+  if(document.getElementById('of-zbor-check').checked){
+    const zborSon = parseInt(document.getElementById('of-zbor-son').value)||0;
+    const zborNarx = parseInt(document.getElementById('of-zbor-narx').value)||500;
+    zborJami = zborSon*zborNarx;
+    setSum('of-zbor-jami', zborJami);
+  }
+
+  // REZKA VA UPAKOVKA
+  let rezkaJami = 0;
+  if(document.getElementById('of-rezka-check').checked){
+    rezkaJami = parseInt(document.getElementById('of-rezka-sum').value)||0;
+    setSum('of-rezka-jami', rezkaJami);
+  }
+
+  // QO'SHIMCHA RASXOD
+  let rasxodJami = 0;
+  if(document.getElementById('of-rasxod-check').checked){
+    rasxodJami = parseInt(document.getElementById('of-rasxod-sum').value)||0;
+    setSum('of-rasxod-jami', rasxodJami);
+  }
+
+  const jami = formaJami+pechatJami+qogozJami+lamJami+visJami+pichJami+perJami+termJami+zborJami+rezkaJami+rasxodJami;
+
+  // FOYDA
+  const foizEl = document.getElementById('of-foyda-foiz');
+  const foydaJamiEl = document.getElementById('of-foyda-jami');
+  const foiz = parseFloat(foizEl ? foizEl.value : 0)||0;
+  const mijozNarx = foiz > 0 ? Math.round(jami * (1 + foiz/100)) : 0;
+  if(foydaJamiEl) foydaJamiEl.textContent = foiz > 0 && jami > 0 ? fmt(mijozNarx)+" so'm (+"+foiz+"%)" : '—';
   const el = document.getElementById('kalk-of-result');
   if(!el) return;
 
@@ -4303,20 +4534,24 @@ function calcOfset(){
   }
 
   const nom = document.getElementById('of-nom').value||'Mahsulot';
-  kalkLastResult = nom+': '+son+' dona\n'+'Toza pechat: '+ishSon+"\nQog'oz: "+qogozSon+' list\n'+'Forma: '+fmt(formaJami)+" so'm\nPechat: "+fmt(pechatJami)+" so'm\nQog'oz: "+fmt(qogozJami)+" so'm\nJami: "+fmt(jami)+" so'm";
+  kalkLastResult = nom+': '+son+' dona\n'+'Toza pechat: '+ishSon+"\nQog'oz: "+qogozSon+' list\n'+
+    'Tannarx: '+fmt(jami)+" so'm"+(foiz>0?'\nMijozga ('+foiz+'%): '+fmt(mijozNarx)+" so'm":'');
 
   const parts = [
     {n:'Forma',v:formaJami},{n:'Pechat',v:pechatJami},{n:"Qog'oz",v:qogozJami},
     {n:'Laminatsiya',v:lamJami},{n:'Visichka',v:visJami},
-    {n:'Pichoq',v:pichJami},{n:'Pereplot',v:perJami},{n:'Termokley',v:termJami}
+    {n:'Pichoq',v:pichJami},{n:'Pereplot',v:perJami},{n:'Termokley',v:termJami},
+    {n:'Zborka',v:zborJami},{n:'Rezka',v:rezkaJami},{n:"Qo'sh.rasxod",v:rasxodJami}
   ].filter(p=>p.v>0);
 
   el.innerHTML =
     '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;margin-bottom:10px;font-size:11px">'+
     parts.map(p=>'<div style="text-align:center;background:var(--blue-light);padding:4px 6px;border-radius:6px"><div style="color:var(--text3)">'+p.n+'</div><div style="font-weight:700;color:var(--blue)">'+fmt(p.v)+"</div></div>").join('')+
     '</div>'+
-    '<div style="font-size:11px;color:var(--text3);margin-bottom:6px">'+son+" dona | "+qogozSon+" list qog'oz</div>"+
-    '<div style="font-size:30px;font-weight:700;color:var(--blue)">'+fmt(jami)+" so'm</div>";
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:4px">'+son+" dona | "+qogozSon+" list qog'oz</div>"+
+    '<div style="font-size:13px;color:var(--text3);margin-bottom:4px">Tannarx: <b>'+fmt(jami)+" so'm</b></div>"+
+    (foiz>0&&mijozNarx>0?'<div style="font-size:13px;color:var(--green);margin-bottom:6px">Mijozga (+'+foiz+'%): <b>'+fmt(mijozNarx)+" so'm</b></div>":'') +
+    '<div style="font-size:30px;font-weight:700;color:var(--blue)">'+fmt(foiz>0&&mijozNarx>0?mijozNarx:jami)+" so'm</div>";
 }
 
 function copyKalkResult(){
