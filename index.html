@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_46.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_48.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -202,6 +202,8 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .avans-chip.berildi{background:var(--green-light);color:var(--green)}
 .give-avans-row{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
 .give-avans-row input{width:140px}
+.kalk-result{padding:14px;background:var(--blue-light);border-radius:10px;border:1px solid var(--blue-border);text-align:center;margin-top:4px}
+[data-theme="dark"] .kalk-result{background:var(--blue-light);border-color:var(--blue-border)}
 .db-recent-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;margin-bottom:6px;border:1px solid var(--gray-border);background:var(--white)}
 .db-recent-item:hover{border-color:var(--blue-border)}
 .db-recent-label{font-size:12px;font-weight:600}
@@ -374,7 +376,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   <p>Yuklanmoqda...</p>
 </div>
 
-<div id="login-screen" class="">
+<div id="login-screen" class="hidden">
   <div class="login-card">
     <div class="login-logo">
       <div class="login-icon">
@@ -396,7 +398,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 </div>
 
-<div id="yoriq-screen" class="hidden">
+<div id="yoriq-screen" class="">
   <div class="yoriq-wrap">
     <div class="yoriq-header">
       <div style="font-size:40px;margin-bottom:10px">📋</div>
@@ -643,9 +645,9 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     <div class="topbar-right">
       <div class="user-chip">
         <div class="user-dot"></div>
-        <span id="user-name-chip">—</span>
+        <span id="user-name-chip">bayramali</span>
       </div>
-      <span class="role-badge" id="role-badge-chip"></span>
+      <span class="role-badge ishlab" id="role-badge-chip">Ishlab chiqarish</span>
       <label class="shift-toggle" id="shift-toggle-wrap" title="Kunduzgi / Tungi rejim">
         <input type="checkbox" id="shift-toggle-input" onchange="toggleShift(this.checked)">
         <span class="shift-slider">
@@ -662,11 +664,11 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
   </div>
 
   <div class="nav" id="main-nav">
-    <button class="nav-btn" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
       Umumiy
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       Admin
     </button>
@@ -691,11 +693,15 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
       Sklad
     </button>
-    <button class="nav-btn hidden" onclick="showPanel(&#39;bozorlik&#39;)" id="nb-bozorlik">
+    <button class="nav-btn" onclick="showPanel(&#39;kalk&#39;)" id="nb-kalk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="10" x2="10" y2="10"></line><line x1="14" y1="10" x2="16" y2="10"></line><line x1="8" y1="14" x2="10" y2="14"></line><line x1="14" y1="14" x2="16" y2="14"></line><line x1="8" y1="18" x2="10" y2="18"></line><line x1="14" y1="18" x2="16" y2="18"></line></svg>
+      Kalk
+    </button>
+    <button class="nav-btn" onclick="showPanel(&#39;bozorlik&#39;)" id="nb-bozorlik">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 01-8 0"></path></svg>
       Bozorlik
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
       <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><circle cx="11" cy="11" r="2"></circle></svg>
       Dizayn
     </button>
@@ -703,7 +709,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14.5 15.5"></polyline><path d="M16.51 3.51L19 1M7.49 3.51L5 1"></path></svg>
       Taymer
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
       <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
       Foiz jadvali
     </button>
@@ -1228,11 +1234,153 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 
     <!-- Telegram yuborish tugmasi -->
     <div id="bozorlik-send-wrap" class="hidden" style="margin-top:12px">
-      <button class="tgbtn" onclick="sendBozorlikToTelegram()">
+      <button class="tgbtn" id="bz-send-btn" onclick="sendBozorlikToTelegram()">
         <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         Bozorlikka yuborish (Telegram)
       </button>
     </div>
+  </div>
+
+  <!-- KALKULYATOR -->
+  <div class="panel" id="panel-kalk">
+    <div style="margin:16px 0 14px;font-size:14px;font-weight:700">Narx kalkulyatori</div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="filter-btn active" onclick="setKalkType(&#39;banner&#39;,this)">Banner/Orakal</button>
+      <button class="filter-btn" onclick="setKalkType(&#39;bekprint&#39;,this)">Bek print</button>
+      <button class="filter-btn" onclick="setKalkType(&#39;uvdtf&#39;,this)">UV DTF</button>
+      <button class="filter-btn" onclick="setKalkType(&#39;dtf&#39;,this)">DTF</button>
+      <button class="filter-btn" onclick="setKalkType(&#39;pechat&#39;,this)">Pechat</button>
+    </div>
+
+    <!-- Banner / Orakal -->
+    <div class="card" id="kalk-banner">
+      <div class="card-title">Banner hisoblash</div>
+
+      <!-- Narx jadvali -->
+      <div style="margin-bottom:14px;padding:10px;background:var(--gray-light);border-radius:8px;font-size:11px">
+        <div style="font-weight:700;margin-bottom:6px;color:var(--text2)">Narx jadvali (1 kv.m):</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;color:var(--text3)">
+          <span>1 kv.m gacha</span><span style="font-weight:700;color:var(--text)">100 000 so'm</span>
+          <span>1 — 5 kv.m</span><span style="font-weight:700;color:var(--text)">50 000 so'm</span>
+          <span>5 — 10 kv.m</span><span style="font-weight:700;color:var(--text)">40 000 so'm</span>
+          <span>10 — 20 kv.m</span><span style="font-weight:700;color:var(--text)">35 000 so'm</span>
+          <span>20 — 30 kv.m</span><span style="font-weight:700;color:var(--text)">30 000 so'm</span>
+          <span>30 — 50 kv.m</span><span style="font-weight:700;color:var(--text)">28 000 so'm</span>
+          <span>50 — 100 kv.m</span><span style="font-weight:700;color:var(--text)">27 000 so'm</span>
+          <span>100+ kv.m</span><span style="font-weight:700;color:var(--text)">25 000 so'm</span>
+        </div>
+        <div style="margin-top:6px;color:var(--amber);font-size:11px">Qora podloshka: +4 000 so'm/kv.m</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div><label class="form-label">Eni (metr)</label><input type="text" inputmode="decimal" id="kalk-eni" placeholder="1.5" oninput="calcBanner()"></div>
+        <div><label class="form-label">Bo'yi (metr)</label><input type="text" inputmode="decimal" id="kalk-boyi" placeholder="3.0" oninput="calcBanner()"></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" id="kalk-podloshka" onchange="calcBanner()" style="width:auto"> Qora podloshka (+4 000/kv.m)</label>
+        </div>
+      </div>
+
+      <!-- Banner formati -->
+      <div id="kalk-banner-format" style="margin-bottom:12px;display:none">
+        <div style="padding:8px 12px;border-radius:8px;background:var(--blue-light);border:1px solid var(--blue-border);font-size:13px;color:var(--blue);font-weight:600" id="kalk-format-text"></div>
+      </div>
+
+      <!-- Ogohlantirish -->
+      <div id="kalk-banner-warn" style="margin-bottom:12px;display:none">
+        <div style="padding:8px 12px;border-radius:8px;background:var(--red-light);border:1px solid var(--red-border);font-size:13px;color:var(--red);font-weight:600">
+          ⚠️ O'lcham katta! Maxsus pechat talab qilinadi (+10 000 so'm/kv.m)
+        </div>
+      </div>
+
+      <div class="kalk-result" id="kalk-banner-result">
+        <div style="font-size:12px;color:var(--text3)">Eni va bo'yini kiriting</div>
+        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
+      </div>
+    </div>
+
+    <!-- Bekprint -->
+    <div class="card hidden" id="kalk-bekprint">
+      <div class="card-title">Bek print hisoblash</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div><label class="form-label">Eni (sm)</label><input type="text" inputmode="decimal" id="kalk-bek-eni" placeholder="30" oninput="calcBekprint()"></div>
+        <div><label class="form-label">Bo'yi (sm)</label><input type="text" inputmode="decimal" id="kalk-bek-boyi" placeholder="40" oninput="calcBekprint()"></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <label class="form-label">Soni</label>
+        <input type="text" inputmode="numeric" id="kalk-bek-son" placeholder="100" oninput="calcBekprint()">
+      </div>
+      <div class="kalk-result" id="kalk-bek-result">
+        <div style="font-size:12px;color:var(--text3)">Natija</div>
+        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
+      </div>
+    </div>
+
+    <!-- UV DTF -->
+    <div class="card hidden" id="kalk-uvdtf">
+      <div class="card-title">UV DTF hisoblash</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div><label class="form-label">Eni (sm)</label><input type="text" inputmode="decimal" id="kalk-uv-eni" placeholder="10" oninput="calcUvDtf()"></div>
+        <div><label class="form-label">Bo'yi (sm)</label><input type="text" inputmode="decimal" id="kalk-uv-boyi" placeholder="10" oninput="calcUvDtf()"></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <label class="form-label">Soni</label>
+        <input type="text" inputmode="numeric" id="kalk-uv-son" placeholder="50" oninput="calcUvDtf()">
+      </div>
+      <div class="kalk-result" id="kalk-uv-result">
+        <div style="font-size:12px;color:var(--text3)">Natija</div>
+        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
+      </div>
+    </div>
+
+    <!-- DTF -->
+    <div class="card hidden" id="kalk-dtf">
+      <div class="card-title">DTF hisoblash</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div><label class="form-label">Eni (sm)</label><input type="text" inputmode="decimal" id="kalk-dtf-eni" placeholder="30" oninput="calcDtf()"></div>
+        <div><label class="form-label">Bo'yi (sm)</label><input type="text" inputmode="decimal" id="kalk-dtf-boyi" placeholder="40" oninput="calcDtf()"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div><label class="form-label">Soni</label><input type="text" inputmode="numeric" id="kalk-dtf-son" placeholder="10" oninput="calcDtf()"></div>
+        <div>
+          <label class="form-label">Turi</label>
+          <select id="kalk-dtf-tur" style="width:100%" onchange="calcDtf()">
+            <option value="1">Bir tomonlama</option>
+            <option value="1.8">Ikki tomonlama</option>
+          </select>
+        </div>
+      </div>
+      <div class="kalk-result" id="kalk-dtf-result">
+        <div style="font-size:12px;color:var(--text3)">Natija</div>
+        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
+      </div>
+    </div>
+
+    <!-- Pechat -->
+    <div class="card hidden" id="kalk-pechat">
+      <div class="card-title">Rangli pechat hisoblash</div>
+      <div style="margin-bottom:12px">
+        <label class="form-label">Soni</label>
+        <input type="text" inputmode="numeric" id="kalk-pech-son" placeholder="100" oninput="calcPechat()">
+      </div>
+      <div style="margin-bottom:12px">
+        <label class="form-label">O'lcham</label>
+        <select id="kalk-pech-olch" style="width:100%" onchange="calcPechat()">
+          <option value="A4">A4</option>
+          <option value="A3">A3</option>
+          <option value="A5">A5</option>
+        </select>
+      </div>
+      <div class="kalk-result" id="kalk-pech-result">
+        <div style="font-size:12px;color:var(--text3)">Natija</div>
+        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
+      </div>
+    </div>
+
+    <!-- Nusxa olish -->
+    <button class="savebtn" style="margin-top:8px" onclick="copyKalkResult()">📋 Natijani nusxa olish</button>
   </div>
 
   <!-- STOPWATCH -->
@@ -3349,7 +3497,7 @@ function renderFoizTable(){ if(ftBuilt)return; ftBuilt=true; const tb=document.g
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
 function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','admin-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',admin_yoriq:'admin-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
-function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} saveCurrentPanel(id); }
+function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} if(id==='kalk'){setKalkType('banner');} saveCurrentPanel(id); }
 function showNotify(msg){ const el=document.getElementById('notify'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2800); }
 
 renderAdmin();
@@ -3620,6 +3768,158 @@ function openRasmModal(url){
   document.body.appendChild(modal);
 }
 
+// ── KALKULYATOR ──
+let kalkType = 'banner';
+let kalkLastResult = '';
+
+function setKalkType(type, el){
+  kalkType = type;
+  document.querySelectorAll('#panel-kalk .filter-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  ['banner','bekprint','uvdtf','dtf','pechat'].forEach(t => {
+    const el2 = document.getElementById('kalk-'+t);
+    if(el2) el2.classList.toggle('hidden', t !== type);
+  });
+}
+
+function showKalkResult(elId, kvM, narxKv, jami, izoh){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  kalkLastResult = izoh + '\nNarx: ' + fmt(jami) + " so'm";
+  el.innerHTML =
+    '<div style="font-size:12px;color:var(--text3);margin-bottom:4px">' + izoh + '</div>' +
+    '<div style="font-size:28px;font-weight:700;color:var(--blue)">' + fmt(jami) + " so'm</div>" +
+    (narxKv ? '<div style="font-size:12px;color:var(--text3);margin-top:4px">Birlik narxi: ' + fmt(narxKv) + " so'm</div>" : '');
+}
+
+function calcBanner(){
+  const eni = parseFloat(document.getElementById('kalk-eni').value)||0;
+  const boyi = parseFloat(document.getElementById('kalk-boyi').value)||0;
+  const podloshka = document.getElementById('kalk-podloshka').checked;
+  const formatEl = document.getElementById('kalk-banner-format');
+  const warnEl = document.getElementById('kalk-banner-warn');
+
+  if(!eni || !boyi){
+    if(formatEl) formatEl.style.display='none';
+    if(warnEl) warnEl.style.display='none';
+    return;
+  }
+
+  // Banner formati aniqlash (eng katta o'lcham asosida)
+  const maxOlcham = Math.max(eni, boyi);
+  let format = '';
+  let isOversized = false;
+
+  if(maxOlcham <= 1.2){
+    format = '1.3 metrlik banner (1.2m pechat)';
+  } else if(maxOlcham <= 2.5){
+    format = '2.6 metrlik banner (2.5m pechat)';
+  } else if(maxOlcham <= 3.1){
+    format = '3.2 metrlik banner (3.0m pechat)';
+  } else {
+    isOversized = true;
+    format = 'Maxsus o\'lcham (3.2m dan katta)';
+  }
+
+  if(formatEl){
+    formatEl.style.display = 'block';
+    document.getElementById('kalk-format-text').textContent = '📐 ' + format;
+  }
+  if(warnEl) warnEl.style.display = isOversized ? 'block' : 'none';
+
+  const kv = eni * boyi;
+
+  // Narx jadvali (1 kv.m asosida)
+  let narxKv;
+  if(kv < 1)        narxKv = 100000;
+  else if(kv < 5)   narxKv = 50000;
+  else if(kv < 10)  narxKv = 40000;
+  else if(kv < 20)  narxKv = 35000;
+  else if(kv < 30)  narxKv = 30000;
+  else if(kv < 50)  narxKv = 28000;
+  else if(kv < 100) narxKv = 27000;
+  else              narxKv = 25000;
+
+  // Qo'shimchalar
+  if(podloshka) narxKv += 4000;
+  if(isOversized) narxKv += 10000; // Maxsus o'lcham uchun
+
+  const jami = Math.round(kv * narxKv);
+
+  const izoh = eni+'m × '+boyi+'m = '+kv.toFixed(2)+' kv.m'+
+    (podloshka?' + Podloshka':'') + (isOversized?' + Maxsus':'') +
+    ' | ' + format;
+
+  const el = document.getElementById('kalk-banner-result');
+  if(!el) return;
+  kalkLastResult = izoh + '\nNarx: ' + fmt(jami) + " so'm";
+  el.innerHTML =
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:4px">'+eni+'m × '+boyi+'m = '+kv.toFixed(2)+' kv.m | '+fmt(narxKv)+" so'm/kv.m"+'</div>'+
+    '<div style="font-size:28px;font-weight:700;color:'+(isOversized?'var(--red)':'var(--blue)')+'">'+fmt(jami)+" so'm</div>"+
+    '<div style="font-size:12px;color:var(--text3);margin-top:4px">'+format+'</div>';
+}
+
+function calcBekprint(){
+  const eni = parseFloat(document.getElementById('kalk-bek-eni').value)||0;
+  const boyi = parseFloat(document.getElementById('kalk-bek-boyi').value)||0;
+  const son = parseInt(document.getElementById('kalk-bek-son').value)||0;
+  if(!eni||!boyi||!son) return;
+  const kvSm = eni * boyi;
+  const kvM = kvSm / 10000;
+  // Narx: kv.m asosida (min 3000 so'm, keyin 8000 so'm/kv.m)
+  const birlikNarx = Math.max(3000, Math.round(kvM * 8000));
+  const jami = birlikNarx * son;
+  const izoh = eni+'×'+boyi+' sm, '+son+' dona';
+  showKalkResult('kalk-bek-result', null, birlikNarx, jami, izoh);
+}
+
+function calcUvDtf(){
+  const eni = parseFloat(document.getElementById('kalk-uv-eni').value)||0;
+  const boyi = parseFloat(document.getElementById('kalk-uv-boyi').value)||0;
+  const son = parseInt(document.getElementById('kalk-uv-son').value)||0;
+  if(!eni||!boyi||!son) return;
+  const kvSm = eni * boyi;
+  const kvM = kvSm / 10000;
+  // UV DTF: min 5000, keyin 15000 so'm/kv.m
+  const birlikNarx = Math.max(5000, Math.round(kvM * 15000));
+  const jami = birlikNarx * son;
+  const izoh = eni+'×'+boyi+' sm, '+son+' dona';
+  showKalkResult('kalk-uv-result', null, birlikNarx, jami, izoh);
+}
+
+function calcDtf(){
+  const eni = parseFloat(document.getElementById('kalk-dtf-eni').value)||0;
+  const boyi = parseFloat(document.getElementById('kalk-dtf-boyi').value)||0;
+  const son = parseInt(document.getElementById('kalk-dtf-son').value)||0;
+  const tur = parseFloat(document.getElementById('kalk-dtf-tur').value)||1;
+  if(!eni||!boyi||!son) return;
+  const kvSm = eni * boyi;
+  const kvM = kvSm / 10000;
+  // DTF: min 8000, keyin 12000 so'm/kv.m
+  const birlikNarx = Math.max(8000, Math.round(kvM * 12000 * tur));
+  const jami = birlikNarx * son;
+  const izoh = eni+'×'+boyi+' sm, '+son+' dona'+(tur>1?' (2 tomonlama)':'');
+  showKalkResult('kalk-dtf-result', null, birlikNarx, jami, izoh);
+}
+
+function calcPechat(){
+  const son = parseInt(document.getElementById('kalk-pech-son').value)||0;
+  const olch = document.getElementById('kalk-pech-olch').value;
+  if(!son) return;
+  const narxlar = { 'A4': 500, 'A3': 900, 'A5': 300 };
+  const narx = narxlar[olch] || 500;
+  const jami = narx * son;
+  const izoh = olch + ' format, ' + son + ' dona';
+  showKalkResult('kalk-pech-result', null, narx, jami, izoh);
+}
+
+function copyKalkResult(){
+  if(!kalkLastResult){ showNotify('Avval hisoblang'); return; }
+  navigator.clipboard.writeText(kalkLastResult)
+    .then(()=>showNotify('Nusxa olindi!'))
+    .catch(()=>showNotify('Xato'));
+}
+
 // ── BOZORLIK ──
 let bozorlikData = [];
 
@@ -3759,7 +4059,8 @@ function renderBozorlik(){
   if(!el) return;
 
   const active = bozorlikData.filter(b => b.status === 'kutilmoqda');
-  const done = bozorlikData.filter(b => b.status !== 'kutilmoqda');
+  const yuborildi = bozorlikData.filter(b => b.status === 'yuborildi');
+  const done = bozorlikData.filter(b => b.status !== 'kutilmoqda' && b.status !== 'yuborildi');
 
   if(!bozorlikData.length){
     el.innerHTML = '<div class="empty-state"><p>Ro\'yxat bo\'sh</p></div>';
@@ -3768,6 +4069,13 @@ function renderBozorlik(){
   }
 
   if(sendWrap) sendWrap.classList.toggle('hidden', !active.length);
+  // Send tugmasini reset qilish (yangi kutilmoqda itemlar bo'lsa)
+  const sendBtn = document.getElementById('bz-send-btn');
+  if(sendBtn && active.length){
+    sendBtn.disabled = false;
+    sendBtn.style.opacity = '1';
+    sendBtn.innerHTML = '<svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Bozorlikka yuborish (Telegram)';
+  }
 
   let html = '';
 
@@ -3813,11 +4121,12 @@ async function sendBozorlikToTelegram(){
   const active = bozorlikData.filter(b => b.status === 'kutilmoqda');
   if(!active.length){ showNotify("Ro'yxat bo'sh"); return; }
 
-  const VERCEL_URL = 'https://adsuz-sklad-jaqpmu8qr-adsuz1.vercel.app';
+  const sendBtn = document.getElementById('bz-send-btn');
+  if(sendBtn && sendBtn.disabled) return;
+  if(sendBtn){ sendBtn.disabled = true; sendBtn.style.opacity = '0.5'; sendBtn.innerHTML = 'Yuborilmoqda...'; }
+
   const BOT_TOKEN = '8636816129:AAE-sBNfcLy8e4EXqepHhDfhHG_p6PDZPxU';
   const CHAT_ID = '-4273189072';
-
-  showNotify('Yuborilmoqda...');
 
   let sentCount = 0;
   for(const item of active){
@@ -3834,32 +4143,30 @@ async function sendBozorlikToTelegram(){
         await fetch('https://api.telegram.org/bot'+BOT_TOKEN+'/sendPhoto', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: CHAT_ID,
-            photo: item.rasm_url,
-            caption: caption,
-            reply_markup: keyboard
-          })
+          body: JSON.stringify({ chat_id: CHAT_ID, photo: item.rasm_url, caption, reply_markup: keyboard })
         });
       } else {
         await fetch('https://api.telegram.org/bot'+BOT_TOKEN+'/sendMessage', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: CHAT_ID,
-            text: '🛒 ' + caption,
-            reply_markup: keyboard
-          })
+          body: JSON.stringify({ chat_id: CHAT_ID, text: '🛒 ' + caption, reply_markup: keyboard })
         });
       }
+      // Statusni yuborildi deb belgilaymiz
+      await sb.from('bozorlik_list').update({status:'yuborildi'}).eq('id', item.id);
       sentCount++;
-      // Kichik pauza
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 400));
     } catch(e){ console.error(e); }
   }
 
-  showNotify('✅ '+sentCount+' ta mahsulot Telegram ga yuborildi!');
+  if(sendBtn){
+    sendBtn.innerHTML = '✅ Yuborildi (' + sentCount + ' ta)';
+    sendBtn.style.opacity = '0.5';
+  }
+  showNotify('✅ ' + sentCount + ' ta mahsulot Telegram ga yuborildi!');
+  await loadBozorlik();
 }
+
 
 // ── SKLAD ──
 const SKLAD_EDITOR = 'ra.ravshan1998+bayramali@gmail.com';
