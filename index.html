@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_58.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_60.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1251,6 +1251,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <button class="filter-btn" onclick="setKalkType(&#39;uvdtf&#39;,this)">UV DTF</button>
       <button class="filter-btn" onclick="setKalkType(&#39;dtf&#39;,this)">DTF</button>
       <button class="filter-btn" onclick="setKalkType(&#39;pechat&#39;,this)">Pechat</button>
+      <button class="filter-btn" onclick="setKalkType(&#39;ofset&#39;,this)">Ofset</button>
     </div>
 
     <!-- Banner / Orakal -->
@@ -1376,6 +1377,53 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div class="kalk-result" id="kalk-pech-result">
         <div style="font-size:12px;color:var(--text3)">Natija</div>
         <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
+      </div>
+    </div>
+
+    <!-- Ofset -->
+    <div class="card hidden" id="kalk-ofset">
+      <div class="card-title">Ofset qog'oz hisoblash</div>
+      
+      <div style="margin-bottom:12px">
+        <label class="form-label">Turi</label>
+        <select id="kalk-of-tur" style="width:100%" onchange="updateOfsetFormats()">
+          <option value="a3">A3 Ofset</option>
+        </select>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <label class="form-label">Zichligi (g/m²)</label>
+          <select id="kalk-of-zich" style="width:100%" onchange="calcOfset()">
+            <option value="70">70 g/m²</option>
+            <option value="80">80 g/m²</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Format</label>
+          <select id="kalk-of-format" style="width:100%" onchange="calcOfset()">
+            <option value="98000">A+ (500 list)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <label class="form-label">Miqdor (list)</label>
+          <input type="text" inputmode="numeric" id="kalk-of-son" placeholder="500" oninput="calcOfset()">
+        </div>
+        <div id="kalk-of-pachka-info" style="display:flex;align-items:flex-end;padding-bottom:9px">
+          <span style="font-size:12px;color:var(--text3)"></span>
+        </div>
+      </div>
+
+      <div class="kalk-result" id="kalk-of-result">
+        <div style="font-size:12px;color:var(--text3)">Miqdor kiriting</div>
+        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
+      </div>
+
+      <div style="margin-top:10px;padding:10px;background:var(--gray-light);border-radius:8px;font-size:11px;color:var(--text3)">
+        ℹ️ Narxlar pachka (500 list) asosida. Hisoblash usulini keyinroq sozlaymiz.
       </div>
     </div>
 
@@ -3776,10 +3824,11 @@ function setKalkType(type, el){
   kalkType = type;
   document.querySelectorAll('#panel-kalk .filter-btn').forEach(b=>b.classList.remove('active'));
   if(el) el.classList.add('active');
-  ['banner','bekprint','uvdtf','dtf','pechat'].forEach(t => {
+  ['banner','bekprint','uvdtf','dtf','pechat','ofset'].forEach(t => {
     const el2 = document.getElementById('kalk-'+t);
     if(el2) el2.classList.toggle('hidden', t !== type);
   });
+  if(type === 'ofset') updateOfsetFormats();
 }
 
 function showKalkResult(elId, kvM, narxKv, jami, izoh){
@@ -3948,6 +3997,55 @@ function calcPechat(){
   const jami = narx * son;
   const izoh = olch + ' format, ' + son + ' dona';
   showKalkResult('kalk-pech-result', null, narx, jami, izoh);
+}
+
+// ── OFSET NARXLARI ──
+const OFSET_NARXLAR = {
+  'a3': {
+    label: 'A3 Ofset (Premium)',
+    formatlar: [
+      { label: 'DOUBLE A Everyday 70g (500 list)', zich: 70, pachkaNarx: 98000, listSon: 500 },
+      { label: 'DOUBLE A Premium 80g (500 list)',  zich: 80, pachkaNarx: 120000, listSon: 500 },
+    ]
+  }
+};
+
+function updateOfsetFormats(){
+  const tur = document.getElementById('kalk-of-tur').value;
+  const data = OFSET_NARXLAR[tur];
+  if(!data) return;
+  const fSel = document.getElementById('kalk-of-format');
+  fSel.innerHTML = data.formatlar.map((f,i) =>
+    '<option value="'+i+'">'+f.label+'</option>'
+  ).join('');
+  calcOfset();
+}
+
+function calcOfset(){
+  const tur = document.getElementById('kalk-of-tur').value;
+  const fIdx = parseInt(document.getElementById('kalk-of-format').value)||0;
+  const son = parseInt(document.getElementById('kalk-of-son').value)||0;
+  const data = OFSET_NARXLAR[tur];
+  if(!data) return;
+  const f = data.formatlar[fIdx];
+  if(!f) return;
+
+  const el = document.getElementById('kalk-of-result');
+  const infoEl = document.getElementById('kalk-of-pachka-info');
+
+  const listNarx = f.pachkaNarx / f.listSon;
+  if(infoEl) infoEl.innerHTML = '<span style="font-size:12px;color:var(--text3)">1 list = '+fmt(Math.round(listNarx))+" so'm</span>";
+
+  if(!son){ if(el) el.innerHTML = '<div style="font-size:12px;color:var(--text3)">Miqdor kiriting</div><div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>'; return; }
+
+  const pachkaSoni = Math.ceil(son / f.listSon);
+  const jami = Math.round(son * listNarx);
+
+  kalkLastResult = f.label + '\n' + son + ' list\nJami: ' + fmt(jami) + " so'm";
+
+  if(el) el.innerHTML =
+    '<div style="font-size:12px;color:var(--text3);margin-bottom:6px">'+son+' list × '+fmt(Math.round(listNarx))+" so'm = <b>"+pachkaSoni+' pachka</b></div>'+
+    '<div style="font-size:28px;font-weight:700;color:var(--blue)">'+fmt(jami)+" so'm</div>";
 }
 
 function copyKalkResult(){
