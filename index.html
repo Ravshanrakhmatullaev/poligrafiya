@@ -162,8 +162,9 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .ugrid-bottom{display:grid;grid-template-columns:75px 75px auto;gap:7px;align-items:center}
 .ures{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid var(--purple-border)}
 .note-box{font-size:11px;color:var(--text3);padding:6px 10px;background:#fff;border-radius:7px;margin-top:6px;border:1px solid var(--gray-border);line-height:1.5}
-.prod-grid{display:grid;grid-template-columns:1fr;gap:8px}
-.prod-row-bottom{display:grid;grid-template-columns:1fr 90px auto;gap:7px;align-items:center}
+.prod-grid{display:grid;grid-template-columns:1fr;gap:6px}
+.prod-row-bottom{display:grid;grid-template-columns:90px 90px auto;gap:6px;align-items:center}
+.prod-row-top{display:grid;grid-template-columns:1fr 90px 90px auto;gap:6px;align-items:center}
 
 .ft{width:100%;border-collapse:collapse;font-size:13px}
 .ft th{padding:8px 12px;text-align:left;font-size:11px;color:var(--text3);font-weight:600;border-bottom:1px solid var(--gray-border);text-transform:uppercase;letter-spacing:.04em}
@@ -225,9 +226,43 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 [data-theme="dark"] .ofset-blok[style*="green"] .ofset-blok-title{color:#4ade80}
 [data-theme="dark"] .ofset-blok[style*="green"] #of-foyda-jami{color:#4ade80}
 [data-theme="dark"] .kalk-result{background:var(--blue-light);border-color:var(--blue-border)}
+[data-theme="dark"] #panel-kalk .filter-btn{background:var(--gray-light);color:var(--text3);border-color:var(--gray-border)}
+[data-theme="dark"] #panel-kalk .filter-btn.active{background:var(--blue-light);color:var(--blue);border-color:var(--blue-border)}
+[data-theme="dark"] #panel-kalk input[type=text]{background:var(--white);color:var(--text);border-color:var(--gray-border)}
+[data-theme="dark"] #panel-kalk select{background:var(--white);color:var(--text);border-color:var(--gray-border)}
+[data-theme="dark"] #panel-kalk label{color:var(--text)}
+[data-theme="dark"] #panel-kalk .form-label{color:var(--text3)}
+[data-theme="dark"] #panel-kalk optgroup{background:var(--white);color:var(--text3)}
+[data-theme="dark"] #panel-kalk option{background:var(--white);color:var(--text)}
+[data-theme="dark"] #sig-result > div > div{background:#1e3a5f !important;border-color:var(--blue-border) !important}
+[data-theme="dark"] #sig-result > div > div:last-child{background:#14532d !important;border-color:var(--green-border) !important}
+[data-theme="dark"] #sig-result > div:last-child{background:var(--gray-light) !important}
+[data-theme="dark"] #kalk-banner-format > div{background:var(--blue-light) !important;border-color:var(--blue-border) !important;color:var(--blue) !important}
+[data-theme="dark"] #kalk-banner-warn > div{background:var(--red-light) !important;border-color:var(--red-border) !important;color:var(--red) !important}
+[data-theme="dark"] #kalk-bek-format > div{background:var(--blue-light) !important;border-color:var(--blue-border) !important;color:var(--blue) !important}
+[data-theme="dark"] #panel-kalk input[type=radio]{accent-color:var(--blue)}
+[data-theme="dark"] label[id^="bek-rulo"]{background:var(--gray-light);border-color:var(--gray-border);color:var(--text)}
+[data-theme="dark"] .kalk-result div{color:var(--text)}
 [data-theme="dark"] #sig-result > div > div{background:#1e3a5f;border-color:var(--blue-border)}
 .kalk-result{padding:14px;background:var(--blue-light);border-radius:10px;border:1px solid var(--blue-border);text-align:center;margin-top:4px}
 [data-theme="dark"] .kalk-result{background:var(--blue-light);border-color:var(--blue-border)}
+[data-theme="dark"] #panel-kalk .filter-btn{background:var(--gray-light);color:var(--text3);border-color:var(--gray-border)}
+[data-theme="dark"] #panel-kalk .filter-btn.active{background:var(--blue-light);color:var(--blue);border-color:var(--blue-border)}
+[data-theme="dark"] #panel-kalk input[type=text]{background:var(--white);color:var(--text);border-color:var(--gray-border)}
+[data-theme="dark"] #panel-kalk select{background:var(--white);color:var(--text);border-color:var(--gray-border)}
+[data-theme="dark"] #panel-kalk label{color:var(--text)}
+[data-theme="dark"] #panel-kalk .form-label{color:var(--text3)}
+[data-theme="dark"] #panel-kalk optgroup{background:var(--white);color:var(--text3)}
+[data-theme="dark"] #panel-kalk option{background:var(--white);color:var(--text)}
+[data-theme="dark"] #sig-result > div > div{background:#1e3a5f !important;border-color:var(--blue-border) !important}
+[data-theme="dark"] #sig-result > div > div:last-child{background:#14532d !important;border-color:var(--green-border) !important}
+[data-theme="dark"] #sig-result > div:last-child{background:var(--gray-light) !important}
+[data-theme="dark"] #kalk-banner-format > div{background:var(--blue-light) !important;border-color:var(--blue-border) !important;color:var(--blue) !important}
+[data-theme="dark"] #kalk-banner-warn > div{background:var(--red-light) !important;border-color:var(--red-border) !important;color:var(--red) !important}
+[data-theme="dark"] #kalk-bek-format > div{background:var(--blue-light) !important;border-color:var(--blue-border) !important;color:var(--blue) !important}
+[data-theme="dark"] #panel-kalk input[type=radio]{accent-color:var(--blue)}
+[data-theme="dark"] label[id^="bek-rulo"]{background:var(--gray-light);border-color:var(--gray-border);color:var(--text)}
+[data-theme="dark"] .kalk-result div{color:var(--text)}
 .db-recent-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;margin-bottom:6px;border:1px solid var(--gray-border);background:var(--white)}
 .db-recent-item:hover{border-color:var(--blue-border)}
 .db-recent-label{font-size:12px;font-weight:600}
@@ -336,6 +371,14 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 .filter-btn.active{background:var(--blue-light);border-color:var(--blue-border);color:var(--blue)}
 
 [data-theme="dark"] .nav-btn{color:var(--text3)}
+[data-theme="dark"] *{color:inherit}
+[data-theme="dark"] .panel{color:var(--text)}
+[data-theme="dark"] .card{color:var(--text)}
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea{background:var(--white) !important;color:var(--text) !important;border-color:var(--gray-border) !important}
+[data-theme="dark"] label{color:var(--text)}
+[data-theme="dark"] .form-label{color:var(--text3) !important}
 [data-theme="dark"] .nav-btn:hover,[data-theme="dark"] .nav-btn.active{background:var(--gray-light);color:var(--text)}
 [data-theme="dark"] .logout-btn{background:var(--gray-light);border-color:var(--gray-border);color:var(--text)}
 [data-theme="dark"] .badge.bw{background:var(--gray-light);border-color:var(--gray-border);color:var(--text2)}
@@ -1279,7 +1322,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
         </div>
       </div>
       <div style="margin-bottom:12px">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--gray-light);border-radius:8px;border:1.5px solid var(--gray-border)">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--gray-light);border-radius:8px;border:1.5px solid var(--gray-border);color:var(--text)">
           <input type="checkbox" id="sig-kesish" onchange="calcSigim()" style="width:18px;height:18px;cursor:pointer;accent-color:var(--blue)">
           <span>✂️ Kesish uchun joy (+0.5 sm oraliq)</span>
         </label>
@@ -1290,12 +1333,12 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 
       <div id="sig-result" style="display:none">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-          <div style="padding:12px;background:var(--blue-light);border-radius:8px;text-align:center;border:1px solid var(--blue-border)">
+          <div style="padding:12px;background:var(--blue-light);border-radius:8px;text-align:center;border:1px solid var(--blue-border);color:var(--text)">
             <div style="font-size:11px;color:var(--text3);margin-bottom:4px">To'g'ri joylashganda</div>
             <div style="font-size:28px;font-weight:700;color:var(--blue)" id="sig-normal">0</div>
             <div style="font-size:11px;color:var(--text3)" id="sig-normal-info"></div>
           </div>
-          <div style="padding:12px;background:var(--green-light);border-radius:8px;text-align:center;border:1px solid var(--green-border)">
+          <div style="padding:12px;background:var(--green-light);border-radius:8px;text-align:center;border:1px solid var(--green-border);color:var(--text)">
             <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Aylantirib joylashganda</div>
             <div style="font-size:28px;font-weight:700;color:var(--green)" id="sig-rotated">0</div>
             <div style="font-size:11px;color:var(--text3)" id="sig-rotated-info"></div>
@@ -1318,7 +1361,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div class="card-title">Banner hisoblash</div>
 
       <!-- Narx jadvali -->
-      <div style="margin-bottom:14px;padding:10px;background:var(--gray-light);border-radius:8px;font-size:11px">
+      <div style="margin-bottom:14px;padding:10px;background:var(--gray-light);border-radius:8px;font-size:11px;color:var(--text2)">
         <div style="font-weight:700;margin-bottom:6px;color:var(--text2)">Narx jadvali (1 kv.m):</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;color:var(--text3)">
           <span>1 kv.m gacha</span><span style="font-weight:700;color:var(--text)">100 000 so'm</span>
@@ -1366,7 +1409,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <div class="card-title">Bek print hisoblash</div>
 
       <!-- Narx jadvali -->
-      <div style="margin-bottom:14px;padding:10px;background:var(--gray-light);border-radius:8px;font-size:11px">
+      <div style="margin-bottom:14px;padding:10px;background:var(--gray-light);border-radius:8px;font-size:11px;color:var(--text2)">
         <div style="font-weight:700;margin-bottom:6px;color:var(--text2)">Narx jadvali (1 kv.m):</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;color:var(--text3)">
           <span>1 kv.m gacha</span><span style="font-weight:700;color:var(--text)">150 000 so'm</span>
@@ -3738,31 +3781,31 @@ function renderIshlab(){
     const toza = m > 0 ? m - brak : 0;
     const brakStyle = brak > 0 ? 'border-color:var(--red-border);background:var(--red-light)' : '';
 
-    div.innerHTML = '<div class="prod-grid">' +
-      '<select onchange="prD['+i+'].key=this.value;prD['+i+'].ex=false;prD['+i+'].qolda_nom=\'\';prD['+i+'].qolda_narx=\'\';renderIshlab()">'+opts+'</select>' +
-      '<div class="prod-row-bottom">' +
-        '<input type="text" inputmode="numeric" placeholder="Miqdor ('+un+')" value="'+r.miq+'" style="text-align:right" id="pmiq'+i+'">' +
-        '<div class="badge bw">'+(np>0&&m>0?fmt(np)+" so'm":'—')+'</div>' +
-        '<div style="display:flex;gap:5px;align-items:center">' +
-          '<div class="badge bo">'+(jami>0?fmt(jami)+" so'm":'—')+'</div>' +
-          delIcon('delProd('+i+')') +
-        '</div>' +
+    div.innerHTML = '<div style="display:grid;grid-template-columns:1fr 80px 80px auto;gap:5px;align-items:center;margin-bottom:4px">' +
+      '<select onchange="prD['+i+'].key=this.value;prD['+i+'].ex=false;prD['+i+'].qolda_nom=\'\';prD['+i+'].qolda_narx=\'\';renderIshlab()" style="font-size:12px">'+opts+'</select>' +
+      '<input type="text" inputmode="numeric" placeholder="Miqdor" value="'+r.miq+'" style="text-align:center;font-size:12px" id="pmiq'+i+'">' +
+      '<div class="badge bw" style="text-align:center;font-size:11px;padding:4px">'+(np>0&&m>0?fmt(np)+" so'm":'—')+'</div>' +
+      '<div style="display:flex;gap:4px;align-items:center;justify-content:flex-end">' +
+        '<div class="badge bo" style="font-size:11px;white-space:nowrap">'+(jami>0?fmt(jami)+" so'm":'—')+'</div>' +
+        delIcon('delProd('+i+')') +
       '</div>' +
+    '</div>' +
       (isQolda ?
-        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">' +
           '<div><label style="font-size:11px;color:var(--text3)">Mahsulot nomi</label>' +
           '<input type="text" placeholder="Nomi" value="'+(r.qolda_nom||'')+'" oninput="prD['+i+'].qolda_nom=this.value" style="margin-top:2px"></div>' +
           '<div><label style="font-size:11px;color:var(--text3)">Narx (som/dona)</label>' +
-          '<input type="text" inputmode="numeric" placeholder="Narx nomalum" value="'+(r.qolda_narx||'')+'" id="pnarx'+i+'" style="margin-top:2px;'+(r.qolda_narx?'':'border-color:var(--amber-border)')+'"></div>' +
+          '<input type="text" inputmode="numeric" placeholder="Narx nomalum" value="'+(r.qolda_narx||'')+'" id="pnarx'+i+'" style="margin-top:2px;'+(r.qolda_narx?'':'border-color:var(--amber-border)')+'">' +
+          '</div>' +
         '</div>' +
         (!r.qolda_narx ? '<div style="font-size:11px;color:var(--amber);margin-top:4px">⏳ Narx kiritilmagan — hisobga qoshilmaydi</div>' : '')
       : '') +
-      '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">' +
-        '<label style="font-size:12px;color:var(--text3)">Brak soni:</label>' +
-        '<input type="text" inputmode="numeric" placeholder="0" value="'+(r.brak||'')+'" style="width:70px;text-align:center;'+brakStyle+'" id="pbrak'+i+'">' +
+      '<div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap">' +
+        '<label style="font-size:11px;color:var(--text3)">Brak:</label>' +
+        '<input type="text" inputmode="numeric" placeholder="0" value="'+(r.brak||'')+'" style="width:58px;text-align:center;font-size:12px;'+brakStyle+'" id="pbrak'+i+'">' +
         (brak>0?'<span class="badge" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-border)">⚠️ '+brak+' ta brak</span><span class="badge bw">'+toza+' ta toza</span>':'') +
       '</div>' +
-    '</div>'+exH+note;
+    exH+note;
 
     pelP.appendChild(div);
     numInput(div.querySelector('#pmiq'+i),v=>{prD[i].miq=v;renderIshlab();});
@@ -3785,30 +3828,27 @@ function renderIshlab(){
       else lsDisplay = `${lsFull} + ${lsFrac} list`;
     }
     
-    const div=document.createElement('div'); div.className='ui';
-    div.innerHTML=`<div class="ugrid-wrap">
-      <input type="text" placeholder="Bloknot, daftar, termoz..." value="${r.nom}" oninput="uvD[${i}].nom=this.value">
-      <div class="ugrid-bottom">
-        <input type="text" inputmode="numeric" placeholder="8" value="${r.sig}" style="text-align:center" id="usig${i}">
-        <input type="text" inputmode="numeric" placeholder="100" value="${r.don}" style="text-align:center" id="udon${i}">
-        <div style="display:flex;gap:5px;align-items:center;justify-content:flex-end">
-          ${sig>0&&don>0?`<span class="badge bp">${lsDisplay}</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
-          ${delIcon(`delUv(${i})`)}
-        </div>
-      </div>
-    </div>
-      ${sig>0&&don>0?`<div class="ures">
-        <span class="badge bp">${lsDisplay}</span>
-        <span style="font-size:11px;color:var(--text3)">→</span>
-        <span class="badge bo">${fmt(jami)} so'm</span>
-        ${lsFrac>0?`<span style="font-size:11px;color:var(--text3)">(${lsFull} list×${fmt(np)} + ${lsFrac} list×${lsFrac===0.2?'20 000':lsFrac===0.5?'30 000':fmt(np)})</span>`:''}
-        ${r.nom?`<span style="font-size:11px;color:var(--text3)">${r.nom}: ${sig}ta/list, ${don} dona</span>`:''}
-      </div>`:''}
-      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
-        <label style="font-size:12px;color:var(--text3)">Brak soni:</label>
-        <input type="text" inputmode="numeric" placeholder="0" value="${r.brak||''}" style="width:70px;text-align:center;${parseInt(r.brak)>0?'border-color:var(--red-border);background:var(--red-light)':''}" id="ubrak${i}">
-        ${parseInt(r.brak)>0?`<span class="badge" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-border)">⚠️ ${r.brak} ta brak</span>`:''}
-      </div>`;
+     const div=document.createElement('div'); div.className='ui';
+     div.innerHTML=`<div style="display:grid;grid-template-columns:1fr 60px 64px auto;gap:5px;align-items:center;margin-bottom:4px">
+       <input type="text" placeholder="Mahsulot nomi..." value="${r.nom}" oninput="uvD[${i}].nom=this.value" style="font-size:12px">
+       <input type="text" inputmode="numeric" placeholder="Sig'im" value="${r.sig}" style="text-align:center;font-size:12px" id="usig${i}">
+       <input type="text" inputmode="numeric" placeholder="Dona" value="${r.don}" style="text-align:center;font-size:12px" id="udon${i}">
+       <div style="display:flex;gap:4px;align-items:center;justify-content:flex-end">
+         ${sig>0&&don>0?`<span class="badge bo" style="font-size:11px;white-space:nowrap">${fmt(jami)}</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
+         ${delIcon(`delUv(${i})`)}
+       </div>
+     </div>
+     ${sig>0&&don>0?`<div class="ures">
+       <span class="badge bp">${lsDisplay}</span>
+       <span style="font-size:11px;color:var(--text3)">→</span>
+       <span class="badge bo">${fmt(jami)} so'm</span>
+       ${lsFrac>0?`<span style="font-size:11px;color:var(--text3)">(${lsFull}×${fmt(np)} + ${lsFrac} list)</span>`:''}
+     </div>`:''}
+     <div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap">
+       <label style="font-size:11px;color:var(--text3)">Brak:</label>
+       <input type="text" inputmode="numeric" placeholder="0" value="${r.brak||''}" style="width:58px;text-align:center;font-size:12px;${parseInt(r.brak)>0?'border-color:var(--red-border);background:var(--red-light)':''}" id="ubrak${i}">
+       ${parseInt(r.brak)>0?`<span class="badge" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-border)">⚠️ ${r.brak} ta brak</span>`:''}
+     </div>`;
     pelU.appendChild(div);
     numInput(div.querySelector(`#usig${i}`),v=>{uvD[i].sig=v;renderIshlab();});
     numInput(div.querySelector(`#udon${i}`),v=>{uvD[i].don=v;renderIshlab();});
