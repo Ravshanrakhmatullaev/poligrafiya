@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_60.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_61.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1382,48 +1382,124 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 
     <!-- Ofset -->
     <div class="card hidden" id="kalk-ofset">
-      <div class="card-title">Ofset qog'oz hisoblash</div>
-      
-      <div style="margin-bottom:12px">
-        <label class="form-label">Turi</label>
-        <select id="kalk-of-tur" style="width:100%" onchange="updateOfsetFormats()">
-          <option value="a3">A3 Ofset</option>
-        </select>
-      </div>
+      <div class="card-title">Ofset hisoblash</div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div>
-          <label class="form-label">Zichligi (g/m²)</label>
-          <select id="kalk-of-zich" style="width:100%" onchange="calcOfset()">
-            <option value="70">70 g/m²</option>
-            <option value="80">80 g/m²</option>
-          </select>
-        </div>
-        <div>
-          <label class="form-label">Format</label>
-          <select id="kalk-of-format" style="width:100%" onchange="calcOfset()">
-            <option value="98000">A+ (500 list)</option>
-          </select>
+      <!-- 1. Mahsulot -->
+      <div style="background:var(--gray-light);border-radius:8px;padding:12px;margin-bottom:10px">
+        <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px">1. MAHSULOT</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label class="form-label">Mahsulot nomi</label><input type="text" id="of-nom" placeholder="Vizitka" oninput="calcOfset()"></div>
+          <div><label class="form-label">Soni (dona)</label><input type="text" inputmode="numeric" id="of-son" placeholder="1000" oninput="calcOfset()"></div>
+          <div><label class="form-label">Eni (sm)</label><input type="text" inputmode="decimal" id="of-eni" placeholder="9" oninput="calcOfset()"></div>
+          <div><label class="form-label">Bo'yi (sm)</label><input type="text" inputmode="decimal" id="of-boyi" placeholder="5" oninput="calcOfset()"></div>
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div>
-          <label class="form-label">Miqdor (list)</label>
-          <input type="text" inputmode="numeric" id="kalk-of-son" placeholder="500" oninput="calcOfset()">
+      <!-- 2. Ish formati -->
+      <div style="background:var(--gray-light);border-radius:8px;padding:12px;margin-bottom:10px">
+        <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px">2. ISH FORMATI</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <label class="form-label">Ish formati</label>
+            <select id="of-ishformat" style="width:100%" onchange="calcOfset()">
+              <option value="44x31">44×31 sm (62×88 qog'ozdan)</option>
+              <option value="35x50">35×50 sm (70×100 qog'ozdan)</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">1 formatga nechta sig'adi</label>
+            <input type="text" inputmode="numeric" id="of-sigim" placeholder="avtomatik" oninput="calcOfset()">
+            <div style="font-size:11px;color:var(--text3);margin-top:2px" id="of-sigim-hint"></div>
+          </div>
         </div>
-        <div id="kalk-of-pachka-info" style="display:flex;align-items:flex-end;padding-bottom:9px">
-          <span style="font-size:12px;color:var(--text3)"></span>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div><label class="form-label">Ish formati soni</label><input type="text" inputmode="numeric" id="of-ishson" placeholder="avtomatik" oninput="calcOfset()"><div style="font-size:11px;color:var(--text3)" id="of-ishson-hint"></div></div>
+          <div><label class="form-label">+ Preladka</label><input type="text" inputmode="numeric" id="of-preladka" value="100" oninput="calcOfset()"></div>
+          <div><label class="form-label">Katta qog'oz soni</label><input type="text" inputmode="numeric" id="of-qogoz" placeholder="avtomatik" oninput="calcOfset()"><div style="font-size:11px;color:var(--text3)" id="of-qogoz-hint"></div></div>
         </div>
       </div>
 
+      <!-- 3. Forma -->
+      <div style="background:var(--gray-light);border-radius:8px;padding:12px;margin-bottom:10px">
+        <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px">3. FORMA</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div>
+            <label class="form-label">Turi</label>
+            <select id="of-forma-tur" style="width:100%" onchange="calcOfset()">
+              <option value="0">Yo'q</option>
+              <option value="22000">1 talik — 22 000</option>
+              <option value="88000">4 talik — 88 000</option>
+            </select>
+          </div>
+          <div><label class="form-label">Formalar soni</label><input type="text" inputmode="numeric" id="of-forma-son" placeholder="0" oninput="calcOfset()"></div>
+          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div style="font-size:13px;font-weight:600;color:var(--blue)" id="of-forma-jami">—</div></div>
+        </div>
+      </div>
+
+      <!-- 4. Pechat -->
+      <div style="background:var(--gray-light);border-radius:8px;padding:12px;margin-bottom:10px">
+        <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px">4. PECHAT</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <label class="form-label">Pechat turi</label>
+            <select id="of-pechat-tur" style="width:100%" onchange="calcOfset()">
+              <option value="1+0">1+0 (bir tomonlama)</option>
+              <option value="4+0">4+0 (bir tomonlama)</option>
+              <option value="1+1s">1+1 svoy</option>
+              <option value="4+4s">4+4 svoy</option>
+              <option value="1+1c">1+1 chujoy</option>
+              <option value="4+4c">4+4 chujoy</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div style="font-size:13px;font-weight:600;color:var(--blue)" id="of-pechat-jami">—</div></div>
+        </div>
+      </div>
+
+      <!-- 5. Qog'oz -->
+      <div style="background:var(--gray-light);border-radius:8px;padding:12px;margin-bottom:10px">
+        <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px">5. QOG'OZ</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <label class="form-label">Qog'oz turi</label>
+            <select id="of-qogoz-tur" style="width:100%" onchange="updateOfsetQogoz()">
+              <option value="">— Tanlang —</option>
+              <optgroup label="62×88 formati">
+                <option value="62x88_80_740">Melovan 80g — 740 so'm/list</option>
+                <option value="62x88_90_810">Melovan 90g — 810 so'm/list</option>
+                <option value="62x88_105_915">Melovan 105g — 915 so'm/list</option>
+                <option value="62x88_115_995">Melovan 115g — 995 so'm/list</option>
+                <option value="62x88_128_1105">Melovan 128g — 1 105 so'm/list</option>
+                <option value="62x88_140_1240">Melovan 140g — 1 240 so'm/list</option>
+                <option value="62x88_150_1300">Melovan 150g — 1 300 so'm/list</option>
+                <option value="62x88_157_1380">Melovan 157g — 1 380 so'm/list</option>
+                <option value="62x88_170_1500">Melovan 170g — 1 500 so'm/list</option>
+                <option value="62x88_250_2200">Melovan 250g — 2 200 so'm/list</option>
+                <option value="62x88_300_2640">Melovan 300g — 2 640 so'm/list</option>
+                <option value="62x88_350_3150">Melovan 350g — 3 150 so'm/list</option>
+              </optgroup>
+              <optgroup label="70×100 formati">
+                <option value="70x100_80_950">Melovan 80g — 950 so'm/list</option>
+                <option value="70x100_90_1030">Melovan 90g — 1 030 so'm/list</option>
+                <option value="70x100_105_1175">Melovan 105g — 1 175 so'm/list</option>
+                <option value="70x100_115_1275">Melovan 115g — 1 275 so'm/list</option>
+                <option value="70x100_128_1420">Melovan 128g — 1 420 so'm/list</option>
+                <option value="70x100_150_1660">Melovan 150g — 1 660 so'm/list</option>
+                <option value="70x100_170_1920">Melovan 170g — 1 920 so'm/list</option>
+                <option value="70x100_200_2260">Melovan 200g — 2 260 so'm/list</option>
+                <option value="70x100_250_2825">Melovan 250g — 2 825 so'm/list</option>
+                <option value="70x100_300_3390">Melovan 300g — 3 390 so'm/list</option>
+                <option value="70x100_350_4040">Melovan 350g — 4 040 so'm/list</option>
+              </optgroup>
+            </select>
+          </div>
+          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div style="font-size:13px;font-weight:600;color:var(--blue)" id="of-qogoz-jami">—</div></div>
+        </div>
+      </div>
+
+      <!-- JAMI -->
       <div class="kalk-result" id="kalk-of-result">
-        <div style="font-size:12px;color:var(--text3)">Miqdor kiriting</div>
-        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
-      </div>
-
-      <div style="margin-top:10px;padding:10px;background:var(--gray-light);border-radius:8px;font-size:11px;color:var(--text3)">
-        ℹ️ Narxlar pachka (500 list) asosida. Hisoblash usulini keyinroq sozlaymiz.
+        <div style="font-size:12px;color:var(--text3)">Ma'lumotlarni kiriting</div>
+        <div style="font-size:28px;font-weight:700;color:var(--blue)">—</div>
       </div>
     </div>
 
@@ -4000,52 +4076,121 @@ function calcPechat(){
 }
 
 // ── OFSET NARXLARI ──
-const OFSET_NARXLAR = {
-  'a3': {
-    label: 'A3 Ofset (Premium)',
-    formatlar: [
-      { label: 'DOUBLE A Everyday 70g (500 list)', zich: 70, pachkaNarx: 98000, listSon: 500 },
-      { label: 'DOUBLE A Premium 80g (500 list)',  zich: 80, pachkaNarx: 120000, listSon: 500 },
-    ]
-  }
+const PECHAT_NARX = {
+  '1+0':  { base: 170000, extra: 70000 },
+  '4+0':  { base: 170000, extra: 70000 },
+  '1+1s': { base: 240000, extra: 140000 },
+  '4+4s': { base: 240000, extra: 140000 },
+  '1+1c': { base: 340000, extra: 140000 },
+  '4+4c': { base: 340000, extra: 140000 },
 };
 
-function updateOfsetFormats(){
-  const tur = document.getElementById('kalk-of-tur').value;
-  const data = OFSET_NARXLAR[tur];
-  if(!data) return;
-  const fSel = document.getElementById('kalk-of-format');
-  fSel.innerHTML = data.formatlar.map((f,i) =>
-    '<option value="'+i+'">'+f.label+'</option>'
-  ).join('');
-  calcOfset();
+const ISH_FORMAT = {
+  '44x31': { eni: 44, boyi: 31, kattaFormat: '62x88', bolinish: 4 },
+  '35x50': { eni: 35, boyi: 50, kattaFormat: '70x100', bolinish: 4 },
+};
+
+function calcPechatNarx(son, tur){
+  const n = PECHAT_NARX[tur];
+  if(!n || !son) return 0;
+  if(son <= 1000) return n.base;
+  const qoshimcha = Math.ceil((son - 1000) / 1000);
+  return n.base + qoshimcha * n.extra;
 }
 
+function autoSigim(mahEni, mahBoyi, ishEni, ishBoyi){
+  if(!mahEni || !mahBoyi) return 0;
+  const gorizont = Math.floor(ishEni/mahEni) * Math.floor(ishBoyi/mahBoyi);
+  const vertikal  = Math.floor(ishEni/mahBoyi) * Math.floor(ishBoyi/mahEni);
+  return Math.max(gorizont, vertikal);
+}
+
+function updateOfsetQogoz(){ calcOfset(); }
+function updateOfsetFormats(){ calcOfset(); }
+
 function calcOfset(){
-  const tur = document.getElementById('kalk-of-tur').value;
-  const fIdx = parseInt(document.getElementById('kalk-of-format').value)||0;
-  const son = parseInt(document.getElementById('kalk-of-son').value)||0;
-  const data = OFSET_NARXLAR[tur];
-  if(!data) return;
-  const f = data.formatlar[fIdx];
-  if(!f) return;
+  const son       = parseInt(document.getElementById('of-son').value)||0;
+  const mahEni    = parseFloat(document.getElementById('of-eni').value)||0;
+  const mahBoyi   = parseFloat(document.getElementById('of-boyi').value)||0;
+  const ishFmt    = document.getElementById('of-ishformat').value;
+  const preladka  = parseInt(document.getElementById('of-preladka').value)||100;
+  const formaTur  = parseInt(document.getElementById('of-forma-tur').value)||0;
+  const formaSon  = parseInt(document.getElementById('of-forma-son').value)||0;
+  const pechatTur = document.getElementById('of-pechat-tur').value;
+  const qogozTur  = document.getElementById('of-qogoz-tur').value;
 
+  const ishInfo = ISH_FORMAT[ishFmt] || ISH_FORMAT['44x31'];
+
+  // Avtomatik sig'im hisoblash
+  const autoSig = autoSigim(mahEni, mahBoyi, ishInfo.eni, ishInfo.boyi);
+  const sigimHint = document.getElementById('of-sigim-hint');
+  if(sigimHint && autoSig) sigimHint.textContent = 'Avtomatik: '+autoSig+' ta';
+
+  // Sig'im: qo'lda yoki avtomatik
+  const sigimInput = document.getElementById('of-sigim').value;
+  const sigim = parseInt(sigimInput) || autoSig || 1;
+
+  // Ish formati soni
+  const ishSonAuto = son > 0 && sigim > 0 ? Math.ceil(son/sigim) : 0;
+  const ishSonInput = document.getElementById('of-ishson').value;
+  const ishSon = parseInt(ishSonInput) || ishSonAuto;
+
+  const ishSonHint = document.getElementById('of-ishson-hint');
+  if(ishSonHint && ishSonAuto) ishSonHint.textContent = 'Avtomatik: '+ishSonAuto+' ta';
+
+  // Katta qog'oz soni
+  const jami_ishson = ishSon + preladka;
+  const qogozAuto = Math.ceil(jami_ishson / ishInfo.bolinish);
+  const qogozInput = document.getElementById('of-qogoz').value;
+  const qogozSon = parseInt(qogozInput) || qogozAuto;
+
+  const qogozHint = document.getElementById('of-qogoz-hint');
+  if(qogozHint) qogozHint.textContent = '('+ishSon+'+'+preladka+')/'+ishInfo.bolinish+' = '+qogozAuto;
+
+  // FORMA narxi
+  const formaJami = formaTur * formaSon;
+  const formaEl = document.getElementById('of-forma-jami');
+  if(formaEl) formaEl.textContent = formaTur > 0 && formaSon > 0 ? fmt(formaJami)+" so'm" : '—';
+
+  // PECHAT narxi
+  const pechatJami = calcPechatNarx(ishSon, pechatTur);
+  const pechatEl = document.getElementById('of-pechat-jami');
+  if(pechatEl) pechatEl.textContent = pechatJami > 0 ? fmt(pechatJami)+" so'm" : '—';
+
+  // QOG'OZ narxi
+  let qogozJami = 0;
+  if(qogozTur){
+    const parts = qogozTur.split('_');
+    const listNarx = parseInt(parts[parts.length-1])||0;
+    qogozJami = listNarx * qogozSon;
+  }
+  const qogozEl = document.getElementById('of-qogoz-jami');
+  if(qogozEl) qogozEl.textContent = qogozJami > 0 ? fmt(qogozJami)+" so'm ("+qogozSon+" list)" : '—';
+
+  // JAMI
+  const jami = formaJami + pechatJami + qogozJami;
   const el = document.getElementById('kalk-of-result');
-  const infoEl = document.getElementById('kalk-of-pachka-info');
+  if(!el) return;
 
-  const listNarx = f.pachkaNarx / f.listSon;
-  if(infoEl) infoEl.innerHTML = '<span style="font-size:12px;color:var(--text3)">1 list = '+fmt(Math.round(listNarx))+" so'm</span>";
+  if(!son){
+    el.innerHTML = '<div style="font-size:12px;color:var(--text3)">Ma\'lumotlarni kiriting</div><div style="font-size:28px;font-weight:700;color:var(--blue)">—</div>';
+    return;
+  }
 
-  if(!son){ if(el) el.innerHTML = '<div style="font-size:12px;color:var(--text3)">Miqdor kiriting</div><div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>'; return; }
+  kalkLastResult = (document.getElementById('of-nom').value||'Mahsulot')+': '+son+' dona\n'+
+    'Forma: '+fmt(formaJami)+" so'm\n"+
+    'Pechat: '+fmt(pechatJami)+" so'm\n"+
+    "Qog'oz: "+fmt(qogozJami)+" so'm\n"+
+    'Jami: '+fmt(jami)+" so'm";
 
-  const pachkaSoni = Math.ceil(son / f.listSon);
-  const jami = Math.round(son * listNarx);
-
-  kalkLastResult = f.label + '\n' + son + ' list\nJami: ' + fmt(jami) + " so'm";
-
-  if(el) el.innerHTML =
-    '<div style="font-size:12px;color:var(--text3);margin-bottom:6px">'+son+' list × '+fmt(Math.round(listNarx))+" so'm = <b>"+pachkaSoni+' pachka</b></div>'+
-    '<div style="font-size:28px;font-weight:700;color:var(--blue)">'+fmt(jami)+" so'm</div>";
+  el.innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;font-size:12px">' +
+      '<div style="text-align:center"><div style="color:var(--text3)">Forma</div><div style="font-weight:700">'+fmt(formaJami)+" so'm</div></div>" +
+      '<div style="text-align:center"><div style="color:var(--text3)">Pechat</div><div style="font-weight:700">'+fmt(pechatJami)+" so'm</div></div>" +
+      "<div style='text-align:center'><div style='color:var(--text3)'>Qog'oz</div><div style='font-weight:700'>"+fmt(qogozJami)+" so'm</div></div>" +
+    '</div>' +
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:6px">'+son+' dona | '+qogozSon+" list qog'oz</div>" +
+    '<div style="font-size:30px;font-weight:700;color:var(--blue)">'+fmt(jami)+" so'm</div>";
 }
 
 function copyKalkResult(){
