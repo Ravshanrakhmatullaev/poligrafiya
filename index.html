@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_15.html -->
-<html lang="uz" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_41.html -->
+<html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poligrafiya — Boshqaruv tizimi</title>
@@ -674,6 +674,10 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
       Sklad
     </button>
+    <button class="nav-btn hidden" onclick="showPanel(&#39;bozorlik&#39;)" id="nb-bozorlik">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 01-8 0"></path></svg>
+      Bozorlik
+    </button>
     <button class="nav-btn" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
       <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><circle cx="11" cy="11" r="2"></circle></svg>
       Dizayn
@@ -1120,6 +1124,77 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     </button>
   </div>
 
+  <!-- BOZORLIK RO'YXATI -->
+  <div class="panel" id="panel-bozorlik">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 14px;flex-wrap:wrap;gap:8px">
+      <div>
+        <div style="font-size:14px;font-weight:700">Bozorlik ro'yxati</div>
+        <div style="font-size:12px;color:var(--text3)">Telegram guruhga yuboriladi</div>
+      </div>
+      <button class="add-btn" style="width:auto;padding:7px 14px" onclick="showBozorlikForm()">
+        + Qo'shish
+      </button>
+    </div>
+
+    <!-- Yangi mahsulot formasi -->
+    <div class="card hidden" id="bozorlik-form-card">
+      <div class="card-title">Yangi bozorlik elementi</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div>
+          <label class="form-label">Mahsulot nomi *</label>
+          <input type="text" id="bz-nom" placeholder="Masalan: Beyjik lenta ko&#39;k">
+        </div>
+        <div>
+          <label class="form-label">Sklad dan tanlash</label>
+          <select id="bz-sklad-sel" style="width:100%" onchange="bozorlikFromSklad(this)">
+            <option value="">— Yoki qo'lda yozing —</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div>
+          <label class="form-label">Miqdor *</label>
+          <input type="text" inputmode="numeric" id="bz-miq" placeholder="0">
+        </div>
+        <div>
+          <label class="form-label">Birlik</label>
+          <select id="bz-birlik" style="width:100%">
+            <option value="dona">dona</option>
+            <option value="metr">metr</option>
+            <option value="kg">kg</option>
+            <option value="ml">ml</option>
+            <option value="rulon">rulon</option>
+            <option value="pachka">pachka</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:10px">
+        <label class="form-label">Izoh</label>
+        <input type="text" id="bz-izoh" placeholder="Masalan: oq rang, L o&#39;lcham">
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="savebtn" style="flex:1" onclick="saveBozorlikItem()">Ro'yxatga qo'shish</button>
+        <button style="padding:10px 16px;border-radius:8px;border:1px solid var(--gray-border);background:var(--white);cursor:pointer;font-family:inherit;font-size:13px;color:var(--text)" onclick="hideBozorlikForm()">Bekor</button>
+      </div>
+    </div>
+
+    <!-- Ro'yxat -->
+    <div id="bozorlik-list">
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"></path></svg>
+        <p>Ro'yxat bo'sh</p>
+      </div>
+    </div>
+
+    <!-- Telegram yuborish tugmasi -->
+    <div id="bozorlik-send-wrap" class="hidden" style="margin-top:12px">
+      <button class="tgbtn" onclick="sendBozorlikToTelegram()">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        Bozorlikka yuborish (Telegram)
+      </button>
+    </div>
+  </div>
+
   <!-- STOPWATCH -->
   <div class="panel" id="panel-stopwatch">
     <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 14px">
@@ -1525,6 +1600,7 @@ function onLogin(){
     nbOwner.classList.add('hidden');
     nbIshlab.classList.add('hidden');
     document.getElementById('nb-dizayner').classList.add('hidden');
+    document.getElementById('nb-bozorlik').classList.remove('hidden');
     const seen = sessionStorage.getItem('admin_yoriq_'+currentUser.id);
     if(seen){ showScreen('app'); loadHistory().then(()=>showPanel(getLastPanel('dashboard'))); setInterval(() => loadMessages(), 30000); }
     else { showScreen('admin_yoriq'); }
@@ -1548,6 +1624,7 @@ function onLogin(){
     nbAdmin.classList.add('hidden');
     document.getElementById('nb-dizayner').classList.add('hidden');
     document.getElementById('nb-foiz').classList.add('hidden');
+    if(currentUser && currentUser.email === SKLAD_EDITOR) document.getElementById('nb-bozorlik').classList.remove('hidden');
     const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
     if(seen){ showScreen('app'); loadHistory().then(()=>showPanel(getLastPanel('dashboard'))); setInterval(() => loadMessages(), 30000); }
     else { showScreen('yoriq'); }
@@ -3181,7 +3258,7 @@ function renderFoizTable(){ if(ftBuilt)return; ftBuilt=true; const tb=document.g
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
 function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','admin-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',admin_yoriq:'admin-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
-function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); saveCurrentPanel(id); }
+function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix')renderHistory(); if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} saveCurrentPanel(id); }
 function showNotify(msg){ const el=document.getElementById('notify'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2800); }
 
 renderAdmin();
@@ -3450,6 +3527,183 @@ function openRasmModal(url){
   modal.innerHTML = '<img src="'+url+'" alt="Rasm">';
   modal.onclick = () => document.body.removeChild(modal);
   document.body.appendChild(modal);
+}
+
+// ── BOZORLIK ──
+let bozorlikData = [];
+
+function showBozorlikForm(){
+  document.getElementById('bozorlik-form-card').classList.remove('hidden');
+  // Sklad dan tanlash uchun ro'yxat to'ldirish
+  const sel = document.getElementById('bz-sklad-sel');
+  sel.innerHTML = '<option value="">— Yoki qo\'lda yozing —</option>';
+  skladData.forEach(s => {
+    sel.innerHTML += '<option value="'+s.id+'" data-nom="'+s.nom+'" data-birlik="'+s.birlik+'">'+s.nom+' ('+s.hisob_miq+' '+s.birlik+')</option>';
+  });
+}
+
+function hideBozorlikForm(){
+  document.getElementById('bozorlik-form-card').classList.add('hidden');
+  document.getElementById('bz-nom').value = '';
+  document.getElementById('bz-miq').value = '';
+  document.getElementById('bz-izoh').value = '';
+  document.getElementById('bz-sklad-sel').value = '';
+}
+
+function bozorlikFromSklad(sel){
+  const opt = sel.options[sel.selectedIndex];
+  if(opt.value){
+    document.getElementById('bz-nom').value = opt.dataset.nom || '';
+    document.getElementById('bz-birlik').value = opt.dataset.birlik || 'dona';
+  }
+}
+
+async function saveBozorlikItem(){
+  const nom = document.getElementById('bz-nom').value.trim();
+  const miq = parseFloat(document.getElementById('bz-miq').value)||0;
+  const birlik = document.getElementById('bz-birlik').value;
+  const izoh = document.getElementById('bz-izoh').value.trim();
+  const skladSel = document.getElementById('bz-sklad-sel');
+  const sklad_id = skladSel.value ? parseInt(skladSel.value) : null;
+
+  if(!nom){ showNotify('Nomi kiriting'); return; }
+  if(!miq){ showNotify('Miqdor kiriting'); return; }
+
+  // Sklad rasmini olish
+  let rasm_url = null;
+  if(sklad_id){
+    const sItem = skladData.find(s => s.id === sklad_id);
+    if(sItem) rasm_url = sItem.rasm_url;
+  }
+
+  const { error } = await sb.from('bozorlik_list').insert({
+    sklad_id, nom, birlik, miqdor: miq, izoh, rasm_url,
+    status: 'kutilmoqda',
+    sana: getSanaVaqt()
+  });
+
+  if(error){ showNotify("Xatolik: "+error.message); return; }
+  showNotify("Ro'yxatga qo'shildi!");
+  hideBozorlikForm();
+  await loadBozorlik();
+}
+
+async function loadBozorlik(){
+  const { data } = await sb.from('bozorlik_list')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  bozorlikData = data || [];
+  renderBozorlik();
+}
+
+function renderBozorlik(){
+  const el = document.getElementById('bozorlik-list');
+  const sendWrap = document.getElementById('bozorlik-send-wrap');
+  if(!el) return;
+
+  const active = bozorlikData.filter(b => b.status === 'kutilmoqda');
+  const done = bozorlikData.filter(b => b.status !== 'kutilmoqda');
+
+  if(!bozorlikData.length){
+    el.innerHTML = '<div class="empty-state"><p>Ro\'yxat bo\'sh</p></div>';
+    if(sendWrap) sendWrap.classList.add('hidden');
+    return;
+  }
+
+  if(sendWrap) sendWrap.classList.toggle('hidden', !active.length);
+
+  let html = '';
+
+  if(active.length){
+    html += '<div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px">Kutilmoqda ('+active.length+' ta)</div>';
+    active.forEach(b => {
+      html += '<div class="sklad-card" style="display:flex;gap:12px;align-items:center">'+
+        (b.rasm_url ? '<img src="'+b.rasm_url+'" style="width:56px;height:56px;object-fit:cover;border-radius:8px;flex-shrink:0">' : '<div style="width:56px;height:56px;background:var(--gray-light);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px">🛒</div>')+
+        '<div style="flex:1">'+
+          '<div style="font-size:13px;font-weight:600">'+b.nom+'</div>'+
+          '<div style="font-size:12px;color:var(--blue);font-weight:700">'+b.miqdor+' '+b.birlik+'</div>'+
+          (b.izoh ? '<div style="font-size:11px;color:var(--text3)">'+b.izoh+'</div>' : '')+
+        '</div>'+
+        '<button onclick="deleteBozorlikItem('+b.id+')" style="padding:4px 8px;border-radius:6px;border:1px solid var(--red-border);background:var(--red-light);color:var(--red);cursor:pointer;font-size:12px">O\'chir</button>'+
+      '</div>';
+    });
+  }
+
+  if(done.length){
+    html += '<div style="font-size:12px;font-weight:700;color:var(--text3);margin:12px 0 8px">Yakunlangan ('+done.length+' ta)</div>';
+    done.forEach(b => {
+      const color = b.status === 'olindi' ? 'var(--green)' : 'var(--red)';
+      const icon = b.status === 'olindi' ? '✅' : '❌';
+      html += '<div class="sklad-card" style="display:flex;gap:12px;align-items:center;opacity:0.7">'+
+        '<div style="font-size:24px">'+icon+'</div>'+
+        '<div style="flex:1">'+
+          '<div style="font-size:13px;font-weight:600;color:'+color+'">'+b.nom+'</div>'+
+          '<div style="font-size:11px;color:var(--text3)">'+b.miqdor+' '+b.birlik+(b.olgan_kishi?' — '+b.olgan_kishi:'')+'</div>'+
+        '</div>'+
+      '</div>';
+    });
+  }
+
+  el.innerHTML = html;
+}
+
+async function deleteBozorlikItem(id){
+  await sb.from('bozorlik_list').delete().eq('id', id);
+  await loadBozorlik();
+}
+
+async function sendBozorlikToTelegram(){
+  const active = bozorlikData.filter(b => b.status === 'kutilmoqda');
+  if(!active.length){ showNotify("Ro'yxat bo'sh"); return; }
+
+  const VERCEL_URL = 'https://adsuz-sklad-jaqpmu8qr-adsuz1.vercel.app';
+  const BOT_TOKEN = '8636816129:AAE-sBNfcLy8e4EXqepHhDfhHG_p6PDZPxU';
+  const CHAT_ID = '-4273189072';
+
+  showNotify('Yuborilmoqda...');
+
+  let sentCount = 0;
+  for(const item of active){
+    const caption = item.nom + '\n' +
+      'Kerak: ' + item.miqdor + ' ' + item.birlik +
+      (item.izoh ? '\nIzoh: ' + item.izoh : '');
+
+    const keyboard = { inline_keyboard: [[
+      { text: '🔍 Qidirayapman', callback_data: 'search_' + item.id }
+    ]]};
+
+    try {
+      if(item.rasm_url){
+        await fetch('https://api.telegram.org/bot'+BOT_TOKEN+'/sendPhoto', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            photo: item.rasm_url,
+            caption: caption,
+            reply_markup: keyboard
+          })
+        });
+      } else {
+        await fetch('https://api.telegram.org/bot'+BOT_TOKEN+'/sendMessage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: '🛒 ' + caption,
+            reply_markup: keyboard
+          })
+        });
+      }
+      sentCount++;
+      // Kichik pauza
+      await new Promise(r => setTimeout(r, 500));
+    } catch(e){ console.error(e); }
+  }
+
+  showNotify('✅ '+sentCount+' ta mahsulot Telegram ga yuborildi!');
 }
 
 // ── SKLAD ──
