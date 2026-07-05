@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_28.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_29.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <meta name="theme-color" content="#2563eb">
@@ -3848,9 +3848,13 @@ async function sendWeekly(type){
   }
 
   const msg = lines.join('\n');
+
+  // Telegram t.me/share has ~4096 char limit
+  // Truncate if needed
+  const MAX = 4000;
+  const truncated = msg.length > MAX ? msg.slice(0, MAX) + '\n...\n(qisqartirildi)' : msg;
   
-  // Telegram share - kim qabul qilishini o'zi tanlaydi
-  window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(msg),'_blank');
+  window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(truncated),'_blank');
 }
 
 async function copyWeekly(type){
@@ -4786,9 +4790,13 @@ async function sendWeeklyDizayner(){
   lines.push(`✅ To'landi: ${fmt(totalT)} so'm`);
   lines.push(`❌ To'lanmadi: ${fmt(totalTM)} so'm`);
   const msg = lines.join('\n');
+
+  // Telegram t.me/share has ~4096 char limit
+  // Truncate if needed
+  const MAX = 4000;
+  const truncated = msg.length > MAX ? msg.slice(0, MAX) + '\n...\n(qisqartirildi)' : msg;
   
-  // Telegram share - kim qabul qilishini o'zi tanlaydi
-  window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(msg),'_blank');
+  window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(truncated),'_blank');
 }
 
 function renderAdmin(){
@@ -5594,14 +5602,18 @@ function calcDtf(){
   const son = parseInt(document.getElementById('kalk-dtf-son').value)||0;
   const tur = parseFloat(document.getElementById('kalk-dtf-tur').value)||1;
   if(!eni||!boyi||!son) return;
-  const kvSm = eni * boyi;
-  const kvM = kvSm / 10000;
-  // DTF: min 8000, keyin 12000 so'm/kv.m
+  const kvM = (eni * boyi) / 10000;
   const birlikNarx = Math.max(8000, Math.round(kvM * 12000 * tur));
   const jami = birlikNarx * son;
-  const izoh = eni+'×'+boyi+' sm, '+son+' dona'+(tur>1?' (2 tomonlama)':'');
-  showKalkResult('kalk-dtf-result', null, birlikNarx, jami, izoh);
+  const izoh = eni+'×'+boyi+' sm, '+son+' dona'+(tur>1?' (ikki tomonlama)':'');
+  kalkLastResult = 'DTF: '+izoh+'\nNarx: '+fmt(birlikNarx)+" so'm/dona\nJami: "+fmt(jami)+" so'm";
+  const el = document.getElementById('kalk-dtf-result');
+  if(!el) return;
+  el.innerHTML = '<div style="font-size:12px;color:var(--text3);margin-bottom:4px">'+izoh+'</div>'+
+    '<div style="font-size:28px;font-weight:700;color:#EF4444">'+fmt(jami)+" so'm</div>"+
+    '<div style="font-size:11px;color:var(--text3);margin-top:4px">'+fmt(birlikNarx)+" so'm/dona</div>";
 }
+
 
 function calcPechat(){
   const son = parseInt(document.getElementById('kalk-pech-son').value)||0;
@@ -5611,8 +5623,14 @@ function calcPechat(){
   const narx = narxlar[olch] || 500;
   const jami = narx * son;
   const izoh = olch + ' format, ' + son + ' dona';
-  showKalkResult('kalk-pech-result', null, narx, jami, izoh);
+  kalkLastResult = 'Pechat: '+izoh+'\nNarx: '+fmt(narx)+" so'm/dona\nJami: "+fmt(jami)+" so'm";
+  const el = document.getElementById('kalk-pech-result');
+  if(!el) return;
+  el.innerHTML = '<div style="font-size:12px;color:var(--text3);margin-bottom:4px">'+izoh+'</div>'+
+    '<div style="font-size:28px;font-weight:700;color:#22C55E">'+fmt(jami)+" so'm</div>"+
+    '<div style="font-size:11px;color:var(--text3);margin-top:4px">'+fmt(narx)+" so'm/dona</div>";
 }
+
 
 // ── OFSET NARXLARI ──
 const PECHAT_NARX = {
