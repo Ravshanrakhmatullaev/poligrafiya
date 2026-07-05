@@ -413,7 +413,104 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 [data-theme="dark"] label[id^="bek-rulo"]{background:var(--gray-light);border-color:var(--gray-border);color:var(--text)}
 [data-theme="dark"] .kalk-result div{color:var(--text)}
 [data-theme="dark"] #sig-result > div > div{background:#1e3a5f;border-color:var(--blue-border)}
-.kalk-result{padding:14px;background:var(--blue-light);border-radius:10px;border:1px solid var(--blue-border);text-align:center;margin-top:4px}
+.kalk-result{padding:20px;background:var(--blue-light);border-radius:12px;border:1px solid var(--blue-border);text-align:center;margin-top:4px;transition:all .2s}
+[data-theme="dark"] .kalk-result{background:var(--blue-light);border-color:var(--blue-border)}
+
+/* ── KALKULYATOR ── */
+.kc-header{display:flex;justify-content:space-between;align-items:flex-start;padding:20px 0 8px}
+.kc-title{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-0.5px}
+.kc-subtitle{font-size:13px;color:var(--text3);margin-top:2px}
+
+.kc-tabs{display:flex;gap:2px;padding:4px;background:var(--gray-light);border-radius:14px;margin-bottom:20px;border:1px solid var(--gray-border);flex-wrap:wrap}
+.kc-tab{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:none;background:none;font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap}
+.kc-tab:hover{color:var(--text);background:rgba(255,255,255,.5)}
+.kc-tab.active{background:var(--white);color:#3B82F6;font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+[data-theme="dark"] .kc-tab.active{background:#273449;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+[data-theme="dark"] .kc-tabs{background:#1E293B;border-color:#334155}
+[data-theme="dark"] .kc-tab:hover{background:rgba(255,255,255,.05)}
+
+.kc-body{display:flex;flex-direction:column;gap:0}
+.kc-section{animation:kc-fade .2s ease}
+@keyframes kc-fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+.kc-section-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
+.kc-section-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.kc-section-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px}
+.kc-section-desc{font-size:12px;color:var(--text3)}
+
+.kc-block{background:var(--white);border-radius:14px;padding:20px;margin-bottom:12px;border:1px solid var(--gray-border)}
+.kc-block-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.kc-step{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:#3B82F6;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+
+.kc-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kc-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:600px){.kc-grid-2,.kc-grid-3{grid-template-columns:1fr}}
+
+.kc-field{display:flex;flex-direction:column;gap:4px}
+.kc-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em}
+.kc-input-wrap{position:relative;display:flex;align-items:center}
+.kc-input-wrap input{padding-right:40px}
+.kc-unit{position:absolute;right:12px;font-size:12px;color:var(--text3);pointer-events:none;font-weight:500}
+.kc-select{width:100%;padding:9px 12px;border:1.5px solid var(--gray-border);border-radius:10px;font-size:13px;color:var(--text);background:var(--white);font-family:inherit;cursor:pointer;outline:none;transition:border-color .15s}
+.kc-select:focus{border-color:#3B82F6}
+.kc-hint{font-size:11px;color:#3B82F6;margin-top:2px;cursor:pointer}
+.kc-result-field{justify-content:flex-end}
+.of-part-sum{font-size:15px;font-weight:700;color:#3B82F6;padding:9px 0}
+
+.kc-info-box{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:10px;padding:14px;margin-bottom:16px}
+.kc-info-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+.kc-price-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+.kc-price-range{font-size:12px;color:var(--text3)}
+.kc-price-val{font-size:12px;font-weight:600;color:var(--text);text-align:right}
+
+.kc-radio-group{display:flex;gap:8px;flex-wrap:wrap}
+.kc-radio-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:1.5px solid var(--gray-border);cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all .15s;background:var(--white)}
+.kc-radio-btn:has(input:checked){border-color:#3B82F6;color:#3B82F6;background:rgba(59,130,246,.06)}
+.kc-radio-btn input{width:0;height:0;opacity:0;position:absolute}
+
+.kc-toggle-row{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:12px 0;gap:12px}
+.kc-toggle-label{font-size:13px;font-weight:600;color:var(--text)}
+.kc-toggle-desc{font-size:11px;color:var(--text3);margin-top:2px}
+.kc-switch-wrap{position:relative;flex-shrink:0}
+.kc-switch-input{opacity:0;width:0;height:0;position:absolute}
+.kc-switch{display:block;width:44px;height:24px;background:#cbd5e1;border-radius:12px;transition:all .25s;position:relative;cursor:pointer}
+.kc-switch::before{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:all .25s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.kc-switch-input:checked + .kc-switch{background:#3B82F6}
+.kc-switch-input:checked + .kc-switch::before{transform:translateX(20px)}
+
+.kc-services{border:1px solid var(--gray-border);border-radius:12px;overflow:hidden}
+.kc-service-item{padding:0 16px;background:var(--white)}
+.kc-service-item + .kc-service-item{border-top:1px solid var(--gray-border)}
+
+.kc-format-badge{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;color:#3B82F6;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2)}
+.kc-warn-box{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;color:#EF4444;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2)}
+
+.kc-results-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.kc-result-card{background:var(--white);border-radius:12px;padding:16px;border:1px solid var(--gray-border);text-align:center}
+.kc-result-label{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.kc-result-value{font-size:22px;font-weight:700;letter-spacing:-0.3px}
+.kc-result-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.kc-result-highlight{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:12px;padding:16px;text-align:center}
+.kc-result-highlight-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.kc-result-highlight-val{font-size:28px;font-weight:700;color:#3B82F6;letter-spacing:-0.5px}
+
+.kc-action-bar{position:sticky;bottom:0;background:var(--white);border-top:1px solid var(--gray-border);padding:12px 16px;display:flex;gap:8px;margin:16px -16px -16px;z-index:10}
+.kc-btn-primary{display:flex;align-items:center;gap:7px;background:#3B82F6;color:#fff;border:none;border-radius:12px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;flex:1;justify-content:center}
+.kc-btn-primary:hover{background:#2563EB;box-shadow:0 4px 12px rgba(59,130,246,.4)}
+.kc-btn-secondary{display:flex;align-items:center;gap:7px;background:var(--gray-light);color:var(--text2);border:1px solid var(--gray-border);border-radius:12px;padding:10px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s}
+.kc-btn-secondary:hover{background:var(--gray-border)}
+
+[data-theme="dark"] .kc-block{background:#1E293B;border-color:#334155}
+[data-theme="dark"] .kc-result-card{background:#273449;border-color:#334155}
+[data-theme="dark"] .kc-services{border-color:#334155}
+[data-theme="dark"] .kc-service-item{background:#1E293B;border-color:#334155}
+[data-theme="dark"] .kc-service-item + .kc-service-item{border-color:#334155}
+[data-theme="dark"] .kc-radio-btn{background:#1E293B;border-color:#334155}
+[data-theme="dark"] .kc-switch{background:#334155}
+[data-theme="dark"] .kc-action-bar{background:#1E293B;border-color:#334155}
+[data-theme="dark"] .kc-btn-secondary{background:#273449;border-color:#334155;color:#94A3B8}
+[data-theme="dark"] .kc-select{background:#1E293B;border-color:#334155;color:#F8FAFC}
+[data-theme="dark"] .kc-select option,.kc-select optgroup{background:#1E293B}
 [data-theme="dark"] .kalk-result{background:var(--blue-light);border-color:var(--blue-border)}
 [data-theme="dark"] #panel-kalk .filter-btn{background:var(--gray-light);color:var(--text3);border-color:var(--gray-border)}
 [data-theme="dark"] #panel-kalk .filter-btn.active{background:var(--blue-light);color:var(--blue);border-color:var(--blue-border)}
@@ -945,7 +1042,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
     </button>
     <button class="nav-btn" onclick="showPanel('kalk')" id="nb-kalk">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/></svg>
-      Kalk
+      Kalkulyator
     </button>
     <button class="nav-btn hidden" onclick="showPanel('bozorlik')" id="nb-bozorlik">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
@@ -1567,521 +1664,583 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-sh
 
   <!-- KALKULYATOR -->
   <div class="panel" id="panel-kalk">
-    <div style="margin:16px 0 14px;font-size:14px;font-weight:700">Narx kalkulyatori</div>
 
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-      <button class="filter-btn active" onclick="setKalkType('sigim',this)">🧮 Sig'im</button>
-      <button class="filter-btn" onclick="setKalkType('banner',this)">Banner/Orakal</button>
-      <button class="filter-btn" onclick="setKalkType('bekprint',this)">Bek print</button>
-      <button class="filter-btn" onclick="setKalkType('uvdtf',this)">UV DTF</button>
-      <button class="filter-btn" onclick="setKalkType('dtf',this)">DTF</button>
-      <button class="filter-btn" onclick="setKalkType('pechat',this)">Pechat</button>
-      <button class="filter-btn" onclick="setKalkType('ofset',this)">Ofset</button>
+    <!-- Header -->
+    <div class="kc-header">
+      <div>
+        <div class="kc-title">Kalkulyator</div>
+        <div class="kc-subtitle">Professional narx hisoblash tizimi</div>
+      </div>
     </div>
 
-    <!-- Sig'im hisoblash -->
-    <div class="card" id="kalk-sigim">
-      <div class="card-title">🧮 Sig'im hisoblash</div>
-      <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Materialga mahsulot nechta sig'ishini hisoblaydi</div>
+    <!-- Tabs -->
+    <div class="kc-tabs">
+      <button class="kc-tab active" onclick="setKalkType('sigim',this)" data-type="sigim">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+        Sig'im
+      </button>
+      <button class="kc-tab" onclick="setKalkType('banner',this)" data-type="banner">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Banner
+      </button>
+      <button class="kc-tab" onclick="setKalkType('bekprint',this)" data-type="bekprint">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Bek Print
+      </button>
+      <button class="kc-tab" onclick="setKalkType('uvdtf',this)" data-type="uvdtf">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/></svg>
+        UV DTF
+      </button>
+      <button class="kc-tab" onclick="setKalkType('dtf',this)" data-type="dtf">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        DTF
+      </button>
+      <button class="kc-tab" onclick="setKalkType('pechat',this)" data-type="pechat">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Pechat
+      </button>
+      <button class="kc-tab" onclick="setKalkType('ofset',this)" data-type="ofset">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Ofset
+      </button>
+    </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div>
-          <label class="form-label">Mahsulot eni (sm)</label>
-          <input type="text" inputmode="decimal" id="sig-mah-eni" placeholder="9" oninput="calcSigim()">
-        </div>
-        <div>
-          <label class="form-label">Mahsulot bo'yi (sm)</label>
-          <input type="text" inputmode="decimal" id="sig-mah-boyi" placeholder="5" oninput="calcSigim()">
-        </div>
-      </div>
+    <!-- Calculator content area -->
+    <div class="kc-body">
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div>
-          <label class="form-label">Material eni (sm)</label>
-          <input type="text" inputmode="decimal" id="sig-mat-eni" placeholder="44" oninput="calcSigim()">
+      <!-- Sig'im -->
+      <div class="kc-section" id="kalk-sigim">
+        <div class="kc-section-header">
+          <div class="kc-section-icon" style="background:rgba(59,130,246,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#3B82F6" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+          </div>
+          <div>
+            <div class="kc-section-title">Sig'im hisoblash</div>
+            <div class="kc-section-desc">Materialga mahsulot nechta sig'ishini hisoblaydi</div>
+          </div>
         </div>
-        <div>
-          <label class="form-label">Material bo'yi (sm)</label>
-          <input type="text" inputmode="decimal" id="sig-mat-boyi" placeholder="31" oninput="calcSigim()">
+
+        <div class="kc-grid-2">
+          <div class="kc-field">
+            <label class="kc-label">Mahsulot eni</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="decimal" id="sig-mah-eni" placeholder="9" oninput="calcSigim()">
+              <span class="kc-unit">sm</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Mahsulot bo'yi</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="decimal" id="sig-mah-boyi" placeholder="5" oninput="calcSigim()">
+              <span class="kc-unit">sm</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Material eni</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="decimal" id="sig-mat-eni" placeholder="44" oninput="calcSigim()">
+              <span class="kc-unit">sm</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Material bo'yi</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="decimal" id="sig-mat-boyi" placeholder="31" oninput="calcSigim()">
+              <span class="kc-unit">sm</span>
+            </div>
+          </div>
         </div>
-      </div>
-      <div style="margin-bottom:12px">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--gray-light);border-radius:8px;border:1.5px solid var(--gray-border);color:var(--text)">
-          <input type="checkbox" id="sig-kesish" onchange="calcSigim()" style="width:18px;height:18px;cursor:pointer;accent-color:var(--blue)">
-          <span>✂️ Kesish uchun joy (+0.5 sm oraliq)</span>
+
+        <label class="kc-toggle-row">
+          <div>
+            <div class="kc-toggle-label">✂️ Kesish uchun joy</div>
+            <div class="kc-toggle-desc">+0.5 sm oraliq qo'shiladi</div>
+          </div>
+          <div class="kc-switch-wrap">
+            <input type="checkbox" id="sig-kesish" class="kc-switch-input" onchange="calcSigim()">
+            <span class="kc-switch"></span>
+          </div>
         </label>
-        <div id="sig-kesish-info" style="display:none;font-size:11px;color:var(--text3);margin-top:4px;padding:0 4px">
-          Mahsulotlar orasiga 0.5 sm oraliq qo'shiladi (oxirida yo'q)
-        </div>
-      </div>
 
-      <div id="sig-result" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-          <div style="padding:12px;background:var(--blue-light);border-radius:8px;text-align:center;border:1px solid var(--blue-border);color:var(--text)">
-            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">To'g'ri joylashganda</div>
-            <div style="font-size:28px;font-weight:700;color:var(--blue)" id="sig-normal">0</div>
-            <div style="font-size:11px;color:var(--text3)" id="sig-normal-info"></div>
+        <div id="sig-result" style="display:none;margin-top:16px">
+          <div class="kc-results-grid">
+            <div class="kc-result-card">
+              <div class="kc-result-label">To'g'ri joylashganda</div>
+              <div class="kc-result-value" id="sig-normal" style="color:#3B82F6">—</div>
+              <div class="kc-result-sub" id="sig-normal-info"></div>
+            </div>
+            <div class="kc-result-card">
+              <div class="kc-result-label">Aylantirib joylashganda</div>
+              <div class="kc-result-value" id="sig-rotated" style="color:#6366F1">—</div>
+              <div class="kc-result-sub" id="sig-rotated-info"></div>
+            </div>
           </div>
-          <div style="padding:12px;background:var(--green-light);border-radius:8px;text-align:center;border:1px solid var(--green-border);color:var(--text)">
-            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Aylantirib joylashganda</div>
-            <div style="font-size:28px;font-weight:700;color:var(--green)" id="sig-rotated">0</div>
-            <div style="font-size:11px;color:var(--text3)" id="sig-rotated-info"></div>
+          <div class="kc-result-highlight">
+            <div class="kc-result-highlight-label">Eng ko'p sig'adi</div>
+            <div class="kc-result-highlight-val"><span id="sig-best">—</span> <span id="sig-best-way" style="font-size:13px;font-weight:400;opacity:.7"></span></div>
           </div>
         </div>
-        <div style="padding:10px;background:var(--gray-light);border-radius:8px;font-size:13px;text-align:center">
-          <span style="color:var(--text3)">Eng ko'p sig'adi: </span>
-          <span style="font-weight:700;font-size:16px;color:var(--blue)" id="sig-best">0 ta</span>
-          <span style="font-size:11px;color:var(--text3)" id="sig-best-way"></span>
-        </div>
+        <div id="sig-empty" style="padding:16px 0;text-align:center;color:var(--text3);font-size:13px">O'lchamlarni kiriting</div>
       </div>
 
-      <div id="sig-empty" style="padding:16px;text-align:center;color:var(--text3);font-size:13px">
-        O'lchamlarni kiriting
-      </div>
-    </div>
-
-    <!-- Banner / Orakal -->
-    <div class="card hidden" id="kalk-banner">
-      <div class="card-title">Banner hisoblash</div>
-
-      <!-- Narx jadvali -->
-      <div style="margin-bottom:14px;padding:10px;background:var(--gray-light);border-radius:8px;font-size:11px;color:var(--text2)">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--text2)">Narx jadvali (1 kv.m):</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;color:var(--text3)">
-          <span>1 kv.m gacha</span><span style="font-weight:700;color:var(--text)">100 000 so'm</span>
-          <span>1 — 5 kv.m</span><span style="font-weight:700;color:var(--text)">50 000 so'm</span>
-          <span>5 — 10 kv.m</span><span style="font-weight:700;color:var(--text)">40 000 so'm</span>
-          <span>10 — 20 kv.m</span><span style="font-weight:700;color:var(--text)">35 000 so'm</span>
-          <span>20 — 30 kv.m</span><span style="font-weight:700;color:var(--text)">30 000 so'm</span>
-          <span>30 — 50 kv.m</span><span style="font-weight:700;color:var(--text)">28 000 so'm</span>
-          <span>50 — 100 kv.m</span><span style="font-weight:700;color:var(--text)">27 000 so'm</span>
-          <span>100+ kv.m</span><span style="font-weight:700;color:var(--text)">25 000 so'm</span>
-        </div>
-        <div style="margin-top:6px;color:var(--amber);font-size:11px">Qora podloshka: +4 000 so'm/kv.m</div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div><label class="form-label">Eni (metr)</label><input type="text" inputmode="decimal" id="kalk-eni" placeholder="1.5" oninput="calcBanner()"></div>
-        <div><label class="form-label">Bo'yi (metr)</label><input type="text" inputmode="decimal" id="kalk-boyi" placeholder="3.0" oninput="calcBanner()"></div>
-      </div>
-      <div style="margin-bottom:12px">
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" id="kalk-podloshka" onchange="calcBanner()" style="width:auto"> Qora podloshka (+4 000/kv.m)</label>
-        </div>
-      </div>
-
-      <!-- Banner formati -->
-      <div id="kalk-banner-format" style="margin-bottom:12px;display:none">
-        <div style="padding:8px 12px;border-radius:8px;background:var(--blue-light);border:1px solid var(--blue-border);font-size:13px;color:var(--blue);font-weight:600" id="kalk-format-text"></div>
-      </div>
-
-      <!-- Ogohlantirish -->
-      <div id="kalk-banner-warn" style="margin-bottom:12px;display:none">
-        <div style="padding:8px 12px;border-radius:8px;background:var(--red-light);border:1px solid var(--red-border);font-size:13px;color:var(--red);font-weight:600">
-          ⚠️ O'lcham katta! Maxsus pechat talab qilinadi (+10 000 so'm/kv.m)
-        </div>
-      </div>
-
-      <div class="kalk-result" id="kalk-banner-result">
-        <div style="font-size:12px;color:var(--text3)">Eni va bo'yini kiriting</div>
-        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
-      </div>
-    </div>
-
-    <!-- Bekprint -->
-    <div class="card hidden" id="kalk-bekprint">
-      <div class="card-title">Bek print hisoblash</div>
-
-      <!-- Narx jadvali -->
-      <div style="margin-bottom:14px;padding:10px;background:var(--gray-light);border-radius:8px;font-size:11px;color:var(--text2)">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--text2)">Narx jadvali (1 kv.m):</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;color:var(--text3)">
-          <span>1 kv.m gacha</span><span style="font-weight:700;color:var(--text)">150 000 so'm</span>
-          <span>1 — 5 kv.m</span><span style="font-weight:700;color:var(--text)">80 000 so'm</span>
-          <span>5 — 10 kv.m</span><span style="font-weight:700;color:var(--text)">70 000 so'm</span>
-          <span>10 — 20 kv.m</span><span style="font-weight:700;color:var(--text)">65 000 so'm</span>
-          <span>20 — 30 kv.m</span><span style="font-weight:700;color:var(--text)">60 000 so'm</span>
-          <span>30 — 50 kv.m</span><span style="font-weight:700;color:var(--text)">55 000 so'm</span>
-          <span>50+ kv.m</span><span style="font-weight:700;color:var(--text)">50 000 so'm</span>
-        </div>
-      </div>
-
-      <div style="margin-bottom:12px">
-        <label class="form-label">Rulo kengligi</label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;padding:8px 12px;border-radius:8px;border:1.5px solid var(--gray-border);flex:1;justify-content:center" id="bek-rulo-91">
-            <input type="radio" name="bek-rulo" value="0.91" onchange="calcBekprint()" style="width:auto"> 0.91 m
-          </label>
-          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;padding:8px 12px;border-radius:8px;border:1.5px solid var(--gray-border);flex:1;justify-content:center" id="bek-rulo-127">
-            <input type="radio" name="bek-rulo" value="1.27" onchange="calcBekprint()" style="width:auto"> 1.27 m
-          </label>
-          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;padding:8px 12px;border-radius:8px;border:1.5px solid var(--gray-border);flex:1;justify-content:center" id="bek-rulo-152">
-            <input type="radio" name="bek-rulo" value="1.52" onchange="calcBekprint()" style="width:auto"> 1.52 m
-          </label>
-        </div>
-      </div>
-
-      <div style="margin-bottom:12px">
-        <label class="form-label">Bo'yi (metr) — cheksiz uzunlik</label>
-        <input type="text" inputmode="decimal" id="kalk-bek-boyi" placeholder="3.5" oninput="calcBekprint()">
-      </div>
-
-      <div id="kalk-bek-format" style="margin-bottom:10px;display:none">
-        <div style="padding:8px 12px;border-radius:8px;background:var(--blue-light);border:1px solid var(--blue-border);font-size:13px;color:var(--blue);font-weight:600" id="kalk-bek-format-text"></div>
-      </div>
-
-      <div class="kalk-result" id="kalk-bek-result">
-        <div style="font-size:12px;color:var(--text3)">Rulo va bo'yini tanlang</div>
-        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
-      </div>
-    </div>
-
-    <!-- UV DTF -->
-    <div class="card hidden" id="kalk-uvdtf">
-      <div class="card-title">UV DTF hisoblash</div>
-
-      <div style="margin-bottom:12px;padding:10px;background:var(--gray-light);border-radius:8px;font-size:11px">
-        <div style="font-weight:700;margin-bottom:6px;color:var(--text2)">Narx jadvali (pogonometr — metr):</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;color:var(--text3)">
-          <span>0.5 metrgacha</span><span style="font-weight:700;color:var(--text)">150 000 so'm</span>
-          <span>0.5 — 5 metr</span><span style="font-weight:700;color:var(--text)">250 000 so'm</span>
-          <span>5 — 10 metr</span><span style="font-weight:700;color:var(--text)">230 000 so'm</span>
-          <span>10 — 20 metr</span><span style="font-weight:700;color:var(--text)">200 000 so'm</span>
-          <span>20 — 50 metr</span><span style="font-weight:700;color:var(--text)">180 000 so'm</span>
-          <span>50 — 100 metr</span><span style="font-weight:700;color:var(--text)">150 000 so'm</span>
-        </div>
-        <div style="margin-top:6px;color:var(--text3)">Rulo: 30sm | Pechat zonasi: 29sm</div>
-      </div>
-
-      <div style="margin-bottom:12px">
-        <label class="form-label">Uzunlik (metr) — bo'yi cheksiz</label>
-        <input type="text" inputmode="decimal" id="kalk-uv-uzunlik" placeholder="2.5" oninput="calcUvDtf()">
-      </div>
-
-      <div class="kalk-result" id="kalk-uv-result">
-        <div style="font-size:12px;color:var(--text3)">Uzunlikni kiriting</div>
-        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
-      </div>
-    </div>
-
-    <!-- DTF -->
-    <div class="card hidden" id="kalk-dtf">
-      <div class="card-title">DTF hisoblash</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div><label class="form-label">Eni (sm)</label><input type="text" inputmode="decimal" id="kalk-dtf-eni" placeholder="30" oninput="calcDtf()"></div>
-        <div><label class="form-label">Bo'yi (sm)</label><input type="text" inputmode="decimal" id="kalk-dtf-boyi" placeholder="40" oninput="calcDtf()"></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div><label class="form-label">Soni</label><input type="text" inputmode="numeric" id="kalk-dtf-son" placeholder="10" oninput="calcDtf()"></div>
-        <div>
-          <label class="form-label">Turi</label>
-          <select id="kalk-dtf-tur" style="width:100%" onchange="calcDtf()">
-            <option value="1">Bir tomonlama</option>
-            <option value="1.8">Ikki tomonlama</option>
-          </select>
-        </div>
-      </div>
-      <div class="kalk-result" id="kalk-dtf-result">
-        <div style="font-size:12px;color:var(--text3)">Natija</div>
-        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
-      </div>
-    </div>
-
-    <!-- Pechat -->
-    <div class="card hidden" id="kalk-pechat">
-      <div class="card-title">Rangli pechat hisoblash</div>
-      <div style="margin-bottom:12px">
-        <label class="form-label">Soni</label>
-        <input type="text" inputmode="numeric" id="kalk-pech-son" placeholder="100" oninput="calcPechat()">
-      </div>
-      <div style="margin-bottom:12px">
-        <label class="form-label">O'lcham</label>
-        <select id="kalk-pech-olch" style="width:100%" onchange="calcPechat()">
-          <option value="A4">A4</option>
-          <option value="A3">A3</option>
-          <option value="A5">A5</option>
-        </select>
-      </div>
-      <div class="kalk-result" id="kalk-pech-result">
-        <div style="font-size:12px;color:var(--text3)">Natija</div>
-        <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
-      </div>
-    </div>
-
-    <!-- Ofset -->
-    <!-- Ofset -->
-    <div class="card hidden" id="kalk-ofset">
-      <div class="card-title">Ofset hisoblash</div>
-
-      <!-- 1. Mahsulot -->
-      <div class="ofset-blok">
-        <div class="ofset-blok-title">1. MAHSULOT</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div><label class="form-label">Mahsulot nomi</label><input type="text" id="of-nom" placeholder="Vizitka" oninput="calcOfset()"></div>
-          <div><label class="form-label">Soni (dona)</label><input type="text" inputmode="numeric" id="of-son" placeholder="1000" oninput="calcOfset()"></div>
-          <div><label class="form-label">Eni (sm)</label><input type="text" inputmode="decimal" id="of-eni" placeholder="9" oninput="calcOfset()"></div>
-          <div><label class="form-label">Bo'yi (sm)</label><input type="text" inputmode="decimal" id="of-boyi" placeholder="5" oninput="calcOfset()"></div>
-        </div>
-      </div>
-
-      <!-- 2. Ish formati -->
-      <div class="ofset-blok">
-        <div class="ofset-blok-title">2. ISH FORMATI</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <!-- Banner -->
+      <div class="kc-section hidden" id="kalk-banner">
+        <div class="kc-section-header">
+          <div class="kc-section-icon" style="background:rgba(34,197,94,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#22C55E" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
           <div>
-            <label class="form-label">Ish formati</label>
-            <select id="of-ishformat" style="width:100%" onchange="calcOfset()">
-              <option value="44x31">44×31 sm (62×88 qog'ozdan)</option>
-              <option value="35x50">35×50 sm (70×100 qog'ozdan)</option>
+            <div class="kc-section-title">Banner / Orakal</div>
+            <div class="kc-section-desc">Ekosalvent banner narxlash</div>
+          </div>
+        </div>
+
+        <!-- Narx jadvali -->
+        <div class="kc-info-box">
+          <div class="kc-info-title">Narx jadvali (1 kv.m)</div>
+          <div class="kc-price-grid">
+            <span class="kc-price-range">1 kv.m gacha</span><span class="kc-price-val">100 000 so'm</span>
+            <span class="kc-price-range">1 — 5 kv.m</span><span class="kc-price-val">50 000 so'm</span>
+            <span class="kc-price-range">5 — 10 kv.m</span><span class="kc-price-val">40 000 so'm</span>
+            <span class="kc-price-range">10 — 20 kv.m</span><span class="kc-price-val">35 000 so'm</span>
+            <span class="kc-price-range">20 — 30 kv.m</span><span class="kc-price-val">30 000 so'm</span>
+            <span class="kc-price-range">30 — 50 kv.m</span><span class="kc-price-val">28 000 so'm</span>
+            <span class="kc-price-range">50 — 100 kv.m</span><span class="kc-price-val">27 000 so'm</span>
+            <span class="kc-price-range">100+ kv.m</span><span class="kc-price-val">25 000 so'm</span>
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:#F59E0B">Qora podloshka: +4 000 so'm/kv.m</div>
+        </div>
+
+        <div class="kc-grid-2">
+          <div class="kc-field">
+            <label class="kc-label">Eni</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="decimal" id="kalk-eni" placeholder="1.5" oninput="calcBanner()">
+              <span class="kc-unit">m</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Bo'yi</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="decimal" id="kalk-boyi" placeholder="3.0" oninput="calcBanner()">
+              <span class="kc-unit">m</span>
+            </div>
+          </div>
+        </div>
+
+        <label class="kc-toggle-row">
+          <div>
+            <div class="kc-toggle-label">Qora podloshka</div>
+            <div class="kc-toggle-desc">+4 000 so'm/kv.m</div>
+          </div>
+          <div class="kc-switch-wrap">
+            <input type="checkbox" id="kalk-podloshka" class="kc-switch-input" onchange="calcBanner()">
+            <span class="kc-switch"></span>
+          </div>
+        </label>
+
+        <div id="kalk-banner-format" style="display:none;margin-top:12px">
+          <div class="kc-format-badge" id="kalk-format-text"></div>
+        </div>
+        <div id="kalk-banner-warn" style="display:none;margin-top:8px">
+          <div class="kc-warn-box">⚠️ O'lcham katta! Maxsus pechat talab qilinadi (+10 000 so'm/kv.m)</div>
+        </div>
+
+        <div class="kalk-result" id="kalk-banner-result" style="margin-top:16px">
+          <div style="font-size:12px;color:var(--text3)">Eni va bo'yini kiriting</div>
+          <div style="font-size:24px;font-weight:700;color:var(--blue)">—</div>
+        </div>
+      </div>
+
+      <!-- Bek Print -->
+      <div class="kc-section hidden" id="kalk-bekprint">
+        <div class="kc-section-header">
+          <div class="kc-section-icon" style="background:rgba(99,102,241,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#6366F1" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          </div>
+          <div>
+            <div class="kc-section-title">Bek Print</div>
+            <div class="kc-section-desc">Rulo: 0.91m / 1.27m / 1.52m — Bo'yi cheksiz</div>
+          </div>
+        </div>
+
+        <div class="kc-info-box" style="border-color:rgba(99,102,241,.2);background:rgba(99,102,241,.05)">
+          <div class="kc-info-title" style="color:#6366F1">Narx jadvali (1 kv.m)</div>
+          <div class="kc-price-grid">
+            <span class="kc-price-range">1 kv.m gacha</span><span class="kc-price-val">150 000 so'm</span>
+            <span class="kc-price-range">1 — 5 kv.m</span><span class="kc-price-val">80 000 so'm</span>
+            <span class="kc-price-range">5 — 10 kv.m</span><span class="kc-price-val">70 000 so'm</span>
+            <span class="kc-price-range">10 — 20 kv.m</span><span class="kc-price-val">65 000 so'm</span>
+            <span class="kc-price-range">20 — 30 kv.m</span><span class="kc-price-val">60 000 so'm</span>
+            <span class="kc-price-range">30+ kv.m</span><span class="kc-price-val">50 000 so'm</span>
+          </div>
+        </div>
+
+        <div class="kc-field" style="margin-bottom:16px">
+          <label class="kc-label">Rulo kengligi</label>
+          <div class="kc-radio-group">
+            <label class="kc-radio-btn"><input type="radio" name="bek-rulo" value="0.91" onchange="calcBekprint()"> 0.91 m</label>
+            <label class="kc-radio-btn"><input type="radio" name="bek-rulo" value="1.27" onchange="calcBekprint()"> 1.27 m</label>
+            <label class="kc-radio-btn"><input type="radio" name="bek-rulo" value="1.52" onchange="calcBekprint()"> 1.52 m</label>
+          </div>
+        </div>
+
+        <div class="kc-field">
+          <label class="kc-label">Bo'yi (uzunlik)</label>
+          <div class="kc-input-wrap">
+            <input type="text" inputmode="decimal" id="kalk-bek-boyi" placeholder="3.5" oninput="calcBekprint()">
+            <span class="kc-unit">m</span>
+          </div>
+        </div>
+
+        <div id="kalk-bek-format" style="display:none;margin-top:12px">
+          <div class="kc-format-badge" style="border-color:rgba(99,102,241,.3);color:#6366F1;background:rgba(99,102,241,.08)" id="kalk-bek-format-text"></div>
+        </div>
+        <div class="kalk-result" id="kalk-bek-result" style="margin-top:16px">
+          <div style="font-size:12px;color:var(--text3)">Rulo va bo'yini tanlang</div>
+          <div style="font-size:24px;font-weight:700;color:#6366F1">—</div>
+        </div>
+      </div>
+
+      <!-- UV DTF -->
+      <div class="kc-section hidden" id="kalk-uvdtf">
+        <div class="kc-section-header">
+          <div class="kc-section-icon" style="background:rgba(245,158,11,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#F59E0B" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/></svg>
+          </div>
+          <div>
+            <div class="kc-section-title">UV DTF</div>
+            <div class="kc-section-desc">Pogonometr asosida hisoblash · Rulo: 30sm · Zona: 29sm</div>
+          </div>
+        </div>
+
+        <div class="kc-info-box" style="border-color:rgba(245,158,11,.2);background:rgba(245,158,11,.05)">
+          <div class="kc-info-title" style="color:#F59E0B">Narx jadvali (metr)</div>
+          <div class="kc-price-grid">
+            <span class="kc-price-range">0.5 m gacha</span><span class="kc-price-val">150 000 so'm/m</span>
+            <span class="kc-price-range">0.5 — 5 m</span><span class="kc-price-val">250 000 so'm/m</span>
+            <span class="kc-price-range">5 — 10 m</span><span class="kc-price-val">230 000 so'm/m</span>
+            <span class="kc-price-range">10 — 20 m</span><span class="kc-price-val">200 000 so'm/m</span>
+            <span class="kc-price-range">20 — 50 m</span><span class="kc-price-val">180 000 so'm/m</span>
+            <span class="kc-price-range">50+ m</span><span class="kc-price-val">150 000 so'm/m</span>
+          </div>
+        </div>
+
+        <div class="kc-field">
+          <label class="kc-label">Uzunlik</label>
+          <div class="kc-input-wrap">
+            <input type="text" inputmode="decimal" id="kalk-uv-uzunlik" placeholder="2.5" oninput="calcUvDtf()">
+            <span class="kc-unit">m</span>
+          </div>
+        </div>
+        <div class="kalk-result" id="kalk-uv-result" style="margin-top:16px">
+          <div style="font-size:12px;color:var(--text3)">Uzunlikni kiriting</div>
+          <div style="font-size:24px;font-weight:700;color:#F59E0B">—</div>
+        </div>
+      </div>
+
+      <!-- DTF -->
+      <div class="kc-section hidden" id="kalk-dtf">
+        <div class="kc-section-header">
+          <div class="kc-section-icon" style="background:rgba(239,68,68,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#EF4444" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          </div>
+          <div>
+            <div class="kc-section-title">DTF Pechat</div>
+            <div class="kc-section-desc">Kv.m asosida narxlash</div>
+          </div>
+        </div>
+
+        <div class="kc-grid-2">
+          <div class="kc-field">
+            <label class="kc-label">Eni</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="decimal" id="kalk-dtf-eni" placeholder="30" oninput="calcDtf()">
+              <span class="kc-unit">sm</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Bo'yi</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="decimal" id="kalk-dtf-boyi" placeholder="40" oninput="calcDtf()">
+              <span class="kc-unit">sm</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Soni</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="numeric" id="kalk-dtf-son" placeholder="10" oninput="calcDtf()">
+              <span class="kc-unit">dona</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Turi</label>
+            <select id="kalk-dtf-tur" class="kc-select" onchange="calcDtf()">
+              <option value="1">Bir tomonlama</option>
+              <option value="1.8">Ikki tomonlama</option>
             </select>
           </div>
-          <div>
-            <label class="form-label">1 formatga nechta sig'adi</label>
-            <input type="text" inputmode="numeric" id="of-sigim" placeholder="avtomatik"
-              onfocus="ofAutoFill('of-sigim','of-sigim-auto')"
-              oninput="calcOfset()">
-            <div style="font-size:11px;color:var(--blue);cursor:pointer;margin-top:2px" id="of-sigim-hint" onclick="ofUseAuto('of-sigim','of-sigim-auto')"></div>
-            <input type="hidden" id="of-sigim-auto">
-          </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-          <div>
-            <label class="form-label">Toza pechat</label>
-            <input type="text" inputmode="numeric" id="of-ishson" placeholder="avtomatik"
-              onfocus="ofAutoFill('of-ishson','of-ishson-auto')"
-              oninput="calcOfset()">
-            <div style="font-size:11px;color:var(--blue);cursor:pointer;margin-top:2px" id="of-ishson-hint" onclick="ofUseAuto('of-ishson','of-ishson-auto')"></div>
-            <input type="hidden" id="of-ishson-auto">
-          </div>
-          <div>
-            <label class="form-label">+ Preladka</label>
-            <input type="text" inputmode="numeric" id="of-preladka" value="100" oninput="calcOfset()">
-          </div>
-          <div>
-            <label class="form-label">Katta qog'oz soni</label>
-            <input type="text" inputmode="numeric" id="of-qogoz"
-              onfocus="ofAutoFill('of-qogoz','of-qogoz-auto')"
-              oninput="calcOfset()">
-            <div style="font-size:11px;color:var(--blue);cursor:pointer;margin-top:2px" id="of-qogoz-hint" onclick="ofUseAuto('of-qogoz','of-qogoz-auto')"></div>
-            <input type="hidden" id="of-qogoz-auto">
-          </div>
+        <div class="kalk-result" id="kalk-dtf-result" style="margin-top:16px">
+          <div style="font-size:12px;color:var(--text3)">Natija</div>
+          <div style="font-size:24px;font-weight:700;color:#EF4444">—</div>
         </div>
       </div>
 
-      <!-- 3. Forma -->
-      <div class="ofset-blok">
-        <div class="ofset-blok-title">3. FORMA</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <!-- Pechat -->
+      <div class="kc-section hidden" id="kalk-pechat">
+        <div class="kc-section-header">
+          <div class="kc-section-icon" style="background:rgba(34,197,94,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#22C55E" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          </div>
           <div>
-            <label class="form-label">Turi</label>
-            <select id="of-forma-tur" style="width:100%" onchange="calcOfset()">
-              <option value="0">Yo'q</option>
-              <option value="22000">1 talik — 22 000</option>
-              <option value="88000">4 talik — 88 000</option>
+            <div class="kc-section-title">Rangli Pechat</div>
+            <div class="kc-section-desc">Format va soni asosida hisoblash</div>
+          </div>
+        </div>
+        <div class="kc-grid-2">
+          <div class="kc-field">
+            <label class="kc-label">Soni</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="numeric" id="kalk-pech-son" placeholder="100" oninput="calcPechat()">
+              <span class="kc-unit">dona</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Format</label>
+            <select id="kalk-pech-olch" class="kc-select" onchange="calcPechat()">
+              <option value="A4">A4</option>
+              <option value="A3">A3</option>
+              <option value="A5">A5</option>
             </select>
           </div>
-          <div><label class="form-label">Formalar soni</label><input type="text" inputmode="numeric" id="of-forma-son" placeholder="0" oninput="calcOfset()"></div>
-          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-forma-jami">—</div></div>
+        </div>
+        <div class="kalk-result" id="kalk-pech-result" style="margin-top:16px">
+          <div style="font-size:12px;color:var(--text3)">Natija</div>
+          <div style="font-size:24px;font-weight:700;color:#22C55E">—</div>
         </div>
       </div>
 
-      <!-- 4. Pechat -->
-      <div class="ofset-blok">
-        <div class="ofset-blok-title">4. PECHAT</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <!-- Ofset -->
+      <div class="kc-section hidden" id="kalk-ofset">
+
+        <div class="kc-section-header">
+          <div class="kc-section-icon" style="background:rgba(59,130,246,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
           <div>
-            <label class="form-label">Pechat turi</label>
-            <select id="of-pechat-tur" style="width:100%" onchange="calcOfset()">
-              <option value="1+0">1+0 (bir tomonlama)</option>
-              <option value="4+0">4+0 (bir tomonlama)</option>
-              <option value="1+1s">1+1 svoy</option>
-              <option value="4+4s">4+4 svoy</option>
-              <option value="1+1c">1+1 chujoy</option>
-              <option value="4+4c">4+4 chujoy</option>
-            </select>
-          </div>
-          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-pechat-jami">—</div></div>
-        </div>
-      </div>
-
-      <!-- 5. Qog'oz -->
-      <div class="ofset-blok">
-        <div class="ofset-blok-title">5. QOG'OZ</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div>
-            <label class="form-label">Qog'oz turi</label>
-            <select id="of-qogoz-tur" style="width:100%" onchange="calcOfset()">
-              <option value="">— Tanlang —</option>
-              <optgroup label="62×88 formati">
-                <option value="740">Melovan 80g — 740</option>
-                <option value="810">Melovan 90g — 810</option>
-                <option value="915">Melovan 105g — 915</option>
-                <option value="995">Melovan 115g — 995</option>
-                <option value="1105">Melovan 128g — 1 105</option>
-                <option value="1240">Melovan 140g — 1 240</option>
-                <option value="1300">Melovan 150g — 1 300</option>
-                <option value="1380">Melovan 157g — 1 380</option>
-                <option value="1500">Melovan 170g — 1 500</option>
-                <option value="2200">Melovan 250g — 2 200</option>
-                <option value="2640">Melovan 300g — 2 640</option>
-                <option value="3150">Melovan 350g — 3 150</option>
-              </optgroup>
-              <optgroup label="70×100 formati">
-                <option value="950">Melovan 80g — 950</option>
-                <option value="1030">Melovan 90g — 1 030</option>
-                <option value="1175">Melovan 105g — 1 175</option>
-                <option value="1275">Melovan 115g — 1 275</option>
-                <option value="1420">Melovan 128g — 1 420</option>
-                <option value="1660">Melovan 150g — 1 660</option>
-                <option value="1920">Melovan 170g — 1 920</option>
-                <option value="2260">Melovan 200g — 2 260</option>
-                <option value="2825">Melovan 250g — 2 825</option>
-                <option value="3390">Melovan 300g — 3 390</option>
-                <option value="4040">Melovan 350g — 4 040</option>
-              </optgroup>
-            </select>
-          </div>
-          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-qogoz-jami">—</div></div>
-        </div>
-      </div>
-
-      <!-- 6. Laminatsiya (ixtiyoriy) -->
-      <div class="ofset-blok">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--text)">
-          <div class="ofset-blok-title" style="margin:0">6. LAMINATSIYA</div>
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="of-lam-check" onchange="toggleOfBlok('lam');calcOfset()" style="width:auto"> Qo'shish</label>
-        </div>
-        <div id="of-lam-body" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:8px">
-          <div><label class="form-label">Ish formati soni</label><input type="text" inputmode="numeric" id="of-lam-son" placeholder="0" oninput="calcOfset()"></div>
-          <div><label class="form-label">Narx (so'm/dona)</label><input type="text" inputmode="numeric" id="of-lam-narx" value="500" oninput="calcOfset()"></div>
-          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-lam-jami">—</div></div>
-        </div>
-      </div>
-
-      <!-- 7. Visichka (ixtiyoriy) -->
-      <div class="ofset-blok">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--text)">
-          <div class="ofset-blok-title" style="margin:0">7. VISICHKA</div>
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="of-vis-check" onchange="toggleOfBlok('vis');calcOfset()" style="width:auto"> Qo'shish</label>
-        </div>
-        <div id="of-vis-body" style="display:none;grid-template-columns:1fr 1fr;gap:8px">
-          <div><label class="form-label">Ish formati soni</label><input type="text" inputmode="numeric" id="of-vis-son" placeholder="0" oninput="calcOfset()"><div style="font-size:11px;color:var(--text3)">Har 1000 ta = 120 000 so'm</div></div>
-          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-vis-jami">—</div></div>
-        </div>
-      </div>
-
-      <!-- 8. Pichoq (ixtiyoriy) -->
-      <div class="ofset-blok">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--text)">
-          <div class="ofset-blok-title" style="margin:0">8. PICHOQ</div>
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="of-pich-check" onchange="toggleOfBlok('pich');calcOfset()" style="width:auto"> Qo'shish</label>
-        </div>
-        <div id="of-pich-body" style="display:none;grid-template-columns:1fr 1fr;gap:8px">
-          <div><label class="form-label">Summa (so'm)</label><input type="text" inputmode="numeric" id="of-pich-sum" placeholder="0" oninput="calcOfset()"></div>
-          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-pich-jami">—</div></div>
-        </div>
-      </div>
-
-      <!-- 9. Pereplot (ixtiyoriy) -->
-      <div class="ofset-blok">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--text)">
-          <div class="ofset-blok-title" style="margin:0">9. PEREPLOT</div>
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="of-per-check" onchange="toggleOfBlok('per');calcOfset()" style="width:auto"> Qo'shish</label>
-        </div>
-        <div id="of-per-body" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:8px">
-          <div><label class="form-label">Soni</label><input type="text" inputmode="numeric" id="of-per-son" placeholder="0" oninput="calcOfset()"></div>
-          <div><label class="form-label">Narx (so'm/dona)</label><input type="text" inputmode="numeric" id="of-per-narx" value="2000" oninput="calcOfset()"></div>
-          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-per-jami">—</div></div>
-        </div>
-      </div>
-
-      <!-- 10. Termokley (ixtiyoriy) -->
-      <div class="ofset-blok">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--text)">
-          <div class="ofset-blok-title" style="margin:0">10. TERMOKLEY</div>
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="of-term-check" onchange="toggleOfBlok('term');calcOfset()" style="width:auto"> Qo'shish</label>
-        </div>
-        <div id="of-term-body" style="display:none;grid-template-columns:1fr 1fr;gap:8px">
-          <div><label class="form-label">Summa (so'm)</label><input type="text" inputmode="numeric" id="of-term-sum" placeholder="0" oninput="calcOfset()"></div>
-          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-term-jami">—</div></div>
-        </div>
-      </div>
-
-      <!-- 11. Zborka (ixtiyoriy) -->
-      <div class="ofset-blok">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--text)">
-          <div class="ofset-blok-title" style="margin:0">11. ZBORKA</div>
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="of-zbor-check" onchange="toggleOfBlok('zbor');calcOfset()" style="width:auto"> Qo'shish</label>
-        </div>
-        <div id="of-zbor-body" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:8px">
-          <div><label class="form-label">Soni</label><input type="text" inputmode="numeric" id="of-zbor-son" placeholder="0" oninput="calcOfset()"></div>
-          <div><label class="form-label">Narx (so'm/dona)</label><input type="text" inputmode="numeric" id="of-zbor-narx" value="500" oninput="calcOfset()"></div>
-          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-zbor-jami">—</div></div>
-        </div>
-      </div>
-
-      <!-- 12. Rezka va Upakovka (ixtiyoriy) -->
-      <div class="ofset-blok">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--text)">
-          <div class="ofset-blok-title" style="margin:0">12. REZKA VA UPAKOVKA</div>
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="of-rezka-check" onchange="toggleOfBlok('rezka');calcOfset()" style="width:auto"> Qo'shish</label>
-        </div>
-        <div id="of-rezka-body" style="display:none;grid-template-columns:1fr 1fr;gap:8px">
-          <div><label class="form-label">Summa (so'm)</label><input type="text" inputmode="numeric" id="of-rezka-sum" placeholder="0" oninput="calcOfset()"></div>
-          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-rezka-jami">—</div></div>
-        </div>
-      </div>
-
-      <!-- 13. Qo'shimcha rasxod (ixtiyoriy) -->
-      <div class="ofset-blok">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--text)">
-          <div class="ofset-blok-title" style="margin:0">13. QO'SHIMCHA RASXOD</div>
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="of-rasxod-check" onchange="toggleOfBlok('rasxod');calcOfset()" style="width:auto"> Qo'shish</label>
-        </div>
-        <div id="of-rasxod-body" style="display:none;grid-template-columns:1fr 1fr;gap:8px">
-          <div><label class="form-label">Summa (so'm)</label><input type="text" inputmode="numeric" id="of-rasxod-sum" placeholder="0" oninput="calcOfset()"></div>
-          <div style="display:flex;align-items:flex-end;padding-bottom:9px"><div class="of-part-sum" id="of-rasxod-jami">—</div></div>
-        </div>
-      </div>
-
-      <!-- 14. Foyda -->
-      <div class="ofset-blok" style="border:1.5px solid var(--green-border);background:var(--green-light)">
-        <div class="ofset-blok-title" style="color:var(--green)">💰 FOYDA (NAЦЕНКА)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:flex-end">
-          <div>
-            <label class="form-label">Foiz (%)</label>
-            <input type="text" inputmode="decimal" id="of-foyda-foiz" placeholder="38" oninput="calcOfset()" style="border-color:var(--green-border)">
-          </div>
-          <div style="padding-bottom:9px">
-            <div style="font-size:11px;color:var(--text3)">Mijozga narx</div>
-            <div style="font-size:18px;font-weight:700;color:var(--green)" id="of-foyda-jami">—</div>
+            <div class="kc-section-title">Ofset Hisoblash</div>
+            <div class="kc-section-desc">To'liq ofset narxlash tizimi</div>
           </div>
         </div>
-      </div>
 
-      <!-- JAMI -->
-      <div class="kalk-result" id="kalk-of-result">
-        <div style="font-size:12px;color:var(--text3)">Ma'lumotlarni kiriting</div>
-        <div style="font-size:28px;font-weight:700;color:var(--blue)">—</div>
-      </div>
-
-      <!-- FOYDA -->
-      <div class="ofset-blok" style="margin-top:10px">
-        <div class="ofset-blok-title">FOYDA (ixtiyoriy)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:flex-end">
-          <div>
-            <label class="form-label">Foyda foizi (%)</label>
-            <input type="text" inputmode="decimal" id="of-foyda-pct" placeholder="38" oninput="calcOfsetFoyda()">
-          </div>
-          <div style="padding-bottom:9px">
-            <div style="font-size:11px;color:var(--text3);margin-bottom:2px">Mijozga narx:</div>
-            <div style="font-size:20px;font-weight:700;color:var(--green)" id="of-foyda-jami">—</div>
+        <!-- 1. Mahsulot -->
+        <div class="kc-block">
+          <div class="kc-block-title"><span class="kc-step">1</span> Mahsulot</div>
+          <div class="kc-grid-2">
+            <div class="kc-field"><label class="kc-label">Mahsulot nomi</label><input type="text" id="of-nom" placeholder="Vizitka" oninput="calcOfset()"></div>
+            <div class="kc-field"><label class="kc-label">Soni</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-son" placeholder="1000" oninput="calcOfset()"><span class="kc-unit">dona</span></div></div>
+            <div class="kc-field"><label class="kc-label">Eni</label><div class="kc-input-wrap"><input type="text" inputmode="decimal" id="of-eni" placeholder="9" oninput="calcOfset()"><span class="kc-unit">sm</span></div></div>
+            <div class="kc-field"><label class="kc-label">Bo'yi</label><div class="kc-input-wrap"><input type="text" inputmode="decimal" id="of-boyi" placeholder="5" oninput="calcOfset()"><span class="kc-unit">sm</span></div></div>
           </div>
         </div>
+
+        <!-- 2. Ish formati -->
+        <div class="kc-block">
+          <div class="kc-block-title"><span class="kc-step">2</span> Ish formati</div>
+          <div class="kc-grid-3">
+            <div class="kc-field"><label class="kc-label">Format</label><select id="of-ishformat" class="kc-select" onchange="calcOfset()"><option value="44x31">44×31 sm</option><option value="35x50">35×50 sm</option></select></div>
+            <div class="kc-field"><label class="kc-label">Sig'im (avtomatik)</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-sigim" placeholder="auto" onfocus="ofAutoFill('of-sigim','of-sigim-auto')" oninput="calcOfset()"><input type="hidden" id="of-sigim-auto"></div><div class="kc-hint" id="of-sigim-hint"></div></div>
+            <div class="kc-field"><label class="kc-label">Preladka</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-preladka" value="100" oninput="calcOfset()"><span class="kc-unit">list</span></div></div>
+          </div>
+          <div class="kc-grid-2" style="margin-top:12px">
+            <div class="kc-field"><label class="kc-label">Toza pechat</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-ishson" placeholder="auto" onfocus="ofAutoFill('of-ishson','of-ishson-auto')" oninput="calcOfset()"><input type="hidden" id="of-ishson-auto"></div><div class="kc-hint" id="of-ishson-hint"></div></div>
+            <div class="kc-field"><label class="kc-label">Katta qog'oz</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-qogoz" onfocus="ofAutoFill('of-qogoz','of-qogoz-auto')" oninput="calcOfset()"><input type="hidden" id="of-qogoz-auto"></div><div class="kc-hint" id="of-qogoz-hint"></div></div>
+          </div>
+        </div>
+
+        <!-- 3. Forma -->
+        <div class="kc-block">
+          <div class="kc-block-title"><span class="kc-step">3</span> Forma</div>
+          <div class="kc-grid-3">
+            <div class="kc-field"><label class="kc-label">Turi</label><select id="of-forma-tur" class="kc-select" onchange="calcOfset()"><option value="0">Yo'q</option><option value="22000">1 talik — 22 000</option><option value="88000">4 talik — 88 000</option></select></div>
+            <div class="kc-field"><label class="kc-label">Soni</label><input type="text" inputmode="numeric" id="of-forma-son" placeholder="0" oninput="calcOfset()"></div>
+            <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-forma-jami">—</div></div>
+          </div>
+        </div>
+
+        <!-- 4. Pechat -->
+        <div class="kc-block">
+          <div class="kc-block-title"><span class="kc-step">4</span> Pechat</div>
+          <div class="kc-grid-2">
+            <div class="kc-field"><label class="kc-label">Pechat turi</label><select id="of-pechat-tur" class="kc-select" onchange="calcOfset()"><option value="1+0">1+0 (bir tomonlama)</option><option value="4+0">4+0 (bir tomonlama)</option><option value="1+1s">1+1 svoy</option><option value="4+4s">4+4 svoy</option><option value="1+1c">1+1 chujoy</option><option value="4+4c">4+4 chujoy</option></select></div>
+            <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-pechat-jami">—</div></div>
+          </div>
+        </div>
+
+        <!-- 5. Qog'oz -->
+        <div class="kc-block">
+          <div class="kc-block-title"><span class="kc-step">5</span> Qog'oz</div>
+          <div class="kc-grid-2">
+            <div class="kc-field"><label class="kc-label">Qog'oz turi</label><select id="of-qogoz-tur" class="kc-select" onchange="calcOfset()"><option value="">— Tanlang —</option><optgroup label="62×88 formati"><option value="740">Melovan 80g — 740</option><option value="810">Melovan 90g — 810</option><option value="915">Melovan 105g — 915</option><option value="995">Melovan 115g — 995</option><option value="1105">Melovan 128g — 1 105</option><option value="1240">Melovan 140g — 1 240</option><option value="1300">Melovan 150g — 1 300</option><option value="1380">Melovan 157g — 1 380</option><option value="1500">Melovan 170g — 1 500</option><option value="2200">Melovan 250g — 2 200</option><option value="2640">Melovan 300g — 2 640</option><option value="3150">Melovan 350g — 3 150</option></optgroup><optgroup label="70×100 formati"><option value="950">Melovan 80g — 950</option><option value="1030">Melovan 90g — 1 030</option><option value="1175">Melovan 105g — 1 175</option><option value="1275">Melovan 115g — 1 275</option><option value="1420">Melovan 128g — 1 420</option><option value="1660">Melovan 150g — 1 660</option><option value="1920">Melovan 170g — 1 920</option><option value="2260">Melovan 200g — 2 260</option><option value="2825">Melovan 250g — 2 825</option><option value="3390">Melovan 300g — 3 390</option><option value="4040">Melovan 350g — 4 040</option></optgroup></select></div>
+            <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-qogoz-jami">—</div></div>
+          </div>
+        </div>
+
+        <!-- Ixtiyoriy xizmatlar -->
+        <div class="kc-block">
+          <div class="kc-block-title">Qo'shimcha xizmatlar</div>
+          <div class="kc-services">
+
+            <div class="kc-service-item">
+              <label class="kc-toggle-row" style="margin:0;padding:12px 0;border-bottom:1px solid var(--gray-border)">
+                <div><div class="kc-toggle-label">Laminatsiya</div><div class="kc-toggle-desc" id="of-lam-preview">—</div></div>
+                <div class="kc-switch-wrap"><input type="checkbox" id="of-lam-check" class="kc-switch-input" onchange="toggleOfBlok('lam');calcOfset()"><span class="kc-switch"></span></div>
+              </label>
+              <div id="of-lam-body" style="display:none;padding-top:12px">
+                <div class="kc-grid-3">
+                  <div class="kc-field"><label class="kc-label">Soni</label><input type="text" inputmode="numeric" id="of-lam-son" placeholder="0" oninput="calcOfset()"></div>
+                  <div class="kc-field"><label class="kc-label">Narx/dona</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-lam-narx" value="500" oninput="calcOfset()"><span class="kc-unit">so'm</span></div></div>
+                  <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-lam-jami">—</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kc-service-item">
+              <label class="kc-toggle-row" style="margin:0;padding:12px 0;border-bottom:1px solid var(--gray-border)">
+                <div><div class="kc-toggle-label">Visichka</div><div class="kc-toggle-desc">Har 1000 ta = 120 000 so'm</div></div>
+                <div class="kc-switch-wrap"><input type="checkbox" id="of-vis-check" class="kc-switch-input" onchange="toggleOfBlok('vis');calcOfset()"><span class="kc-switch"></span></div>
+              </label>
+              <div id="of-vis-body" style="display:none;padding-top:12px">
+                <div class="kc-grid-2">
+                  <div class="kc-field"><label class="kc-label">Ish formati soni</label><input type="text" inputmode="numeric" id="of-vis-son" placeholder="0" oninput="calcOfset()"></div>
+                  <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-vis-jami">—</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kc-service-item">
+              <label class="kc-toggle-row" style="margin:0;padding:12px 0;border-bottom:1px solid var(--gray-border)">
+                <div><div class="kc-toggle-label">Pichoq</div></div>
+                <div class="kc-switch-wrap"><input type="checkbox" id="of-pich-check" class="kc-switch-input" onchange="toggleOfBlok('pich');calcOfset()"><span class="kc-switch"></span></div>
+              </label>
+              <div id="of-pich-body" style="display:none;padding-top:12px">
+                <div class="kc-grid-2">
+                  <div class="kc-field"><label class="kc-label">Summa</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-pich-sum" placeholder="0" oninput="calcOfset()"><span class="kc-unit">so'm</span></div></div>
+                  <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-pich-jami">—</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kc-service-item">
+              <label class="kc-toggle-row" style="margin:0;padding:12px 0;border-bottom:1px solid var(--gray-border)">
+                <div><div class="kc-toggle-label">Pereplot</div><div class="kc-toggle-desc">Har dona uchun 2 000 so'm</div></div>
+                <div class="kc-switch-wrap"><input type="checkbox" id="of-per-check" class="kc-switch-input" onchange="toggleOfBlok('per');calcOfset()"><span class="kc-switch"></span></div>
+              </label>
+              <div id="of-per-body" style="display:none;padding-top:12px">
+                <div class="kc-grid-3">
+                  <div class="kc-field"><label class="kc-label">Soni</label><input type="text" inputmode="numeric" id="of-per-son" placeholder="0" oninput="calcOfset()"></div>
+                  <div class="kc-field"><label class="kc-label">Narx/dona</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-per-narx" value="2000" oninput="calcOfset()"><span class="kc-unit">so'm</span></div></div>
+                  <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-per-jami">—</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kc-service-item">
+              <label class="kc-toggle-row" style="margin:0;padding:12px 0;border-bottom:1px solid var(--gray-border)">
+                <div><div class="kc-toggle-label">Termokley</div></div>
+                <div class="kc-switch-wrap"><input type="checkbox" id="of-term-check" class="kc-switch-input" onchange="toggleOfBlok('term');calcOfset()"><span class="kc-switch"></span></div>
+              </label>
+              <div id="of-term-body" style="display:none;padding-top:12px">
+                <div class="kc-grid-2">
+                  <div class="kc-field"><label class="kc-label">Summa</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-term-sum" placeholder="0" oninput="calcOfset()"><span class="kc-unit">so'm</span></div></div>
+                  <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-term-jami">—</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kc-service-item">
+              <label class="kc-toggle-row" style="margin:0;padding:12px 0;border-bottom:1px solid var(--gray-border)">
+                <div><div class="kc-toggle-label">Zborka</div></div>
+                <div class="kc-switch-wrap"><input type="checkbox" id="of-zbor-check" class="kc-switch-input" onchange="toggleOfBlok('zbor');calcOfset()"><span class="kc-switch"></span></div>
+              </label>
+              <div id="of-zbor-body" style="display:none;padding-top:12px">
+                <div class="kc-grid-3">
+                  <div class="kc-field"><label class="kc-label">Soni</label><input type="text" inputmode="numeric" id="of-zbor-son" placeholder="0" oninput="calcOfset()"></div>
+                  <div class="kc-field"><label class="kc-label">Narx/dona</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-zbor-narx" value="500" oninput="calcOfset()"><span class="kc-unit">so'm</span></div></div>
+                  <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-zbor-jami">—</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kc-service-item">
+              <label class="kc-toggle-row" style="margin:0;padding:12px 0;border-bottom:1px solid var(--gray-border)">
+                <div><div class="kc-toggle-label">Rezka va Upakovka</div></div>
+                <div class="kc-switch-wrap"><input type="checkbox" id="of-rezka-check" class="kc-switch-input" onchange="toggleOfBlok('rezka');calcOfset()"><span class="kc-switch"></span></div>
+              </label>
+              <div id="of-rezka-body" style="display:none;padding-top:12px">
+                <div class="kc-grid-2">
+                  <div class="kc-field"><label class="kc-label">Summa</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-rezka-sum" placeholder="0" oninput="calcOfset()"><span class="kc-unit">so'm</span></div></div>
+                  <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-rezka-jami">—</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kc-service-item">
+              <label class="kc-toggle-row" style="margin:0;padding:12px 0">
+                <div><div class="kc-toggle-label">Qo'shimcha rasxod</div></div>
+                <div class="kc-switch-wrap"><input type="checkbox" id="of-rasxod-check" class="kc-switch-input" onchange="toggleOfBlok('rasxod');calcOfset()"><span class="kc-switch"></span></div>
+              </label>
+              <div id="of-rasxod-body" style="display:none;padding-top:12px">
+                <div class="kc-grid-2">
+                  <div class="kc-field"><label class="kc-label">Summa</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-rasxod-sum" placeholder="0" oninput="calcOfset()"><span class="kc-unit">so'm</span></div></div>
+                  <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-rasxod-jami">—</div></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Foyda -->
+        <div class="kc-block">
+          <div class="kc-block-title"><span class="kc-step" style="background:#22C55E">💰</span> Foyda</div>
+          <div class="kc-grid-2">
+            <div class="kc-field">
+              <label class="kc-label">Foyda foizi</label>
+              <div class="kc-input-wrap">
+                <input type="text" inputmode="decimal" id="of-foyda-foiz" placeholder="38" oninput="calcOfset()">
+                <span class="kc-unit">%</span>
+              </div>
+            </div>
+            <div class="kc-field kc-result-field">
+              <label class="kc-label">Mijozga narx</label>
+              <div style="font-size:18px;font-weight:700;color:#22C55E" id="of-foyda-jami">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jami natija -->
+        <div class="kalk-result" id="kalk-of-result" style="margin-top:8px">
+          <div style="font-size:12px;color:var(--text3)">Ma'lumotlarni kiriting</div>
+          <div style="font-size:28px;font-weight:700;color:var(--blue)">—</div>
+        </div>
+
       </div>
     </div>
 
-    <button class="savebtn" style="margin-top:8px" onclick="copyKalkResult()">📋 Natijani nusxa olish</button>
+    <!-- Sticky action bar -->
+    <div class="kc-action-bar">
+      <button class="kc-btn-primary" onclick="copyKalkResult()">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Natijani nusxa olish
+      </button>
+      <button class="kc-btn-secondary" onclick="clearKalk()">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.45"/></svg>
+        Tozalash
+      </button>
+    </div>
+
   </div>
 
   <!-- STOPWATCH -->
@@ -4552,7 +4711,7 @@ function renderFoizTable(){ if(ftBuilt)return; ftBuilt=true; const tb=document.g
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
 function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','admin-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',admin_yoriq:'admin-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
-function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix'){renderHistory();if(currentRole==='owner')renderBiDashboard();} if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} if(id==='kalk'){setKalkType('sigim');} saveCurrentPanel(id); }
+function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix'){renderHistory();if(currentRole==='owner')renderBiDashboard();} if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} if(id==='kalk'){setKalkType('sigim', document.querySelector('.kc-tab[data-type="sigim"]'));} saveCurrentPanel(id); }
 function showNotify(msg){ const el=document.getElementById('notify'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2800); }
 
 renderAdmin();
@@ -4841,13 +5000,38 @@ let kalkLastResult = '';
 
 function setKalkType(type, el){
   kalkType = type;
-  document.querySelectorAll('#panel-kalk .filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.kc-tab').forEach(b=>b.classList.remove('active'));
   if(el) el.classList.add('active');
+  else {
+    const btn = document.querySelector('.kc-tab[data-type="'+type+'"]');
+    if(btn) btn.classList.add('active');
+  }
   ['sigim','banner','bekprint','uvdtf','dtf','pechat','ofset'].forEach(t => {
     const el2 = document.getElementById('kalk-'+t);
     if(el2) el2.classList.toggle('hidden', t !== type);
   });
   if(type === 'ofset') updateOfsetFormats();
+}
+
+function clearKalk(){
+  // Clear all inputs in current kalk section
+  const section = document.getElementById('kalk-'+kalkType);
+  if(section){
+    section.querySelectorAll('input[type=text]').forEach(i=>i.value='');
+    section.querySelectorAll('input[type=checkbox]').forEach(i=>{ if(i.classList.contains('kc-switch-input')) i.checked=false; });
+    section.querySelectorAll('[id$="-body"]').forEach(b=>b.style.display='none');
+    // Reset results
+    ['kalk-banner-result','kalk-bek-result','kalk-uv-result','kalk-dtf-result','kalk-pech-result','kalk-of-result','sig-result'].forEach(id=>{
+      const e=document.getElementById(id);
+      if(e && section.contains(e)){
+        e.style.display='none';
+        const valEl = e.querySelector && e.querySelector('[style*="font-size:24px"]'); if(valEl) valEl.textContent='—';
+      }
+    });
+    const sigEmpty = document.getElementById('sig-empty');
+    if(sigEmpty && section.contains(sigEmpty)) sigEmpty.style.display='block';
+  }
+  showNotify('Tozalandi');
 }
 
 function showKalkResult(elId, kvM, narxKv, jami, izoh){
