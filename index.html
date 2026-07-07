@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_34.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_75.html -->
 <html lang="uz" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <meta name="theme-color" content="#2563eb">
@@ -1429,6 +1429,10 @@ input[type=email]:invalid:not(:placeholder-shown){
       <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14.5 15.5"></polyline><path d="M16.51 3.51L19 1M7.49 3.51L5 1"></path></svg>
       Taymer
     </button>
+    <button class="nav-btn hidden" onclick="showPanel(&#39;uvdtf-panel&#39;)" id="nb-uvdtf">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line></svg>
+      UV DTF
+    </button>
     <button class="nav-btn" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
       <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
       Foiz jadvali
@@ -2643,6 +2647,222 @@ input[type=email]:invalid:not(:placeholder-shown){
 
   </div>
 
+  <!-- UV DTF SHERIK PANELI -->
+  <div class="panel" id="panel-uvdtf-panel">
+
+    <div class="rp-header">
+      <div>
+        <div class="rp-title">UV DTF Hisob</div>
+        <div class="rp-subtitle">Sherik uchun daromad va harajatlar tahlili</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select class="rp-select" id="uvdtf-oy" onchange="loadUvdtfHisobot()">
+          <option value="">Joriy oy</option>
+        </select>
+        <button class="btn btn-primary" onclick="saveUvdtfHisobot()">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline></svg>
+          Saqlash
+        </button>
+      </div>
+    </div>
+
+    <!-- Asosiy ko'rsatkichlar -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+      <div class="bi-kpi-card">
+        <div class="bi-kpi-icon" style="background:rgba(245,158,11,.12)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#F59E0B" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        </div>
+        <div class="bi-kpi-label">Jami tushum</div>
+        <div class="bi-kpi-value" style="color:#F59E0B" id="uvdtf-jami-tushum">0 so'm</div>
+      </div>
+      <div class="bi-kpi-card">
+        <div class="bi-kpi-icon" style="background:rgba(239,68,68,.12)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#EF4444" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+        </div>
+        <div class="bi-kpi-label">Jami harajat</div>
+        <div class="bi-kpi-value" style="color:#EF4444" id="uvdtf-jami-harajat">0 so'm</div>
+      </div>
+      <div class="bi-kpi-card">
+        <div class="bi-kpi-icon" style="background:rgba(34,197,94,.12)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#22C55E" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <div class="bi-kpi-label">Sof daromad</div>
+        <div class="bi-kpi-value" style="color:#22C55E" id="uvdtf-sof-daromad">0 so'm</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+      <!-- CHAP: Kirim -->
+      <div class="bi-card">
+        <div class="bi-card-header" style="margin-bottom:16px">
+          <div class="bi-card-title">📈 Sotuv (kirim)</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="kc-field">
+            <label class="kc-label">Sotuv narxi (1 metr)</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="numeric" id="uvdtf-sotuv-narx" placeholder="250000" oninput="calcUvdtfSof()">
+              <span class="kc-unit">so'm</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Jami metr (bu oy)</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="numeric" id="uvdtf-metr" placeholder="0" oninput="calcUvdtfSof()">
+              <span class="kc-unit">metr</span>
+            </div>
+          </div>
+          <div style="padding:12px;background:rgba(245,158,11,.08);border-radius:var(--radius-md);border:1px solid rgba(245,158,11,.2)">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Jami tushum</div>
+            <div style="font-size:20px;font-weight:700;color:#F59E0B" id="uvdtf-tushum-calc">0 so'm</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- O'NG: Admin foizi -->
+      <div class="bi-card">
+        <div class="bi-card-header" style="margin-bottom:16px">
+          <div class="bi-card-title">👤 Admin ulushi</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="kc-field">
+            <label class="kc-label">Admin foizi</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="numeric" id="uvdtf-admin-foiz" placeholder="20" oninput="calcUvdtfSof()">
+              <span class="kc-unit">%</span>
+            </div>
+            <div class="kc-hint">Adminlar sotuvdan oladigan foiz</div>
+          </div>
+          <div style="padding:12px;background:rgba(99,102,241,.08);border-radius:var(--radius-md);border:1px solid rgba(99,102,241,.2)">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Admin ulushi</div>
+            <div style="font-size:20px;font-weight:700;color:#6366F1" id="uvdtf-admin-sum">0 so'm</div>
+          </div>
+          <div style="padding:12px;background:rgba(59,130,246,.08);border-radius:var(--radius-md);border:1px solid rgba(59,130,246,.2)">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Sherikka qolgan</div>
+            <div style="font-size:20px;font-weight:700;color:#3B82F6" id="uvdtf-sherik-qolgan">0 so'm</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- HARAJATLAR -->
+    <div class="bi-card" style="margin-top:16px">
+      <div class="bi-card-header" style="margin-bottom:16px">
+        <div class="bi-card-title">📉 Harajatlar</div>
+      </div>
+
+      <!-- Oylik harajatlar -->
+      <div style="margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Oylik harajatlar (bir marta)</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
+          <div class="kc-field">
+            <label class="kc-label">Arenda / Ijara</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="numeric" id="uvdtf-arenda" placeholder="0" oninput="calcUvdtfSof()">
+              <span class="kc-unit">so'm/oy</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Elektr toki</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="numeric" id="uvdtf-elektr" placeholder="0" oninput="calcUvdtfSof()">
+              <span class="kc-unit">so'm/oy</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Reklama byudjeti</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="numeric" id="uvdtf-reklama" placeholder="0" oninput="calcUvdtfSof()">
+              <span class="kc-unit">so'm/oy</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Admin harajati</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="numeric" id="uvdtf-admin-harajat" placeholder="0" oninput="calcUvdtfSof()">
+              <span class="kc-unit">so'm/oy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metr harajatlar -->
+      <div style="margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Har metr harajatlar</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
+          <div class="kc-field">
+            <label class="kc-label">Material (chernila, plyonka)</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="numeric" id="uvdtf-material" placeholder="0" oninput="calcUvdtfSof()">
+              <span class="kc-unit">so'm/m</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Pechatnik ish haqi</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="numeric" id="uvdtf-pechatnik" placeholder="0" oninput="calcUvdtfSof()">
+              <span class="kc-unit">so'm/m</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Harajatlar jami -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-top:14px;border-top:1px solid var(--gray-border)">
+        <div style="text-align:center;padding:10px;background:var(--gray-light);border-radius:var(--radius-md)">
+          <div style="font-size:11px;color:var(--text3)">Oylik harajat</div>
+          <div style="font-size:16px;font-weight:700;color:#EF4444" id="uvdtf-oylik-sum">0 so'm</div>
+        </div>
+        <div style="text-align:center;padding:10px;background:var(--gray-light);border-radius:var(--radius-md)">
+          <div style="font-size:11px;color:var(--text3)">Metr harajat (jami)</div>
+          <div style="font-size:16px;font-weight:700;color:#EF4444" id="uvdtf-metr-sum">0 so'm</div>
+        </div>
+        <div style="text-align:center;padding:10px;background:var(--gray-light);border-radius:var(--radius-md)">
+          <div style="font-size:11px;color:var(--text3)">Jami harajat</div>
+          <div style="font-size:16px;font-weight:700;color:#EF4444" id="uvdtf-harajat-jami">0 so'm</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOF DAROMAD -->
+    <div style="margin-top:16px;background:var(--white);border-radius:var(--radius-xl);padding:20px;border:2px solid var(--green-border);box-shadow:0 4px 16px rgba(34,197,94,.1)">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+        <div style="text-align:center">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Tushum</div>
+          <div style="font-size:16px;font-weight:700;color:#F59E0B" id="uvdtf-res-tushum">—</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Admin ulushi</div>
+          <div style="font-size:16px;font-weight:700;color:#6366F1" id="uvdtf-res-admin">—</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Harajatlar</div>
+          <div style="font-size:16px;font-weight:700;color:#EF4444" id="uvdtf-res-harajat">—</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Sof daromad</div>
+          <div style="font-size:24px;font-weight:700;color:#22C55E" id="uvdtf-res-sof">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TARIX -->
+    <div class="bi-card" style="margin-top:16px">
+      <div class="bi-card-header" style="margin-bottom:12px">
+        <div class="bi-card-title">📋 Oy tarixi</div>
+      </div>
+      <div id="uvdtf-tarix-list">
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <p>Hali yozuvlar yo'q</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
   <!-- STOPWATCH -->
   <div class="panel" id="panel-stopwatch">
     <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 14px">
@@ -2919,6 +3139,7 @@ const ROLES = {
   'ra.ravshan1998+ulugbekdesign@gmail.com': 'dizayner',
   'ra.ravshan1998+begzodbek@gmail.com': 'dizayner',
   'ra.ravshan1998+gaybulloh@gmail.com': 'dizayner',
+  'ra.ravshan1998+uvdtf@gmail.com': 'uvdtf',
 };
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -3152,7 +3373,7 @@ function onLogin(){
   document.getElementById('user-name-chip').textContent = name;
   const rb = document.getElementById('role-badge-chip');
   rb.className = 'role-badge ' + currentRole;
-  rb.textContent = currentRole === 'owner' ? 'Owner' : currentRole === 'admin' ? 'Admin' : currentRole === 'dizayner' ? 'Dizayner' : 'Ishlab chiqarish';
+  rb.textContent = currentRole === 'owner' ? 'Owner' : currentRole === 'admin' ? 'Admin' : currentRole === 'dizayner' ? 'Dizayner' : currentRole === 'uvdtf' ? 'UV DTF' : 'Ishlab chiqarish';
   
 
 
@@ -3203,6 +3424,19 @@ function onLogin(){
     document.getElementById('nb-dizayner').classList.add('hidden');
     document.getElementById('nb-foiz').classList.add('hidden');
     if(currentUser && currentUser.email === SKLAD_EDITOR) document.getElementById('nb-bozorlik').classList.remove('hidden');
+
+  // ── UVDTF ROLI ──
+  if(currentRole === 'uvdtf'){
+    // Faqat uvdtf panelini ko'rsatamiz
+    ['nb-owner','nb-admin','nb-ishlab','nb-dizayner','nb-dashboard','nb-tarix',
+     'nb-xabarlar','nb-sklad','nb-kalk','nb-bozorlik','nb-stopwatch','nb-foiz'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.classList.add('hidden');
+    });
+    document.getElementById('nb-uvdtf').classList.remove('hidden');
+    showPanel('uvdtf-panel');
+    return;
+  }
     const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
     if(seen){ showScreen('app'); loadHistory().then(()=>showPanel(getLastPanel('dashboard'))); setInterval(() => loadMessages(), 30000); }
     else { showScreen('yoriq'); }
@@ -4496,6 +4730,7 @@ const XODIMLAR = {
   'ra.ravshan1998+ulugbek@gmail.com': 'Ulugbek',
   'ra.ravshan1998+zuhriddin@gmail.com': 'Zuhriddin',
   'ra.ravshan1998+jorabek@gmail.com': 'Jorabek',
+  'ra.ravshan1998+uvdtf@gmail.com': 'UV DTF Sherik',
   'ra.ravshan1998+rashidulloh@gmail.com': 'Rashidulloh',
   'ra.ravshan1998+ulugbekdesign@gmail.com': 'Ulugbek (Dizayn)',
   'ra.ravshan1998+begzodbek@gmail.com': 'Begzodbek',
@@ -5255,7 +5490,7 @@ function renderFoizTable(){ if(ftBuilt)return; ftBuilt=true; const tb=document.g
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
 function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','admin-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',admin_yoriq:'admin-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
-function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current')}); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix'){renderHistory();if(currentRole==='owner')renderBiDashboard();} if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} if(id==='kalk'){setKalkType('sigim', document.querySelector('.kc-tab[data-type="sigim"]'));} saveCurrentPanel(id); }
+function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current')}); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix'){renderHistory();if(currentRole==='owner')renderBiDashboard();} if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} if(id==='uvdtf-panel'){loadUvdtfHisobot();} if(id==='kalk'){setKalkType('sigim', document.querySelector('.kc-tab[data-type="sigim"]'));} saveCurrentPanel(id); }
 function showNotify(msg, type){
   const container = document.getElementById('toast-container');
   if(!container){ alert(msg); return; }
@@ -6093,6 +6328,130 @@ function calcOfset(){
     '<div style="font-size:13px;color:var(--text3);margin-bottom:4px">Tannarx: <b>'+fmt(jami)+" so'm</b></div>"+
     (foiz>0&&mijozNarx>0?'<div style="font-size:13px;color:var(--green);margin-bottom:6px">Mijozga (+'+foiz+'%): <b>'+fmt(mijozNarx)+" so'm</b></div>":'') +
     '<div style="font-size:30px;font-weight:700;color:var(--blue)">'+fmt(foiz>0&&mijozNarx>0?mijozNarx:jami)+" so'm</div>";
+}
+
+// ── UV DTF SHERIK TIZIMI ──
+
+function calcUvdtfSof(){
+  const sotuvNarx  = parseInt(document.getElementById('uvdtf-sotuv-narx').value)||0;
+  const metr       = parseInt(document.getElementById('uvdtf-metr').value)||0;
+  const adminFoiz  = parseFloat(document.getElementById('uvdtf-admin-foiz').value)||0;
+  const arenda     = parseInt(document.getElementById('uvdtf-arenda').value)||0;
+  const elektr     = parseInt(document.getElementById('uvdtf-elektr').value)||0;
+  const reklama    = parseInt(document.getElementById('uvdtf-reklama').value)||0;
+  const adminH     = parseInt(document.getElementById('uvdtf-admin-harajat').value)||0;
+  const material   = parseInt(document.getElementById('uvdtf-material').value)||0;
+  const pechatnik  = parseInt(document.getElementById('uvdtf-pechatnik').value)||0;
+
+  // Tushum
+  const tushum = sotuvNarx * metr;
+
+  // Admin ulushi (sotuvdan foiz)
+  const adminUlush = Math.round(tushum * adminFoiz / 100);
+  const sherikQolgan = tushum - adminUlush;
+
+  // Harajatlar
+  const oylikH = arenda + elektr + reklama + adminH;
+  const metrH  = (material + pechatnik) * metr;
+  const jH     = oylikH + metrH;
+
+  // Sof daromad
+  const sof = sherikQolgan - jH;
+
+  const setEl = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
+
+  setEl('uvdtf-tushum-calc',   fmt(tushum)+" so'm");
+  setEl('uvdtf-admin-sum',     fmt(adminUlush)+" so'm");
+  setEl('uvdtf-sherik-qolgan', fmt(sherikQolgan)+" so'm");
+  setEl('uvdtf-oylik-sum',     fmt(oylikH)+" so'm");
+  setEl('uvdtf-metr-sum',      fmt(metrH)+" so'm");
+  setEl('uvdtf-harajat-jami',  fmt(jH)+" so'm");
+
+  // Summary
+  setEl('uvdtf-res-tushum',  tushum > 0 ? fmt(tushum)+" so'm" : '—');
+  setEl('uvdtf-res-admin',   adminUlush > 0 ? fmt(adminUlush)+" so'm" : '—');
+  setEl('uvdtf-res-harajat', jH > 0 ? fmt(jH)+" so'm" : '—');
+  setEl('uvdtf-res-sof',     tushum > 0 ? fmt(sof)+" so'm" : '—');
+
+  // KPI kartalar
+  setEl('uvdtf-jami-tushum',   fmt(tushum)+" so'm");
+  setEl('uvdtf-jami-harajat',  fmt(jH)+" so'm");
+  setEl('uvdtf-sof-daromad',   fmt(sof)+" so'm");
+
+  // Color coding
+  const sofEl = document.getElementById('uvdtf-res-sof');
+  if(sofEl) sofEl.style.color = sof >= 0 ? '#22C55E' : '#EF4444';
+}
+
+async function saveUvdtfHisobot(){
+  const sana = new Date().toISOString().slice(0,7); // YYYY-MM
+  const metr = parseInt(document.getElementById('uvdtf-metr').value)||0;
+  if(!metr){ showNotify('Avval metr kiriting'); return; }
+
+  const data = {
+    sotuv_narx:    parseInt(document.getElementById('uvdtf-sotuv-narx').value)||0,
+    metr,
+    admin_foiz:    parseFloat(document.getElementById('uvdtf-admin-foiz').value)||0,
+    arenda:        parseInt(document.getElementById('uvdtf-arenda').value)||0,
+    elektr:        parseInt(document.getElementById('uvdtf-elektr').value)||0,
+    reklama:       parseInt(document.getElementById('uvdtf-reklama').value)||0,
+    admin_harajat: parseInt(document.getElementById('uvdtf-admin-harajat').value)||0,
+    material:      parseInt(document.getElementById('uvdtf-material').value)||0,
+    pechatnik:     parseInt(document.getElementById('uvdtf-pechatnik').value)||0,
+  };
+
+  // Hisoblash
+  const tushum     = data.sotuv_narx * data.metr;
+  const adminUlush = Math.round(tushum * data.admin_foiz / 100);
+  const jH         = (data.arenda + data.elektr + data.reklama + data.admin_harajat) +
+                     (data.material + data.pechatnik) * data.metr;
+  const sof        = (tushum - adminUlush) - jH;
+
+  const row = {
+    user_id:      currentUser.id,
+    user_email:   currentUser.email,
+    sana,
+    data,
+    tushum,
+    admin_ulush:  adminUlush,
+    jami_harajat: jH,
+    sof_daromad:  sof,
+    created_at:   new Date().toISOString(),
+  };
+
+  const { error } = await sb.from('uvdtf_hisobot').upsert(row, { onConflict: 'user_email,sana' });
+  if(error){ showNotify('Xatolik: '+error.message); return; }
+  showNotify('✅ Saqlandi!');
+  await loadUvdtfHisobot();
+}
+
+async function loadUvdtfHisobot(){
+  const { data, error } = await sb.from('uvdtf_hisobot')
+    .select('*')
+    .order('sana', { ascending: false })
+    .limit(24);
+
+  const list = document.getElementById('uvdtf-tarix-list');
+  if(error || !data || !data.length){
+    if(list) list.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><p>Hali yozuvlar yo\'q</p></div>';
+    return;
+  }
+
+  if(list) list.innerHTML = data.map(r => {
+    const sof = r.sof_daromad || 0;
+    return '<div class="rp-card" style="margin-bottom:10px">'+
+      '<div class="rp-card-top">'+
+        '<div style="font-size:14px;font-weight:700;color:var(--text)">'+r.sana+'</div>'+
+        '<div style="font-size:12px;color:var(--text3)">'+fmt(r.data?.metr||0)+' metr</div>'+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 16px">'+
+        '<div style="text-align:center"><div style="font-size:10px;color:var(--text3)">Tushum</div><div style="font-weight:700;color:#F59E0B">'+fmt(r.tushum)+" so'm"+'</div></div>'+
+        '<div style="text-align:center"><div style="font-size:10px;color:var(--text3)">Admin</div><div style="font-weight:700;color:#6366F1">'+fmt(r.admin_ulush)+" so'm"+'</div></div>'+
+        '<div style="text-align:center"><div style="font-size:10px;color:var(--text3)">Harajat</div><div style="font-weight:700;color:#EF4444">'+fmt(r.jami_harajat)+" so'm"+'</div></div>'+
+        '<div style="text-align:center"><div style="font-size:10px;color:var(--text3)">Sof</div><div style="font-size:16px;font-weight:700;color:'+(sof>=0?'#22C55E':'#EF4444')+'">'+fmt(sof)+" so'm"+'</div></div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
 }
 
 function copyKalkResult(){
