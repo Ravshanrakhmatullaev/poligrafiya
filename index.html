@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_78.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_79.html -->
 <html lang="uz" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <meta name="theme-color" content="#2563eb">
@@ -825,6 +825,11 @@ input[type=email]:invalid:not(:placeholder-shown){
 [data-theme="dark"] .kc-action-bar{background:#1E293B;border-color:#334155}
 [data-theme="dark"] .kc-btn-secondary{background:#273449;border-color:#334155;color:#94A3B8}
 [data-theme="dark"] .kc-select{background:#1E293B;border-color:#334155;color:#F8FAFC}
+[data-theme="dark"] .kc-select option{background:#1E293B;color:#F8FAFC}
+[data-theme="dark"] .kc-select optgroup{background:#273449;color:#94A3B8}
+[data-theme="dark"] select{background:#1E293B !important;color:#F8FAFC !important;border-color:#334155 !important}
+[data-theme="dark"] select option{background:#1E293B;color:#F8FAFC}
+[data-theme="dark"] select optgroup{background:#273449;color:#94A3B8;font-weight:600}
 [data-theme="dark"] .kc-select option,.kc-select optgroup{background:#1E293B}
 [data-theme="dark"] .kalk-result{background:var(--blue-light);border-color:var(--blue-border)}
 [data-theme="dark"] #panel-kalk .filter-btn{background:var(--gray-light);color:var(--text3);border-color:var(--gray-border)}
@@ -1054,7 +1059,7 @@ input[type=email]:invalid:not(:placeholder-shown){
   <p>Yuklanmoqda...</p>
 </div>
 
-<div id="login-screen" class="">
+<div id="login-screen" class="hidden">
   <div class="login-card">
     <div class="login-logo">
       <div class="login-icon">
@@ -1312,7 +1317,7 @@ input[type=email]:invalid:not(:placeholder-shown){
   </div>
 </div>
 
-<div id="app-screen" class="hidden">
+<div id="app-screen" class="">
   <div class="topbar">
     <div class="topbar-left">
       <div class="topbar-icon">
@@ -1326,9 +1331,9 @@ input[type=email]:invalid:not(:placeholder-shown){
     <div class="topbar-right">
       <div class="user-chip">
         <div class="user-dot"></div>
-        <span id="user-name-chip">—</span>
+        <span id="user-name-chip">adsuzuvdtf</span>
       </div>
-      <span class="role-badge" id="role-badge-chip"></span>
+      <span class="role-badge uvdtf" id="role-badge-chip">UV DTF</span>
       <div class="global-search-wrap" id="global-search-wrap" style="display:none">
       <div class="global-search-box">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -1384,36 +1389,36 @@ input[type=email]:invalid:not(:placeholder-shown){
   </div>
 
   <div class="nav" id="main-nav" role="navigation" aria-label="Asosiy menyu">
-    <button class="nav-btn" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;owner&#39;)" id="nb-owner">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
       Umumiy
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;admin&#39;)" id="nb-admin">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       Admin
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;ishlab&#39;)" id="nb-ishlab">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;ishlab&#39;)" id="nb-ishlab">
       <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
       Ishlab chiqarish
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;dashboard&#39;)" id="nb-dashboard">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;dashboard&#39;)" id="nb-dashboard">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
       Dashboard
     </button>
-    <button class="nav-btn active" onclick="showPanel(&#39;tarix&#39;)" id="nb-tarix">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;tarix&#39;)" id="nb-tarix">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
       Hisobotlar
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;xabarlar&#39;)" id="nb-xabarlar">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;xabarlar&#39;)" id="nb-xabarlar">
       <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
       Xabarlar
       <span class="nav-badge hidden" id="nav-bell-count">0</span>
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;sklad&#39;)" id="nb-sklad">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;sklad&#39;)" id="nb-sklad">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
       Sklad
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;kalk&#39;)" id="nb-kalk">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;kalk&#39;)" id="nb-kalk">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="10" x2="10" y2="10"></line><line x1="14" y1="10" x2="16" y2="10"></line><line x1="8" y1="14" x2="10" y2="14"></line><line x1="14" y1="14" x2="16" y2="14"></line><line x1="8" y1="18" x2="10" y2="18"></line><line x1="14" y1="18" x2="16" y2="18"></line></svg>
       Kalkulyator
     </button>
@@ -1421,7 +1426,7 @@ input[type=email]:invalid:not(:placeholder-shown){
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 01-8 0"></path></svg>
       Bozorlik
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;dizayner&#39;)" id="nb-dizayner">
       <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><circle cx="11" cy="11" r="2"></circle></svg>
       Dizayn
     </button>
@@ -1429,11 +1434,11 @@ input[type=email]:invalid:not(:placeholder-shown){
       <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14.5 15.5"></polyline><path d="M16.51 3.51L19 1M7.49 3.51L5 1"></path></svg>
       Taymer
     </button>
-    <button class="nav-btn hidden" onclick="showPanel(&#39;uvdtf-panel&#39;)" id="nb-uvdtf">
+    <button class="nav-btn" onclick="showPanel(&#39;uvdtf-panel&#39;)" id="nb-uvdtf">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line></svg>
       UV DTF
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
+    <button class="nav-btn hidden" onclick="showPanel(&#39;foiz&#39;)" id="nb-foiz">
       <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
       Foiz jadvali
     </button>
@@ -1840,7 +1845,7 @@ input[type=email]:invalid:not(:placeholder-shown){
   </div>
 
   <!-- TARIX / HISOBOTLAR -->
-  <div class="panel active" id="panel-tarix">
+  <div class="panel" id="panel-tarix">
 
     <!-- Header -->
     <div class="rp-header">
@@ -2314,34 +2319,73 @@ input[type=email]:invalid:not(:placeholder-shown){
           </div>
           <div>
             <div class="kc-section-title">UV DTF</div>
-            <div class="kc-section-desc">Pogonometr asosida hisoblash · Rulo: 30sm · Zona: 29sm</div>
+            <div class="kc-section-desc">30 sm va 60 sm rulo uchun narxlash</div>
           </div>
         </div>
 
-        <div class="kc-info-box" style="border-color:rgba(245,158,11,.2);background:rgba(245,158,11,.05)">
-          <div class="kc-info-title" style="color:#F59E0B">Narx jadvali (metr)</div>
-          <div class="kc-price-grid">
-            <span class="kc-price-range">0.5 m gacha</span><span class="kc-price-val">150 000 so'm/m</span>
-            <span class="kc-price-range">0.5 — 5 m</span><span class="kc-price-val">250 000 so'm/m</span>
-            <span class="kc-price-range">5 — 10 m</span><span class="kc-price-val">230 000 so'm/m</span>
-            <span class="kc-price-range">10 — 20 m</span><span class="kc-price-val">200 000 so'm/m</span>
-            <span class="kc-price-range">20 — 50 m</span><span class="kc-price-val">180 000 so'm/m</span>
-            <span class="kc-price-range">50+ m</span><span class="kc-price-val">150 000 so'm/m</span>
+        <!-- 30sm / 60sm tab -->
+        <div style="display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--border-1);border-radius:10px;padding:3px;margin-bottom:16px">
+          <button class="uv-tab active" id="uv-tab-30" onclick="setUvTab(&#39;30&#39;)" style="flex:1;padding:7px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;background:#3B82F6;color:#fff;transition:all .15s">UV DTF 30 sm</button>
+          <button class="uv-tab" id="uv-tab-60" onclick="setUvTab(&#39;60&#39;)" style="flex:1;padding:7px;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;background:none;color:var(--text3);transition:all .15s">UV DTF 60 sm</button>
+        </div>
+
+        <!-- 30 SM -->
+        <div id="uv-panel-30">
+          <div class="kc-info-box" style="border-color:rgba(245,158,11,.2);background:rgba(245,158,11,.05)">
+            <div class="kc-info-title" style="color:#F59E0B">Narx jadvali — 30 sm (metr)</div>
+            <div class="kc-price-grid">
+              <span class="kc-price-range">0.5 m gacha</span><span class="kc-price-val">150 000 so'm/m</span>
+              <span class="kc-price-range">0.5 — 5 m</span><span class="kc-price-val">250 000 so'm/m</span>
+              <span class="kc-price-range">5 — 10 m</span><span class="kc-price-val">230 000 so'm/m</span>
+              <span class="kc-price-range">10 — 20 m</span><span class="kc-price-val">200 000 so'm/m</span>
+              <span class="kc-price-range">20 — 50 m</span><span class="kc-price-val">180 000 so'm/m</span>
+              <span class="kc-price-range">50+ m</span><span class="kc-price-val">150 000 so'm/m</span>
+            </div>
+            <div style="margin-top:8px;font-size:11px;color:var(--text3)">Rulo: 30sm · Pechat zonasi: 29sm</div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Uzunlik</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="decimal" id="kalk-uv-uzunlik" placeholder="2.5" oninput="calcUvDtf()">
+              <span class="kc-unit">m</span>
+            </div>
+          </div>
+          <div class="kalk-result" id="kalk-uv-result" style="margin-top:16px">
+            <div style="font-size:12px;color:var(--text3)">Uzunlikni kiriting</div>
+            <div style="font-size:24px;font-weight:700;color:#F59E0B">—</div>
           </div>
         </div>
 
-        <div class="kc-field">
-          <label class="kc-label">Uzunlik</label>
-          <div class="kc-input-wrap">
-            <input type="text" inputmode="decimal" id="kalk-uv-uzunlik" placeholder="2.5" oninput="calcUvDtf()">
-            <span class="kc-unit">m</span>
+        <!-- 60 SM -->
+        <div id="uv-panel-60" style="display:none">
+          <div class="kc-info-box" style="border-color:rgba(99,102,241,.2);background:rgba(99,102,241,.05)">
+            <div class="kc-info-title" style="color:#6366F1">60 sm rulo — qo'lda narx</div>
+            <div style="font-size:12px;color:var(--text3);line-height:1.6">
+              60 sm uchun narx avtomatik hisoblanmaydi.<br>
+              Uzunlik va narxni qo'lda kiriting.
+            </div>
+          </div>
+          <div class="kc-grid-2">
+            <div class="kc-field">
+              <label class="kc-label">Uzunlik</label>
+              <div class="kc-input-wrap">
+                <input type="text" inputmode="decimal" id="kalk-uv60-uzunlik" placeholder="3.0" oninput="calcUvDtf60()">
+                <span class="kc-unit">m</span>
+              </div>
+            </div>
+            <div class="kc-field">
+              <label class="kc-label">Narx (metr)</label>
+              <div class="kc-input-wrap">
+                <input type="text" inputmode="numeric" id="kalk-uv60-narx" placeholder="350000" oninput="calcUvDtf60()">
+                <span class="kc-unit">so'm</span>
+              </div>
+            </div>
+          </div>
+          <div class="kalk-result" id="kalk-uv60-result" style="margin-top:16px">
+            <div style="font-size:12px;color:var(--text3)">Uzunlik va narx kiriting</div>
+            <div style="font-size:24px;font-weight:700;color:#6366F1">—</div>
           </div>
         </div>
-        <div class="kalk-result" id="kalk-uv-result" style="margin-top:16px">
-          <div style="font-size:12px;color:var(--text3)">Uzunlikni kiriting</div>
-          <div style="font-size:24px;font-weight:700;color:#F59E0B">—</div>
-        </div>
-      </div>
 
       <!-- DTF -->
       <div class="kc-section hidden" id="kalk-dtf">
@@ -2486,7 +2530,78 @@ input[type=email]:invalid:not(:placeholder-shown){
         <div class="kc-block">
           <div class="kc-block-title"><span class="kc-step">5</span> Qog'oz</div>
           <div class="kc-grid-2">
-            <div class="kc-field"><label class="kc-label">Qog'oz turi</label><select id="of-qogoz-tur" class="kc-select" onchange="calcOfset()"><option value="">— Tanlang —</option><optgroup label="62×88 formati"><option value="740">Melovan 80g — 740</option><option value="810">Melovan 90g — 810</option><option value="915">Melovan 105g — 915</option><option value="995">Melovan 115g — 995</option><option value="1105">Melovan 128g — 1 105</option><option value="1240">Melovan 140g — 1 240</option><option value="1300">Melovan 150g — 1 300</option><option value="1380">Melovan 157g — 1 380</option><option value="1500">Melovan 170g — 1 500</option><option value="2200">Melovan 250g — 2 200</option><option value="2640">Melovan 300g — 2 640</option><option value="3150">Melovan 350g — 3 150</option></optgroup><optgroup label="70×100 formati"><option value="950">Melovan 80g — 950</option><option value="1030">Melovan 90g — 1 030</option><option value="1175">Melovan 105g — 1 175</option><option value="1275">Melovan 115g — 1 275</option><option value="1420">Melovan 128g — 1 420</option><option value="1660">Melovan 150g — 1 660</option><option value="1920">Melovan 170g — 1 920</option><option value="2260">Melovan 200g — 2 260</option><option value="2825">Melovan 250g — 2 825</option><option value="3390">Melovan 300g — 3 390</option><option value="4040">Melovan 350g — 4 040</option></optgroup></select></div>
+            <div class="kc-field"><label class="kc-label">Qog'oz turi</label><select id="of-qogoz-tur" class="kc-select" onchange="calcOfset()">
+<option value="">— Tanlang —</option>
+<optgroup label="── Melovan (62×88) ──">
+  <option value="740">Melovan 80g — 740 so'm</option>
+  <option value="810">Melovan 90g — 810 so'm</option>
+  <option value="915">Melovan 105g — 915 so'm</option>
+  <option value="995">Melovan 115g — 995 so'm</option>
+  <option value="1105">Melovan 128g — 1 105 so'm</option>
+  <option value="1240">Melovan 140g — 1 240 so'm</option>
+  <option value="1300">Melovan 150g — 1 300 so'm</option>
+  <option value="1380">Melovan 157g — 1 380 so'm</option>
+  <option value="1500">Melovan 170g — 1 500 so'm</option>
+  <option value="2200">Melovan 250g — 2 200 so'm</option>
+  <option value="2640">Melovan 300g — 2 640 so'm</option>
+  <option value="3150">Melovan 350g — 3 150 so'm</option>
+</optgroup>
+<optgroup label="── Melovan (70×100) ──">
+  <option value="950">Melovan 80g — 950 so'm</option>
+  <option value="1030">Melovan 90g — 1 030 so'm</option>
+  <option value="1175">Melovan 105g — 1 175 so'm</option>
+  <option value="1275">Melovan 115g — 1 275 so'm</option>
+  <option value="1420">Melovan 128g — 1 420 so'm</option>
+  <option value="1660">Melovan 150g — 1 660 so'm</option>
+  <option value="1920">Melovan 170g — 1 920 so'm</option>
+  <option value="2260">Melovan 200g — 2 260 so'm</option>
+  <option value="2825">Melovan 250g — 2 825 so'm</option>
+  <option value="3390">Melovan 300g — 3 390 so'm</option>
+  <option value="4040">Melovan 350g — 4 040 so'm</option>
+</optgroup>
+<optgroup label="── C1S Ivory Board (70×100) ──">
+  <option value="2415">Karton 190g — 2 415 so'm</option>
+  <option value="2625">Karton 210g — 2 625 so'm</option>
+  <option value="2825">Karton 230g — 2 825 so'm</option>
+  <option value="3025">Karton 250g — 3 025 so'm</option>
+  <option value="3250">Karton 270g — 3 250 so'm</option>
+  <option value="3625">Karton 300g — 3 625 so'm</option>
+  <option value="3925">Karton 325g — 3 925 so'm</option>
+  <option value="4225">Karton 350g — 4 225 so'm</option>
+  <option value="4850">Karton 400g — 4 850 so'm</option>
+</optgroup>
+<optgroup label="── C1S Ivory Board (72×104) ──">
+  <option value="2580">Karton 190g — 2 580 so'm</option>
+  <option value="2265">Karton 210g — 2 265 so'm</option>
+  <option value="3020">Karton 230g — 3 020 so'm</option>
+  <option value="3235">Karton 250g — 3 235 so'm</option>
+  <option value="3475">Karton 270g — 3 475 so'm</option>
+  <option value="3875">Karton 300g — 3 875 so'm</option>
+  <option value="4200">Karton 325g — 4 200 so'm</option>
+  <option value="4520">Karton 350g — 4 520 so'm</option>
+</optgroup>
+<optgroup label="── C1S Ivory Board (62×94) ──">
+  <option value="2080">Karton 190g — 2 080 so'm</option>
+  <option value="2435">Karton 230g — 2 435 so'm</option>
+  <option value="2590">Karton 250g — 2 590 so'm</option>
+  <option value="2800">Karton 270g — 2 800 so'm</option>
+  <option value="3150">Karton 300g — 3 150 so'm</option>
+  <option value="3380">Karton 325g — 3 380 so'm</option>
+  <option value="3660">Karton 350g — 3 660 so'm</option>
+  <option value="4200">Karton 400g — 4 200 so'm</option>
+</optgroup>
+<optgroup label="── C1S Ivory Board (62×105) ──">
+  <option value="2275">Karton 190g — 2 275 so'm</option>
+  <option value="2475">Karton 210g — 2 475 so'm</option>
+  <option value="2650">Karton 230g — 2 650 so'm</option>
+  <option value="2850">Karton 250g — 2 850 so'm</option>
+  <option value="3075">Karton 270g — 3 075 so'm</option>
+  <option value="3420">Karton 300g — 3 420 so'm</option>
+  <option value="3710">Karton 325g — 3 710 so'm</option>
+  <option value="3990">Karton 350g — 3 990 so'm</option>
+  <option value="4500">Karton 400g — 4 500 so'm</option>
+</optgroup>
+</select></div>
             <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-qogoz-jami">—</div></div>
           </div>
         </div>
@@ -2648,7 +2763,7 @@ input[type=email]:invalid:not(:placeholder-shown){
   </div>
 
   <!-- UV DTF SHERIK PANELI -->
-  <div class="panel" id="panel-uvdtf-panel">
+  <div class="panel active" id="panel-uvdtf-panel">
 
     <div class="rp-header">
       <div>
@@ -2853,12 +2968,7 @@ input[type=email]:invalid:not(:placeholder-shown){
       <div class="bi-card-header" style="margin-bottom:12px">
         <div class="bi-card-title">📋 Oy tarixi</div>
       </div>
-      <div id="uvdtf-tarix-list">
-        <div class="empty-state">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          <p>Hali yozuvlar yo'q</p>
-        </div>
-      </div>
+      <div id="uvdtf-tarix-list"><div class="empty-state"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><p>Hali yozuvlar yo'q</p></div></div>
     </div>
 
   </div>
@@ -6069,6 +6179,28 @@ function calcBekprint(){
     '<div style="font-size:30px;font-weight:700;color:var(--blue)">'+fmt(jami)+" so'm</div>";
 }
 
+function setUvTab(tab){
+  document.getElementById('uv-panel-30').style.display = tab==='30' ? 'block' : 'none';
+  document.getElementById('uv-panel-60').style.display = tab==='60' ? 'block' : 'none';
+  document.getElementById('uv-tab-30').style.background = tab==='30' ? '#3B82F6' : 'none';
+  document.getElementById('uv-tab-30').style.color = tab==='30' ? '#fff' : 'var(--text3)';
+  document.getElementById('uv-tab-60').style.background = tab==='60' ? '#6366F1' : 'none';
+  document.getElementById('uv-tab-60').style.color = tab==='60' ? '#fff' : 'var(--text3)';
+}
+
+function calcUvDtf60(){
+  const uzunlik = parseFloat(document.getElementById('kalk-uv60-uzunlik').value)||0;
+  const narx    = parseInt(document.getElementById('kalk-uv60-narx').value)||0;
+  if(!uzunlik || !narx) return;
+  const jami = Math.round(uzunlik * narx);
+  kalkLastResult = 'UV DTF 60sm: '+uzunlik+' metr\nNarx: '+fmt(narx)+" so'm/metr\nJami: "+fmt(jami)+" so'm";
+  const el = document.getElementById('kalk-uv60-result');
+  if(!el) return;
+  el.innerHTML =
+    '<div style="font-size:12px;color:var(--text3);margin-bottom:6px">'+uzunlik+' metr × '+fmt(narx)+" so'm/metr</div>"+
+    '<div style="font-size:30px;font-weight:700;color:#6366F1">'+fmt(jami)+" so'm</div>";
+}
+
 function calcUvDtf(){
   const uzunlik = parseFloat(document.getElementById('kalk-uv-uzunlik').value)||0;
   if(!uzunlik) return;
@@ -7304,4 +7436,4 @@ function copyTasdiqXat(){
 </script>
 
 
-</body></html>
+</div></body></html>
