@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_79.html -->
-<html lang="uz" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_80.html -->
+<html lang="uz" data-theme="light"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <meta name="theme-color" content="#2563eb">
   <meta name="mobile-web-app-capable" content="yes">
@@ -1347,15 +1347,15 @@ input[type=email]:invalid:not(:placeholder-shown){
       <span>Qidirish</span>
       <kbd>⌘K</kbd>
     </button>
-    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Mavzuni almashtirish" title="Light modega otish" aria-pressed="true">
-        <svg class="theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display: none;">
+    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Mavzuni almashtirish" title="Dark modega otish" aria-pressed="false">
+        <svg class="theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display: block;">
           <circle cx="12" cy="12" r="5"></circle>
           <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
           <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
           <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
-        <svg class="theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display: block;">
+        <svg class="theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
       </button>
@@ -1434,7 +1434,7 @@ input[type=email]:invalid:not(:placeholder-shown){
       <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14.5 15.5"></polyline><path d="M16.51 3.51L19 1M7.49 3.51L5 1"></path></svg>
       Taymer
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;uvdtf-panel&#39;)" id="nb-uvdtf">
+    <button class="nav-btn active" onclick="showPanel(&#39;uvdtf-panel&#39;)" id="nb-uvdtf">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line></svg>
       UV DTF
     </button>
@@ -3527,16 +3527,7 @@ function onLogin(){
       setInterval(() => loadMessages(), 30000);
     }
     else { showScreen('dizayner_yoriq'); }
-  } else {
-    // ishlab chiqarish
-    nbOwner.classList.add('hidden');
-    nbAdmin.classList.add('hidden');
-    document.getElementById('nb-dizayner').classList.add('hidden');
-    document.getElementById('nb-foiz').classList.add('hidden');
-    if(currentUser && currentUser.email === SKLAD_EDITOR) document.getElementById('nb-bozorlik').classList.remove('hidden');
-
-  // ── UVDTF ROLI ──
-  if(currentRole === 'uvdtf'){
+  } else if(currentRole === 'uvdtf'){
     // Faqat uvdtf panelini ko'rsatamiz
     ['nb-owner','nb-admin','nb-ishlab','nb-dizayner','nb-dashboard','nb-tarix',
      'nb-xabarlar','nb-sklad','nb-kalk','nb-bozorlik','nb-stopwatch','nb-foiz'].forEach(id => {
@@ -3547,7 +3538,13 @@ function onLogin(){
     showScreen('app');
     loadUvdtfHisobot().then(() => showPanel('uvdtf-panel'));
     return;
-  }
+  } else {
+    // ishlab chiqarish
+    nbOwner.classList.add('hidden');
+    nbAdmin.classList.add('hidden');
+    document.getElementById('nb-dizayner').classList.add('hidden');
+    document.getElementById('nb-foiz').classList.add('hidden');
+    if(currentUser && currentUser.email === SKLAD_EDITOR) document.getElementById('nb-bozorlik').classList.remove('hidden');
     const seen = sessionStorage.getItem('yoriq_'+currentUser.id);
     if(seen){ showScreen('app'); loadHistory().then(()=>showPanel(getLastPanel('dashboard'))); setInterval(() => loadMessages(), 30000); }
     else { showScreen('yoriq'); }
@@ -5601,7 +5598,7 @@ function renderFoizTable(){ if(ftBuilt)return; ftBuilt=true; const tb=document.g
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
 function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','admin-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',admin_yoriq:'admin-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
-function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current')}); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix'){renderHistory();if(currentRole==='owner')renderBiDashboard();} if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} if(id==='uvdtf-panel'){loadUvdtfHisobot();} if(id==='kalk'){setKalkType('sigim', document.querySelector('.kc-tab[data-type="sigim"]'));} saveCurrentPanel(id); }
+function showPanel(id){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current')}); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix'){renderHistory();if(currentRole==='owner')renderBiDashboard();} if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} if(id==='uvdtf-panel'){loadUvdtfHisobot(); document.getElementById('nb-uvdtf') && document.getElementById('nb-uvdtf').classList.add('active');} if(id==='kalk'){setKalkType('sigim', document.querySelector('.kc-tab[data-type="sigim"]'));} saveCurrentPanel(id); }
 function showNotify(msg, type){
   const container = document.getElementById('toast-container');
   if(!container){ alert(msg); return; }
