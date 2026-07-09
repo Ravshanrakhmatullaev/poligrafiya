@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_83.html -->
-<html lang="uz" data-theme="light"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_35.html -->
+<html lang="uz" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <meta name="theme-color" content="#2563eb">
   <meta name="mobile-web-app-capable" content="yes">
@@ -1347,15 +1347,15 @@ input[type=email]:invalid:not(:placeholder-shown){
       <span>Qidirish</span>
       <kbd>⌘K</kbd>
     </button>
-    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Mavzuni almashtirish" title="Dark modega otish" aria-pressed="false">
-        <svg class="theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display: block;">
+    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Mavzuni almashtirish" title="Light modega otish" aria-pressed="true">
+        <svg class="theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display: none;">
           <circle cx="12" cy="12" r="5"></circle>
           <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
           <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
           <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
-        <svg class="theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none">
+        <svg class="theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display: block;">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
       </button>
@@ -1842,6 +1842,18 @@ input[type=email]:invalid:not(:placeholder-shown){
       </div>
       <div id="db-recent-list"></div>
     </div>
+
+    <!-- Avanslar (hodimlar uchun) -->
+    <div class="card" id="db-avans-card" style="display:none">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        Mening avanslarim
+      </div>
+      <div id="db-avans-list">
+        <div style="font-size:13px;color:var(--text3);padding:8px 0">Yuklanmoqda...</div>
+      </div>
+    </div>
+
   </div>
 
   <!-- TARIX / HISOBOTLAR -->
@@ -5783,7 +5795,46 @@ function renderDashboard(){
       </div>
     </div>`;
   }).join('');
+  // Avans (hodimlar uchun)
+  if(currentRole !== 'owner') loadMyAvans();
 }
+
+async function loadMyAvans(){
+  const card = document.getElementById('db-avans-card');
+  const list = document.getElementById('db-avans-list');
+  if(!card || !list || !currentUser) return;
+
+  const { data, error } = await sb.from('avanslar')
+    .select('*')
+    .eq('user_email', currentUser.email)
+    .order('created_at', { ascending: false })
+    .limit(10);
+
+  if(error || !data || !data.length){
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = 'block';
+  const jami = data.reduce((s, a) => s + (a.summa || 0), 0);
+
+  list.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0 12px;border-bottom:1px solid var(--gray-border);margin-bottom:8px">'+
+      '<span style="font-size:12px;color:var(--text3)">Jami avans</span>'+
+      '<span style="font-size:16px;font-weight:700;color:var(--green)">'+fmt(jami)+" so'm</span>"+
+    '</div>'+
+    data.map(a => {
+      const sana = new Date(a.created_at).toLocaleDateString('uz-UZ');
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-border)">'+
+        '<div>'+
+          '<div style="font-size:13px;font-weight:600;color:var(--text)">'+fmt(a.summa)+" so'm</div>"+
+          '<div style="font-size:11px;color:var(--text3)">'+(a.izoh||'')+'</div>'+
+        '</div>'+
+        '<div style="font-size:11px;color:var(--text3)">'+sana+'</div>'+
+      '</div>';
+    }).join('');
+}
+
 
 function renderDbChart(myData, thisMonth, thisYear){
   const canvas = document.getElementById('db-chart');
@@ -5820,7 +5871,7 @@ function renderDbChart(myData, thisMonth, thisYear){
     data = Array.from({length:8},(_,i)=>weeks[7-i]||0);
 
   } else {
-    // Yillik
+
     const yearly = {};
     myData.forEach(h => {
       const y = new Date(h.created_at).getFullYear();
