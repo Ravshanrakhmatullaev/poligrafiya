@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_86.html -->
-<html lang="uz" data-theme="light"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_87.html -->
+<html lang="uz" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <meta name="theme-color" content="#2563eb">
   <meta name="mobile-web-app-capable" content="yes">
@@ -1347,15 +1347,15 @@ input[type=email]:invalid:not(:placeholder-shown){
       <span>Qidirish</span>
       <kbd>⌘K</kbd>
     </button>
-    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Mavzuni almashtirish" title="Dark modega otish" aria-pressed="false">
-        <svg class="theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display: block;">
+    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Mavzuni almashtirish" title="Light modega otish" aria-pressed="true">
+        <svg class="theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display: none;">
           <circle cx="12" cy="12" r="5"></circle>
           <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
           <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
           <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
-        <svg class="theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none">
+        <svg class="theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display: block;">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
       </button>
@@ -5728,7 +5728,11 @@ function buildIshlabMsg(){
 
 const FL=['100 000 gacha','100 000 – 249 000','250 000 – 499 000','500 000 – 999 000','1 000 000 – 1 999 000','2 000 000 – 2 999 000','3 000 000 – 3 999 000','4 000 000 – 4 999 000','5 000 000 – 9 999 000','10 000 000 – 29 999 000','30 000 000 – 49 999 000','50 000 000 – 99 999 000','100 000 000 +'];
 let ftBuilt=false;
-function renderFoizTable(){ const tb=document.getElementById('foiz-tbody'); if(!tb) return; tb.innerHTML=''; FOIZ.forEach(([,,f],i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${FL[i]}</td><td class="fp">${Math.round(f*100)}%</td>`; tb.appendChild(tr); }); }
+function renderFoizTable(){ 
+  console.log('[FOIZ] renderFoizTable called');
+  const tb=document.getElementById('foiz-tbody'); 
+  console.log('[FOIZ] foiz-tbody:', tb);
+  if(!tb) return; tb.innerHTML=''; FOIZ.forEach(([,,f],i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${FL[i]}</td><td class="fp">${Math.round(f*100)}%</td>`; tb.appendChild(tr); }); }
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
 function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','admin-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',admin_yoriq:'admin-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
@@ -7122,11 +7126,13 @@ async function checkAfterHarakat(){
 }
 
 async function loadSklad(){
+  console.log('[SKLAD] loadSklad started');
   // Tugmani rolga qarab ko'rsat/yashir
   const addBtn = document.getElementById('sklad-add-btn');
   if(addBtn) addBtn.classList.toggle('hidden', !canEditSklad());
 
-  const { data } = await sb.from('sklad').select('*, sklad_harakati(id,tur,miqdor,sabab,user_name,sana,created_at)').order('nom');
+  const { data, error } = await sb.from('sklad').select('*, sklad_harakati(id,tur,miqdor,sabab,user_name,sana,created_at)').order('nom');
+  console.log('[SKLAD] data:', data?.length, 'error:', error);
   if(data){
     // Calculate actual quantity from harakati
     skladData = data.map(s => {
