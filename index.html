@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_89.html -->
+<!-- saved from url=(0045)file:///C:/Users/User/Downloads/index_91.html -->
 <html lang="uz" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <meta name="theme-color" content="#2563eb">
@@ -736,7 +736,7 @@ input[type=email]:invalid:not(:placeholder-shown){
 [data-theme="dark"] .kc-tab:hover{background:rgba(255,255,255,.05)}
 
 .kc-body{display:flex;flex-direction:column;gap:0}
-.kc-section{animation:kc-fade .2s ease}
+.kc-section{animation:kc-fade .2s ease;display:block}
 @keyframes kc-fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
 .kc-section-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
@@ -928,7 +928,7 @@ input[type=email]:invalid:not(:placeholder-shown){
 .msg-direction{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
 .msg-direction.inbox{background:var(--blue-light);color:var(--blue)}
 .msg-direction.sent{background:var(--green-light);color:var(--green)}
-.read-btn{font-size:11px;padding:3px 10px;border-radius:var(--radius-sm);border:1px solid var(--blue-border);background:#fff;color:var(--blue);cursor:pointer;font-family:inherit;margin-top:6px}
+.read-btn{font-size:11px;padding:3px 10px;border-radius:var(--radius-sm);border:1px solid var(--blue-border);background:var(--white);color:var(--blue);cursor:pointer;font-family:inherit;margin-top:6px}
 .msg-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .msg-action-btn{font-size:12px;padding:5px 12px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-weight:500;transition:var(--transition-fast)}
 .msg-action-btn.blue{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-border)}
@@ -4465,11 +4465,26 @@ async function loadHisobTarix(email, safeId){
         '<span style="color:var(--text3)">'+( h.sana||'')+'</span>'+
         '<span style="color:var(--text2)">+'+ fmt(h.summa)+" so'm</span>"+
         '<span style="color:'+qc+'">'+qt+'</span>'+
+        (currentRole==='owner' ? `<button onclick="deleteHisobKitob(${h.id},'${safeId}')" style="background:none;border:1px solid var(--red-border);color:var(--red);border-radius:4px;padding:1px 6px;font-size:11px;cursor:pointer">&#x1F5D1;</button>` : '')+ 
       '</div>';
     }).join('')+
     '</div>';
 }
 
+
+// ── HISOB KITOB O'CHIRISH ──
+async function deleteHisobKitob(id, safeId){
+  showConfirm("O'chirishni tasdiqlang", "Bu hisob yozuvini o'chirasizmi?", async () => {
+    const { error } = await sb.from('hisob_kitob').delete().eq('id', id);
+    if(error){ showNotify('❌ Xato: '+error.message); return; }
+    showNotify('Ochirildi ✅');
+    // Email ni safeId dan tiklash
+    const email = Object.keys(XODIMLAR).find(e => e.replace(/[^a-z0-9]/gi,'_') === safeId) ||
+                  Object.keys(ROLES).find(e => e.replace(/[^a-z0-9]/gi,'_') === safeId);
+    if(email) await loadHisobTarix(email, safeId);
+    renderOwnerPanel();
+  });
+}
 
 // ── SAVE ──
 function getSanaVaqt(){
@@ -5789,15 +5804,13 @@ function buildIshlabMsg(){
 
 const FL=['100 000 gacha','100 000 – 249 000','250 000 – 499 000','500 000 – 999 000','1 000 000 – 1 999 000','2 000 000 – 2 999 000','3 000 000 – 3 999 000','4 000 000 – 4 999 000','5 000 000 – 9 999 000','10 000 000 – 29 999 000','30 000 000 – 49 999 000','50 000 000 – 99 999 000','100 000 000 +'];
 let ftBuilt=false;
-function renderFoizTable(){ 
-  console.log('[FOIZ] renderFoizTable called');
-  const tb=document.getElementById('foiz-tbody'); 
-  console.log('[FOIZ] foiz-tbody:', tb);
+function renderFoizTable(){
+  const tb=document.getElementById('foiz-tbody');
   if(!tb) return; tb.innerHTML=''; FOIZ.forEach(([,,f],i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${FL[i]}</td><td class="fp">${Math.round(f*100)}%</td>`; tb.appendChild(tr); }); }
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
 function showScreen(id){ ['login-screen','yoriq-screen','dizayner-yoriq-screen','admin-yoriq-screen','app-screen'].forEach(s=>{ document.getElementById(s) && document.getElementById(s).classList.add('hidden'); }); const map={login:'login-screen',yoriq:'yoriq-screen',dizayner_yoriq:'dizayner-yoriq-screen',admin_yoriq:'admin-yoriq-screen',app:'app-screen'}; document.getElementById(map[id]) && document.getElementById(map[id]).classList.remove('hidden'); }
-function showPanel(id){ saveLastPanel(id); document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current')}); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz')renderFoizTable(); if(id==='tarix'){renderHistory();if(currentRole==='owner')renderBiDashboard();} if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} if(id==='uvdtf'){loadUvdtfHisobot(); document.getElementById('nb-uvdtf') && document.getElementById('nb-uvdtf').classList.add('active');} if(id==='kalk'){setKalkType('sigim', document.querySelector('.kc-tab[data-type="sigim"]'));} saveCurrentPanel(id); }
+function showPanel(id){ saveLastPanel(id); document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current')}); document.getElementById('panel-'+id) && document.getElementById('panel-'+id).classList.add('active'); document.getElementById('nb-'+id) && document.getElementById('nb-'+id).classList.add('active'); if(id==='foiz'){ setTimeout(()=>renderFoizTable(), 50); } if(id==='tarix'){renderHistory();if(currentRole==='owner')renderBiDashboard();} if(id==='owner')renderOwnerPanel(); if(id==='xabarlar'){loadMessages();renderMessages();} if(id==='ishlab')loadHiddenSections(); if(id==='sklad')loadSklad(); if(id==='stopwatch')renderDizayner(); if(id==='dashboard')renderDashboard(); if(id==='bozorlik'){loadBozorlik();if(!skladData.length)loadSklad();} if(id==='uvdtf'){loadUvdtfHisobot(); document.getElementById('nb-uvdtf') && document.getElementById('nb-uvdtf').classList.add('active');} if(id==='kalk'){setKalkType('sigim', document.querySelector('.kc-tab[data-type="sigim"]'));} saveCurrentPanel(id); }
 function showNotify(msg, type){
   const container = document.getElementById('toast-container');
   if(!container){ alert(msg); return; }
@@ -7226,13 +7239,10 @@ async function checkAfterHarakat(){
 }
 
 async function loadSklad(){
-  console.log('[SKLAD] loadSklad started');
-  // Tugmani rolga qarab ko'rsat/yashir
   const addBtn = document.getElementById('sklad-add-btn');
   if(addBtn) addBtn.classList.toggle('hidden', !canEditSklad());
 
-  const { data, error } = await sb.from('sklad').select('*, sklad_harakati(id,tur,miqdor,sabab,user_name,sana,created_at)').order('nom');
-  console.log('[SKLAD] data:', data?.length, 'error:', error);
+  const { data } = await sb.from('sklad').select('*, sklad_harakati(id,tur,miqdor,sabab,user_name,sana,created_at)').order('nom');
   if(data){
     // Calculate actual quantity from harakati
     skladData = data.map(s => {
