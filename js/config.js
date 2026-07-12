@@ -7,6 +7,7 @@ const SUPABASE_URL  = 'https://jxxmbgmbaqausqunfyna.supabase.co';
 const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4eG1iZ21iYXFhdXNxdW5meW5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3MjU2MzUsImV4cCI6MjA5ODMwMTYzNX0.G3bULfygRDeqZxOdBDUop296K60_cWCVLFBCZfXkWPo';
 const OWNER_EMAIL   = 'ra.ravshan1998@gmail.com';
 const SKLAD_EDITOR  = 'ra.ravshan1998+bayramali@gmail.com';
+const ABROR_EMAIL   = 'ra.ravshan1998+abror@gmail.com'; // bonus_50 checkbox faqat Abror uchun
 // TG_BOT_TOKEN frontendda saqlanmaydi!
 // Telegram webhook: vercel endpoint orqali
 const TG_WEBHOOK    = 'https://adsuz-sklad-jaqpmu8qr-adsuz1.vercel.app/api/webhook';
