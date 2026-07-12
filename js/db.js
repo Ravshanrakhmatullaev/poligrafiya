@@ -190,13 +190,58 @@ async function deleteHistoryItem(id) {
 
 // ── SKLAD ──
 async function getWarehouse() {
+  // 1-urinish: relation bilan bitta so'rov
   try {
     const { data, error } = await sb.from('sklad')
       .select('*, sklad_harakati(id,tur,miqdor,sabab,user_name,sana,created_at)')
       .order('nom');
-    if (error) throw error;
-    return data || [];
-  } catch (e) { console.error('[getWarehouse]', e); return []; }
+
+    if (!error) return data || [];
+
+    // Relation xatosi — 2-urinish: alohida so'rovlar
+    console.warn('[getWarehouse] relation query xato, alohida yuklanmoqda:', error);
+  } catch (e) {
+    console.warn('[getWarehouse] relation query exception:', e.message);
+  }
+
+  // 2-urinish: sklad va sklad_harakati alohida, JS da birlashtirish
+  try {
+    const [skladRes, harakatiRes] = await Promise.all([
+      sb.from('sklad').select('*').order('nom'),
+      sb.from('sklad_harakati').select('id,sklad_id,tur,miqdor,sabab,user_name,sana,created_at'),
+    ]);
+
+    if (skladRes.error) throw skladRes.error;
+
+    const harakatiMap = {};
+    (harakatiRes.data || []).forEach(h => {
+      if (!harakatiMap[h.sklad_id]) harakatiMap[h.sklad_id] = [];
+      harakatiMap[h.sklad_id].push(h);
+    });
+
+    return (skladRes.data || []).map(s => ({
+      ...s,
+      sklad_harakati: harakatiMap[s.id] || [],
+    }));
+
+  } catch (e) {
+    // Ikkalasi ham xato — foydalanuvchiga aniq xabar
+    const msg = e?.message || 'Noma\'lum xato';
+    const code = e?.code || '';
+    const details = e?.details || '';
+    console.error('[getWarehouse] XATO:', { message: msg, code, details, status: e?.status });
+
+    // UI ga xabar
+    showNotify("Sklad ma'lumotlarini yuklab bo'lmadi", 'error');
+    const listEl = document.getElementById('sklad-list');
+    if (listEl) {
+      listEl.innerHTML = `<div class="empty-state" style="color:var(--red)">
+        <p>⚠️ Yuklashda xato: ${msg}</p>
+        <p style="font-size:12px;color:var(--text3)">${code ? 'Kod: ' + code : ''} ${details || ''}</p>
+      </div>`;
+    }
+    return [];
+  }
 }
 
 async function createWarehouseItem(data) {
