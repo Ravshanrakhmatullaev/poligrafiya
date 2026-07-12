@@ -274,21 +274,75 @@ const DV_WARN_STATUSES = ['missing_check_in', 'missing_check_out'];
 
 function dvShowTab(tab) {
   const scanTab = document.getElementById('dv-tab-scan');
+  const mineTab = document.getElementById('dv-tab-mine');
   const listTab = document.getElementById('dv-tab-list');
   const scanBtn = document.getElementById('dv-tab-scan-btn');
+  const mineBtn = document.getElementById('dv-tab-mine-btn');
   const listBtn = document.getElementById('dv-tab-list-btn');
   if (scanTab) scanTab.classList.toggle('hidden', tab !== 'scan');
+  if (mineTab) mineTab.classList.toggle('hidden', tab !== 'mine');
   if (listTab) listTab.classList.toggle('hidden', tab !== 'list');
   if (scanBtn) { scanBtn.classList.toggle('btn-primary', tab === 'scan'); scanBtn.classList.toggle('btn-secondary', tab !== 'scan'); }
+  if (mineBtn) { mineBtn.classList.toggle('btn-primary', tab === 'mine'); mineBtn.classList.toggle('btn-secondary', tab !== 'mine'); }
   if (listBtn) { listBtn.classList.toggle('btn-primary', tab === 'list'); listBtn.classList.toggle('btn-secondary', tab !== 'list'); }
 
   if (tab === 'scan') {
     if (!dvScanning) dvStartCamera();
+  } else if (tab === 'mine') {
+    stopDavomatScanner();
+    loadMyDavomatTab();
   } else {
     stopDavomatScanner();
     dvSetToday(false);
     loadDavomatList();
   }
+}
+
+function dvTodayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function dvMonthStartStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-01';
+}
+
+async function loadMyDavomatTab() {
+  const today = dvTodayStr();
+  const rows = await getMyDavomat(dvMonthStartStr(), today);
+  const fmtTime = (iso) => iso ? new Date(iso).toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' }) : '—';
+
+  const todayRow = rows.find(r => r.sana === today);
+  const statusEl = document.getElementById('dv-mine-status');
+  if (statusEl) statusEl.textContent = todayRow ? (DV_STATUS_LABELS[todayRow.status] || todayRow.status) : "Yozuv yo'q";
+  const checkinEl = document.getElementById('dv-mine-checkin');
+  if (checkinEl) checkinEl.textContent = todayRow ? fmtTime(todayRow.check_in) : '—';
+  const checkoutEl = document.getElementById('dv-mine-checkout');
+  if (checkoutEl) checkoutEl.textContent = todayRow ? fmtTime(todayRow.check_out) : '—';
+  const workedEl = document.getElementById('dv-mine-worked');
+  if (workedEl) workedEl.textContent = (todayRow && todayRow.worked_minutes != null) ? (Math.round(todayRow.worked_minutes / 6) / 10) + ' soat' : '—';
+  const lateEl = document.getElementById('dv-mine-late');
+  if (lateEl) lateEl.textContent = (todayRow && todayRow.late_minutes != null) ? todayRow.late_minutes + ' daq' : '—';
+
+  // Shu oy statistikasi
+  const daysPresent = rows.filter(r => r.check_in).length;
+  const daysLate = rows.filter(r => r.status === 'late' || (r.late_minutes || 0) > 0).length;
+  const totalMinutes = rows.reduce((sum, r) => sum + (r.worked_minutes || 0), 0);
+  const totalHours = Math.round(totalMinutes / 6) / 10;
+
+  // Shu oyning bugungacha bo'lgan ish kunlari (yakshanbadan tashqari)
+  const now = new Date();
+  let workDays = 0;
+  for (let d = 1; d <= now.getDate(); d++) {
+    if (new Date(now.getFullYear(), now.getMonth(), d).getDay() !== 0) workDays++;
+  }
+  const percent = workDays > 0 ? Math.round((daysPresent / workDays) * 100) : 0;
+
+  const dp = document.getElementById('dv-mine-days-present'); if (dp) dp.textContent = daysPresent;
+  const dl = document.getElementById('dv-mine-days-late'); if (dl) dl.textContent = daysLate;
+  const th = document.getElementById('dv-mine-total-hours'); if (th) th.textContent = totalHours + ' soat';
+  const pc = document.getElementById('dv-mine-percent'); if (pc) pc.textContent = percent + '%';
 }
 
 function dvSetToday(reload = true) {

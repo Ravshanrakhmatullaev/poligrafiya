@@ -513,3 +513,17 @@ async function getDavomatList(filters = {}) {
     return data || [];
   } catch (e) { console.error('[getDavomatList]', e); return []; }
 }
+
+// Xodimning o'z davomat yozuvlari — RLS orqali ham himoyalangan, bu yerda .eq('user_id',...)
+// bilan qo'shimcha aniq filtr (staff/owner ham shu funksiyani chaqirsa faqat o'zinikini ko'radi)
+async function getMyDavomat(fromDate, toDate) {
+  try {
+    if (!currentUser) return [];
+    let q = sb.from('davomat').select('*').eq('user_id', currentUser.id).order('sana', { ascending: false });
+    if (fromDate) q = q.gte('sana', fromDate);
+    if (toDate) q = q.lte('sana', toDate);
+    const { data, error } = await q;
+    if (error) throw error;
+    return data || [];
+  } catch (e) { console.error('[getMyDavomat]', e); return []; }
+}

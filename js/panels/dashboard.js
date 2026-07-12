@@ -22,6 +22,7 @@ function setDbMode(mode, el){
 
 function renderDashboard(){
   if(!currentUser || !allHistory) return;
+  renderMyAttendanceWidget();
   const myData = allHistory.filter(h => h.user_email === currentUser.email);
   if(!myData.length){
     document.getElementById('db-recent-list').innerHTML = '<div class="empty-state"><p>Hali yozuvlar yoq</p></div>';
@@ -489,8 +490,28 @@ async function msgAction(id, type){
   const updates = { o_qildi: true };
   if(type === 'qabul') updates.qabul_qilindi = true;
   if(type === 'tolov') updates.tolov_qilindi = true;
-  
+
   await markMessageRead(id);
   showNotify(type === 'qabul' ? '✅ Qabul qilindi!' : '💰 Tolov qilindi!');
   await loadMessages();
+}
+
+// ── DAVOMAT: bugungi holat kichik vidjeti ──
+async function renderMyAttendanceWidget(){
+  const widget = document.getElementById('db-attendance-widget');
+  if(!widget || !currentUser) return;
+  try{
+    const today = (typeof dvTodayStr === 'function') ? dvTodayStr() : new Date().toISOString().slice(0,10);
+    const rows = await getMyDavomat(today, today);
+    const row = rows[0];
+    widget.classList.remove('hidden');
+    const fmtTime = (iso) => iso ? new Date(iso).toLocaleTimeString('uz-UZ', {hour:'2-digit',minute:'2-digit'}) : '—';
+    const statusLabels = (typeof DV_STATUS_LABELS !== 'undefined') ? DV_STATUS_LABELS : {};
+
+    document.getElementById('db-att-status').textContent = row ? (statusLabels[row.status] || row.status) : "Yozuv yo'q";
+    document.getElementById('db-att-checkin').textContent = row ? fmtTime(row.check_in) : '—';
+    document.getElementById('db-att-checkout').textContent = row ? fmtTime(row.check_out) : '—';
+    document.getElementById('db-att-worked').textContent = (row && row.worked_minutes != null) ? (Math.round(row.worked_minutes/6)/10) + ' soat' : '—';
+    document.getElementById('db-att-late').textContent = (row && row.late_minutes != null) ? row.late_minutes + ' daq' : '—';
+  } catch(e){ console.error('[renderMyAttendanceWidget]', e); }
 }
