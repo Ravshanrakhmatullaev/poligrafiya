@@ -34,50 +34,14 @@ async function initDavomatScanner() {
       video: { facingMode: 'environment' },
       audio: false,
     });
-    console.log('[davomat][debug] getUserMedia: success'); // VAQTINCHALIK DEBUG
   } catch (e) {
     console.error('[davomat] kamera xatosi', e);
     setDavomatStatus('Kameraga ruxsat berilmadi yoki kamera topilmadi', 'error');
     return;
   }
 
-  // VAQTINCHALIK DEBUG — faqat diagnostika, kamera oqimiga ta'sir qilmaydi
-  const dvTrack = dvStream.getVideoTracks()[0];
-  console.log('[davomat][debug] track.readyState =', dvTrack && dvTrack.readyState);
-  console.log('[davomat][debug] track.muted =', dvTrack && dvTrack.muted);
-  console.log('[davomat][debug] track.enabled =', dvTrack && dvTrack.enabled);
-
   video.srcObject = dvStream;
-
-  let dvPlayErrorName = null; // VAQTINCHALIK DEBUG
-  try {
-    await video.play();
-    console.log('[davomat][debug] video.play(): success'); // VAQTINCHALIK DEBUG
-  } catch (e) {
-    dvPlayErrorName = e && e.name; // VAQTINCHALIK DEBUG
-    console.error('[davomat][debug] video.play(): FAILED', e && e.name, e && e.message); // VAQTINCHALIK DEBUG
-    /* autoplay bloklansa ham davom etamiz */
-  }
-
-  // VAQTINCHALIK DEBUG — video haqiqiy o'lchamini/holatini log qilish va ekranda ko'rsatish
-  const dvLogVideoState = (label) => {
-    console.log('[davomat][debug]', label,
-      'videoWidth =', video.videoWidth,
-      'videoHeight =', video.videoHeight,
-      'readyState =', video.readyState);
-    dvRenderDebugBox({
-      width: video.videoWidth,
-      height: video.videoHeight,
-      readyState: video.readyState,
-      trackReadyState: dvTrack && dvTrack.readyState,
-      trackMuted: dvTrack && dvTrack.muted,
-      trackEnabled: dvTrack && dvTrack.enabled,
-      playErrorName: dvPlayErrorName,
-    });
-  };
-  dvLogVideoState('play() dan keyin darhol');
-  video.addEventListener('loadedmetadata', () => dvLogVideoState('loadedmetadata hodisasida'), { once: true });
-  video.addEventListener('playing', () => dvLogVideoState('playing hodisasida'), { once: true });
+  try { await video.play(); } catch (e) { /* autoplay bloklansa ham davom etamiz */ }
 
   dvDetector = null;
   if ('BarcodeDetector' in window) {
@@ -198,29 +162,6 @@ function setDavomatStatus(text, type) {
   if (!el) return;
   el.textContent = text;
   el.className = 'dv-status-' + (type || 'info');
-}
-
-// ═══════════════════════════════════════
-// VAQTINCHALIK DEBUG BLOK — faqat diagnostika uchun, keyin olib tashlanadi
-// ═══════════════════════════════════════
-function dvRenderDebugBox(info) {
-  let box = document.getElementById('dv-debug-box');
-  if (!box) {
-    box = document.createElement('div');
-    box.id = 'dv-debug-box';
-    box.style.cssText = 'margin-top:10px;padding:8px 10px;font:11px/1.5 monospace;' +
-      'background:#111;color:#0f0;border-radius:6px;white-space:pre-wrap;word-break:break-word';
-    const panel = document.getElementById('panel-davomat');
-    if (panel) panel.appendChild(box);
-  }
-  box.textContent =
-    'DEBUG (vaqtinchalik)\n' +
-    'video: ' + info.width + ' x ' + info.height + '\n' +
-    'video.readyState: ' + info.readyState + '\n' +
-    'track.readyState: ' + info.trackReadyState + '\n' +
-    'track.muted: ' + info.trackMuted + '\n' +
-    'track.enabled: ' + info.trackEnabled + '\n' +
-    'play() error: ' + (info.playErrorName || '(yo\'q)');
 }
 
 // ── NOANIQ HOLAT: "Ishga keldim" / "Ishdan ketyapman" ──
