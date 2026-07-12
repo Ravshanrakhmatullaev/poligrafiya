@@ -28,6 +28,10 @@ as $$
   select encode(extensions.digest(p_token::text, 'sha256'), 'hex');
 $$;
 
+-- Minimal privilege: faqat ichkarida (SECURITY DEFINER funksiyalar ichidan, ularning
+-- egasi sifatida) chaqiriladi — tashqi (authenticated) grant kerak emas
+revoke execute on function public._attendance_token_hash(uuid) from public;
+
 -- ═══════════════════════════════════════
 -- 1) attendance_scan — QR skanerlanganda chaqiriladi
 -- ═══════════════════════════════════════
@@ -45,6 +49,7 @@ declare
   v_now          timestamptz := now();
   v_local_now    time;
   v_row          davomat%rowtype;
+  v_updated      davomat%rowtype;
   v_work_start_ts timestamptz;
   v_work_end_ts   timestamptz;
   v_ambiguous_from time;
@@ -83,64 +88,91 @@ begin
 
   select * into v_row from davomat where user_id = v_user_id and sana = v_today;
 
-  -- Holat C: ikkalasi ham bor
-  if found and v_row.check_in is not null and v_row.check_out is not null then
+  -- Holat C: kun allaqachon yakunlangan (check_out qo'yilgan — oddiy check-out orqali
+  -- ham, missing_check_in orqali ham bo'lishi mumkin, ikkalasida ham qayta yozilmasin)
+  if found and v_row.check_out is not null then
     insert into attendance_events (user_id, branch_id, davomat_id, event_type, token_hash, result)
     values (v_user_id, v_branch.id, v_row.id, 'rejected_already_completed', v_hash, 'already_completed');
     return jsonb_build_object('ok', false, 'reason', 'already_completed',
       'message', 'Bugungi davomat allaqachon yakunlangan');
   end if;
 
-  -- Holat B: check-in bor, check-out yo'q → CHECK-OUT
-  if found and v_row.check_in is not null and v_row.check_out is null then
-    v_worked_minutes := round(extract(epoch from (v_now - v_row.check_in)) / 60)::int;
-    if v_now < v_work_end_ts then
-      v_early_minutes := round(extract(epoch from (v_work_end_ts - v_now)) / 60)::int;
-      v_overtime_minutes := 0;
-    else
-      v_early_minutes := 0;
-      v_overtime_minutes := round(extract(epoch from (v_now - v_work_end_ts)) / 60)::int;
+  -- Holat A: bugungi yozuv (hali) yo'q — CHECK-IN urinib ko'ramiz
+  if not found then
+    if v_local_now >= v_ambiguous_from then
+      -- Noaniq holat — yozib qo'yilmaydi, frontend tanlov so'rashi kerak
+      return jsonb_build_object('ok', true, 'action', 'ambiguous_choice_required',
+        'branch_id', v_branch.id, 'token', p_token);
     end if;
 
-    update davomat set
-      check_out = v_now,
-      worked_minutes = v_worked_minutes,
-      early_leave_minutes = v_early_minutes,
-      overtime_minutes = v_overtime_minutes,
-      status = 'checked_out',
-      updated_at = v_now
-    where id = v_row.id
+    v_late_minutes := greatest(0, round(extract(epoch from (v_now - v_work_start_ts)) / 60)::int);
+    v_status := case when v_late_minutes > 0 then 'late' else 'on_time' end;
+
+    -- Atomik yozish: parallel so'rov bir xil (user_id, sana) qatorini urinib ko'rsa,
+    -- xom unique_violation o'rniga ON CONFLICT DO NOTHING xavfsiz jim o'tkazadi
+    insert into davomat (user_id, branch_id, sana, check_in, late_minutes, status)
+    values (v_user_id, v_branch.id, v_today, v_now, v_late_minutes, v_status)
+    on conflict (user_id, sana) do nothing
     returning * into v_row;
 
+    if v_row.id is not null then
+      insert into attendance_events (user_id, branch_id, davomat_id, event_type, token_hash, result)
+      values (v_user_id, v_branch.id, v_row.id, 'check_in', v_hash, v_status);
+
+      return jsonb_build_object('ok', true, 'action', 'check_in', 'davomat_id', v_row.id,
+        'status', v_row.status, 'late_minutes', v_row.late_minutes);
+    end if;
+
+    -- Conflict: parallel so'rov bizdan oldin yozib ulgurdi — haqiqiy holatni qayta o'qiymiz
+    select * into v_row from davomat where user_id = v_user_id and sana = v_today;
+
+    if v_row.check_out is not null then
+      insert into attendance_events (user_id, branch_id, davomat_id, event_type, token_hash, result)
+      values (v_user_id, v_branch.id, v_row.id, 'rejected_already_completed', v_hash, 'already_completed');
+      return jsonb_build_object('ok', false, 'reason', 'already_completed',
+        'message', 'Bugungi davomat allaqachon yakunlangan');
+    end if;
+    -- check_out hali yo'q — pastdagi CHECK-OUT bo'limiga tushamiz
+  end if;
+
+  -- Holat B: check-in bor, check-out yo'q → CHECK-OUT
+  -- Atomik: faqat check_out hali NULL bo'lgan holatda yoziladi (parallel so'rovdan himoya)
+  if v_now < v_work_end_ts then
+    v_early_minutes := round(extract(epoch from (v_work_end_ts - v_now)) / 60)::int;
+    v_overtime_minutes := 0;
+  else
+    v_early_minutes := 0;
+    v_overtime_minutes := round(extract(epoch from (v_now - v_work_end_ts)) / 60)::int;
+  end if;
+  v_worked_minutes := round(extract(epoch from (v_now - v_row.check_in)) / 60)::int;
+
+  update davomat set
+    check_out = v_now,
+    worked_minutes = v_worked_minutes,
+    early_leave_minutes = v_early_minutes,
+    overtime_minutes = v_overtime_minutes,
+    status = 'checked_out',
+    updated_at = v_now
+  where id = v_row.id and check_out is null
+  returning * into v_updated;
+
+  if v_updated.id is null then
+    -- Parallel so'rov bizdan oldin check-out qilib ulgurdi — duplicate yozuv yaratilmaydi
     insert into attendance_events (user_id, branch_id, davomat_id, event_type, token_hash, result)
-    values (v_user_id, v_branch.id, v_row.id, 'check_out', v_hash, 'checked_out');
-
-    return jsonb_build_object('ok', true, 'action', 'check_out', 'davomat_id', v_row.id,
-      'status', v_row.status, 'worked_minutes', v_row.worked_minutes);
+    values (v_user_id, v_branch.id, v_row.id, 'rejected_already_completed', v_hash, 'already_completed');
+    return jsonb_build_object('ok', false, 'reason', 'already_completed',
+      'message', 'Bugungi davomat allaqachon yakunlangan');
   end if;
-
-  -- Holat A: bugungi yozuv yo'q
-  if v_local_now >= v_ambiguous_from then
-    -- Noaniq holat — yozib qo'yilmaydi, frontend tanlov so'rashi kerak
-    return jsonb_build_object('ok', true, 'action', 'ambiguous_choice_required',
-      'branch_id', v_branch.id, 'token', p_token);
-  end if;
-
-  v_late_minutes := greatest(0, round(extract(epoch from (v_now - v_work_start_ts)) / 60)::int);
-  v_status := case when v_late_minutes > 0 then 'late' else 'on_time' end;
-
-  insert into davomat (user_id, branch_id, sana, check_in, late_minutes, status)
-  values (v_user_id, v_branch.id, v_today, v_now, v_late_minutes, v_status)
-  returning * into v_row;
 
   insert into attendance_events (user_id, branch_id, davomat_id, event_type, token_hash, result)
-  values (v_user_id, v_branch.id, v_row.id, 'check_in', v_hash, v_status);
+  values (v_user_id, v_branch.id, v_updated.id, 'check_out', v_hash, 'checked_out');
 
-  return jsonb_build_object('ok', true, 'action', 'check_in', 'davomat_id', v_row.id,
-    'status', v_row.status, 'late_minutes', v_row.late_minutes);
+  return jsonb_build_object('ok', true, 'action', 'check_out', 'davomat_id', v_updated.id,
+    'status', v_updated.status, 'worked_minutes', v_updated.worked_minutes);
 end;
 $$;
 
+revoke execute on function public.attendance_scan(uuid) from public;
 grant execute on function public.attendance_scan(uuid) to authenticated;
 
 -- ═══════════════════════════════════════
@@ -163,7 +195,6 @@ declare
   v_branch   branches%rowtype;
   v_today    date;
   v_now      timestamptz := now();
-  v_existing davomat%rowtype;
   v_row      davomat%rowtype;
   v_late_minutes integer;
 begin
@@ -186,19 +217,19 @@ begin
     return jsonb_build_object('ok', false, 'reason', 'invalid_qr', 'message', 'QR kod yaroqsiz');
   end if;
 
-  -- Race-holat himoyasi: shu oraliqda boshqa so'rov yozib ulgurmaganini tekshirish
-  select * into v_existing from davomat where user_id = v_user_id and sana = v_today;
-  if found then
-    return jsonb_build_object('ok', false, 'reason', 'already_exists',
-      'message', 'Bugungi davomat yozuvi allaqachon mavjud');
-  end if;
-
   if p_choice = 'came_in' then
     v_late_minutes := greatest(0, round(extract(epoch from (v_now - ((v_today + v_branch.work_start) at time zone 'Asia/Tashkent'))) / 60)::int);
 
+    -- Atomik: bir vaqtda ikkita resolve (yoki resolve+scan) chaqirilsa, faqat birinchisi yoziladi
     insert into davomat (user_id, branch_id, sana, check_in, late_minutes, status)
     values (v_user_id, v_branch.id, v_today, v_now, v_late_minutes, 'late')
+    on conflict (user_id, sana) do nothing
     returning * into v_row;
+
+    if v_row.id is null then
+      return jsonb_build_object('ok', false, 'reason', 'already_exists',
+        'message', 'Bugungi davomat yozuvi allaqachon mavjud');
+    end if;
 
     insert into attendance_events (user_id, branch_id, davomat_id, event_type, token_hash, result)
     values (v_user_id, v_branch.id, v_row.id, 'check_in', v_hash, 'late');
@@ -206,13 +237,20 @@ begin
     return jsonb_build_object('ok', true, 'action', 'check_in', 'davomat_id', v_row.id,
       'status', v_row.status, 'late_minutes', v_row.late_minutes);
   else
+    -- Atomik: yuqoridagi bilan bir xil himoya
     insert into davomat (
       user_id, branch_id, sana, check_in, check_out, status, sabab, sabab_matni
     )
     values (
       v_user_id, v_branch.id, v_today, null, v_now, 'missing_check_in', p_sabab, p_sabab_matni
     )
+    on conflict (user_id, sana) do nothing
     returning * into v_row;
+
+    if v_row.id is null then
+      return jsonb_build_object('ok', false, 'reason', 'already_exists',
+        'message', 'Bugungi davomat yozuvi allaqachon mavjud');
+    end if;
 
     insert into attendance_events (user_id, branch_id, davomat_id, event_type, token_hash, result, note)
     values (v_user_id, v_branch.id, v_row.id, 'check_out', v_hash, 'missing_check_in', p_sabab_matni);
@@ -223,6 +261,7 @@ begin
 end;
 $$;
 
+revoke execute on function public.attendance_resolve(uuid, text, text, text) from public;
 grant execute on function public.attendance_resolve(uuid, text, text, text) to authenticated;
 
 -- ═══════════════════════════════════════
@@ -253,6 +292,16 @@ begin
   select * into v_old from davomat where id = p_davomat_id;
   if not found then
     raise exception 'attendance_approve: davomat yozuvi topilmadi';
+  end if;
+
+  if v_old.status in ('approved', 'rejected') then
+    return jsonb_build_object('ok', false, 'reason', 'already_reviewed',
+      'message', 'Bu yozuv allaqachon ko''rib chiqilgan: ' || v_old.status);
+  end if;
+
+  if v_old.status not in ('missing_check_in', 'missing_check_out', 'pending_approval') then
+    return jsonb_build_object('ok', false, 'reason', 'not_reviewable',
+      'message', 'Bu holat tasdiqlashni talab qilmaydi: ' || v_old.status);
   end if;
 
   select * into v_branch from branches where id = v_old.branch_id;
@@ -293,6 +342,7 @@ begin
 end;
 $$;
 
+revoke execute on function public.attendance_approve(uuid, text) from public;
 grant execute on function public.attendance_approve(uuid, text) to authenticated;
 
 -- ═══════════════════════════════════════
@@ -321,6 +371,16 @@ begin
     raise exception 'attendance_reject: davomat yozuvi topilmadi';
   end if;
 
+  if v_old.status in ('approved', 'rejected') then
+    return jsonb_build_object('ok', false, 'reason', 'already_reviewed',
+      'message', 'Bu yozuv allaqachon ko''rib chiqilgan: ' || v_old.status);
+  end if;
+
+  if v_old.status not in ('missing_check_in', 'missing_check_out', 'pending_approval') then
+    return jsonb_build_object('ok', false, 'reason', 'not_reviewable',
+      'message', 'Bu holat rad etishni talab qilmaydi: ' || v_old.status);
+  end if;
+
   update davomat set
     status = 'rejected',
     approved_by = auth.uid(),
@@ -339,6 +399,7 @@ begin
 end;
 $$;
 
+revoke execute on function public.attendance_reject(uuid, text) from public;
 grant execute on function public.attendance_reject(uuid, text) to authenticated;
 
 -- ═══════════════════════════════════════
@@ -376,6 +437,20 @@ begin
   select * into v_old from davomat where id = p_davomat_id;
   if not found then
     raise exception 'attendance_manual_edit: davomat yozuvi topilmadi';
+  end if;
+
+  if p_check_in is not null and (p_check_in at time zone 'Asia/Tashkent')::date <> v_old.sana then
+    raise exception 'attendance_manual_edit: check_in sanasi (%) davomat sanasiga (%) mos kelmaydi',
+      (p_check_in at time zone 'Asia/Tashkent')::date, v_old.sana;
+  end if;
+
+  if p_check_out is not null and (p_check_out at time zone 'Asia/Tashkent')::date <> v_old.sana then
+    raise exception 'attendance_manual_edit: check_out sanasi (%) davomat sanasiga (%) mos kelmaydi',
+      (p_check_out at time zone 'Asia/Tashkent')::date, v_old.sana;
+  end if;
+
+  if p_check_in is not null and p_check_out is not null and p_check_out < p_check_in then
+    raise exception 'attendance_manual_edit: check_out check_in dan oldin bo''lishi mumkin emas';
   end if;
 
   select * into v_branch from branches where id = v_old.branch_id;
@@ -425,4 +500,5 @@ begin
 end;
 $$;
 
+revoke execute on function public.attendance_manual_edit(uuid, timestamptz, timestamptz, text) from public;
 grant execute on function public.attendance_manual_edit(uuid, timestamptz, timestamptz, text) to authenticated;

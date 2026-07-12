@@ -48,6 +48,11 @@ as $$
   );
 $$;
 
+-- Minimal privilege: PUBLIC (shu jumladan anon)'dan olib tashlab, faqat authenticated'ga beriladi
+revoke execute on function public.current_user_role() from public;
+revoke execute on function public.is_owner() from public;
+revoke execute on function public.is_attendance_staff() from public;
+
 grant execute on function public.current_user_role() to authenticated;
 grant execute on function public.is_owner() to authenticated;
 grant execute on function public.is_attendance_staff() to authenticated;

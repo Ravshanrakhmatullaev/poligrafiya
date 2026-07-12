@@ -8,7 +8,7 @@ create table branches (
   id                 uuid primary key default gen_random_uuid(),
   name               text not null,              -- "Ishlab chiqarish", "Sotuv"
   code               text unique not null,        -- 'production', 'sales'
-  qr_secret_hash     text not null,                -- QR'dagi random UUID'ning sha256 hash'i (raw UUID DB'da saqlanmaydi)
+  qr_secret_hash     text not null unique,           -- QR'dagi random UUID'ning sha256 hash'i (raw UUID DB'da saqlanmaydi); unique = lookup indeksi ham beradi
   allowed_public_ip  inet,                          -- V2 uchun tayyorgarlik — hozircha hech qanday RPC bu ustunni tekshirmaydi
   work_start         time not null default '09:30',
   work_end           time not null default '18:00',
@@ -80,6 +80,9 @@ create table davomat_audit_log (
   created_at   timestamptz not null default now()
 );
 
-create index idx_davomat_user_sana on davomat(user_id, sana);
+-- idx_davomat_user_sana qo'shilmadi — unique(user_id, sana) constraint buni avtomatik ta'minlaydi
 create index idx_davomat_branch    on davomat(branch_id);
+create index idx_davomat_sana      on davomat(sana);
+create index idx_davomat_pending   on davomat(status)
+  where status in ('missing_check_in', 'missing_check_out', 'pending_approval');
 create index idx_events_user       on attendance_events(user_id, created_at);
