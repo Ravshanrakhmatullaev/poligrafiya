@@ -139,23 +139,26 @@ async function sendWeeklyDizayner(){
 function renderAdmin(){
   const el=document.getElementById('admin-rows'); el.innerHTML='';
   let tz=0,td=0,soni=0;
+  const isAbror = currentUser && currentUser.email === ABROR_EMAIL;
   adD.forEach((r,i)=>{
-    const s=parseInt(r.sum)||0; const foiz=getFoiz(s); const dr=Math.round(s*foiz);
+    const s=parseInt(r.sum)||0; const foiz=getFoiz(s);
+    const baseDr = Math.round(s*foiz);
+    const dr = (isAbror && r.bonus_50) ? Math.round(baseDr*1.5) : baseDr;
     if(r.nom||s){tz+=s;td+=dr;soni++;}
     const row=document.createElement('div'); row.className='zakaz-row';
+    const bonusChk = isAbror
+      ? `<label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--green);cursor:pointer;white-space:nowrap"><input type="checkbox" ${r.bonus_50?'checked':''} onchange="adD[${i}].bonus_50=this.checked;renderAdmin()"> +50%</label>`
+      : '';
     row.innerHTML=`
       <input type="text" placeholder="Mahsulot nomi" value="${r.nom}" oninput="adD[${i}].nom=this.value">
       <input type="text" inputmode="numeric" placeholder="Summa" value="${r.sum}" style="text-align:right" id="asum${i}">
       <div class="fzbadge">${s?Math.round(foiz*100)+'%':'—'}</div>
-      <div class="drbadge">${s?fmt(dr)+" so'm":'—'}</div>
-      ${delIcon(`delAdmin(${i})`)}`;
+      <div class="drbadge" style="${isAbror&&r.bonus_50?'color:var(--green);font-weight:700':''}">${s?fmt(dr)+" so'm":'—'}${isAbror&&r.bonus_50?' ✦':''}</div>
+      ${bonusChk}${delIcon(`delAdmin(${i})`)}`;
     el.appendChild(row);
     numInput(row.querySelector(`#asum${i}`),v=>{adD[i].sum=v;renderAdmin();});
   });
-  // Joriy (hali saqlanmagan) forma yig'indisi — faqat pastdagi "Sof daromad" tugmasi yonida
   document.getElementById('admin-grand').textContent=fmt(td)+" so'm";
-
-  // Statistika kartalari endi TARIXDAN hisoblanadi (renderAdminStats orqali)
   renderAdminStats();
 }
 
