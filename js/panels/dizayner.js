@@ -362,10 +362,7 @@ function buildIshlabMsg(){
   return lines.join('\n');
 }
 
-function renderFoizTable(){
-  const tb=document.getElementById('foiz-tbody');
-  if(!tb) return; tb.innerHTML=''; FOIZ.forEach(([,,f],i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${FL[i]}</td><td class="fp">${Math.round(f*100)}%</td>`; tb.appendChild(tr); }); }
-function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
+// renderFoizTable() va calcFoiz() — js/panels/foiz.js ga kochirildi
 
 // ── STOPWATCH ──
 
