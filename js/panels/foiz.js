@@ -4,8 +4,15 @@
 // ═══════════════════════════════════════
 
 
-// ── FOIZ ──
+// ── FOIZ JADVALI ──
 // NOTE: getFoiz defined in utils.js
+// showPanel('foiz') → app.js setTimeout(renderFoizTable, 50) chaqiradi
+
+function renderFoizTable(){
+  const tb=document.getElementById('foiz-tbody');
+  if(!tb) return; tb.innerHTML=''; FOIZ.forEach(([,,f],i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${FL[i]}</td><td class="fp">${Math.round(f*100)}%</td>`; tb.appendChild(tr); }); }
+
+function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
 // ── BO'LIMLARNI YASHIRISH/KO'RSATISH ──
 
