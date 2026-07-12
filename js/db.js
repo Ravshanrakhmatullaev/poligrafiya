@@ -527,3 +527,30 @@ async function getMyDavomat(fromDate, toDate) {
     return data || [];
   } catch (e) { console.error('[getMyDavomat]', e); return []; }
 }
+
+// ── DAVOMAT MANAGER AMALLARI (owner/attendance_manager) ──
+async function approveDavomat(davomatId, sabab) {
+  const { data, error } = await sb.rpc('attendance_approve', { p_davomat_id: davomatId, p_sabab: sabab });
+  if (error) throw error;
+  return data;
+}
+
+async function rejectDavomat(davomatId, sabab) {
+  const { data, error } = await sb.rpc('attendance_reject', { p_davomat_id: davomatId, p_sabab: sabab });
+  if (error) throw error;
+  return data;
+}
+
+async function manualEditDavomat(davomatId, checkIn, checkOut, sabab) {
+  const { data, error } = await sb.rpc('attendance_manual_edit', {
+    p_davomat_id: davomatId, p_check_in: checkIn, p_check_out: checkOut, p_sabab: sabab,
+  });
+  if (error) throw error;
+  return data;
+}
+
+async function deleteDavomat(davomatId, sabab) {
+  const { data, error } = await sb.rpc('attendance_delete', { p_davomat_id: davomatId, p_sabab: sabab });
+  if (error) throw error;
+  return data;
+}

@@ -354,10 +354,12 @@ function dvSetToday(reload = true) {
   if (reload) loadDavomatList();
 }
 
+let dvListRowsCache = {}; // id -> row, Amallar tugmalari (tuzatish/o'chirish) uchun
+
 async function loadDavomatList() {
   const tbody = document.getElementById('dv-list-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text3)">Yuklanmoqda...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text3)">Yuklanmoqda...</td></tr>';
 
   if (!dvBranchCache) {
     const branches = await getBranches();
@@ -378,9 +380,11 @@ async function loadDavomatList() {
   }
 
   const rows = await getDavomatList(filters);
+  dvListRowsCache = {};
+  rows.forEach(r => { dvListRowsCache[r.id] = r; });
 
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text3)">Ma\'lumot topilmadi</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text3)">Ma\'lumot topilmadi</td></tr>';
     return;
   }
 
@@ -395,6 +399,11 @@ async function loadDavomatList() {
     const isWarn = DV_WARN_STATUSES.includes(r.status);
     const statusLabel = (isWarn ? '⚠️ ' : '') + (DV_STATUS_LABELS[r.status] || r.status);
     const td = 'padding:8px;border-bottom:1px solid var(--gray-border)';
+    const actions =
+      '<button class="btn btn-secondary btn-sm" onclick="dvOpenAction(\'' + r.id + '\',\'approve\')">Tasdiqlash</button> ' +
+      '<button class="btn btn-secondary btn-sm" onclick="dvOpenAction(\'' + r.id + '\',\'reject\')">Rad etish</button> ' +
+      '<button class="btn btn-secondary btn-sm" onclick="dvOpenEdit(\'' + r.id + '\')">Tuzatish</button> ' +
+      '<button class="btn btn-danger btn-sm" onclick="dvOpenAction(\'' + r.id + '\',\'delete\')">O\'chirish</button>';
     return '<tr>' +
       '<td style="' + td + '">' + name + '</td>' +
       '<td style="' + td + '">' + branchName + '</td>' +
@@ -402,6 +411,137 @@ async function loadDavomatList() {
       '<td style="' + td + '">' + fmtTime(r.check_out) + '</td>' +
       '<td style="' + td + '">' + statusLabel + '</td>' +
       '<td style="' + td + '">' + worked + '</td>' +
+      '<td style="' + td + ';white-space:nowrap">' + actions + '</td>' +
       '</tr>';
   }).join('');
+}
+
+// ── MANAGER AMALLARI: tasdiqlash / rad etish / o'chirish (sabab so'raladi) ──
+let dvActionTarget = null; // {id, action}
+
+function dvOpenAction(davomatId, action) {
+  dvActionTarget = { id: davomatId, action: action };
+  const titles = { approve: 'Tasdiqlash', reject: 'Rad etish', delete: "O'chirish" };
+  const titleEl = document.getElementById('dv-action-title');
+  if (titleEl) titleEl.textContent = titles[action] || action;
+
+  const warnEl = document.getElementById('dv-action-warning');
+  if (warnEl) {
+    if (action === 'delete') {
+      warnEl.textContent = "Diqqat: bu amal davomat yozuvini butunlay o'chiradi, qaytarib bo'lmaydi.";
+      warnEl.classList.remove('hidden');
+    } else {
+      warnEl.classList.add('hidden');
+    }
+  }
+
+  const btn = document.getElementById('dv-action-confirm-btn');
+  if (btn) { btn.className = action === 'delete' ? 'btn btn-danger' : 'btn btn-primary'; btn.style.flex = '1'; }
+
+  const sababEl = document.getElementById('dv-action-sabab');
+  if (sababEl) sababEl.value = '';
+  document.getElementById('dv-action-error')?.classList.add('hidden');
+  document.getElementById('dv-action-modal')?.classList.remove('hidden');
+}
+
+function dvActionCancel() {
+  document.getElementById('dv-action-modal')?.classList.add('hidden');
+  dvActionTarget = null;
+}
+
+async function dvActionConfirm() {
+  const sababEl = document.getElementById('dv-action-sabab');
+  const err = document.getElementById('dv-action-error');
+  const sabab = sababEl ? sababEl.value.trim() : '';
+
+  if (!sabab) {
+    if (err) { err.textContent = 'Sababni yozing'; err.classList.remove('hidden'); }
+    return;
+  }
+  if (err) err.classList.add('hidden');
+
+  const target = dvActionTarget;
+  document.getElementById('dv-action-modal')?.classList.add('hidden');
+  if (!target) return;
+
+  try {
+    let res;
+    if (target.action === 'approve') res = await approveDavomat(target.id, sabab);
+    else if (target.action === 'reject') res = await rejectDavomat(target.id, sabab);
+    else if (target.action === 'delete') res = await deleteDavomat(target.id, sabab);
+
+    if (res && res.ok === false) {
+      showNotify(res.message || 'Bajarilmadi', 'error');
+    } else {
+      showNotify('Bajarildi', 'success');
+    }
+    loadDavomatList();
+  } catch (e) {
+    console.error('[davomat] action xatosi', e);
+    showNotify('Xatolik: ' + (e.message || "noma'lum xato"), 'error');
+  }
+  dvActionTarget = null;
+}
+
+// ── MANAGER AMALI: vaqtni qo'lda tuzatish (check_in, check_out, sabab — barchasi majburiy) ──
+let dvEditTarget = null;
+
+function dvToLocalInputValue(iso) {
+  const d = new Date(iso);
+  const pad = (n) => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+function dvOpenEdit(davomatId) {
+  const row = dvListRowsCache[davomatId];
+  dvEditTarget = davomatId;
+  const checkinEl = document.getElementById('dv-edit-checkin');
+  const checkoutEl = document.getElementById('dv-edit-checkout');
+  if (checkinEl) checkinEl.value = row && row.check_in ? dvToLocalInputValue(row.check_in) : '';
+  if (checkoutEl) checkoutEl.value = row && row.check_out ? dvToLocalInputValue(row.check_out) : '';
+  const sababEl = document.getElementById('dv-edit-sabab');
+  if (sababEl) sababEl.value = '';
+  document.getElementById('dv-edit-error')?.classList.add('hidden');
+  document.getElementById('dv-edit-modal')?.classList.remove('hidden');
+}
+
+function dvEditCancel() {
+  document.getElementById('dv-edit-modal')?.classList.add('hidden');
+  dvEditTarget = null;
+}
+
+async function dvEditConfirm() {
+  const checkinEl = document.getElementById('dv-edit-checkin');
+  const checkoutEl = document.getElementById('dv-edit-checkout');
+  const sababEl = document.getElementById('dv-edit-sabab');
+  const err = document.getElementById('dv-edit-error');
+
+  const checkinVal = checkinEl ? checkinEl.value : '';
+  const checkoutVal = checkoutEl ? checkoutEl.value : '';
+  const sabab = sababEl ? sababEl.value.trim() : '';
+
+  if (!checkinVal || !checkoutVal) {
+    if (err) { err.textContent = 'Kelgan va ketgan vaqt majburiy'; err.classList.remove('hidden'); }
+    return;
+  }
+  if (!sabab) {
+    if (err) { err.textContent = 'Sababni yozing'; err.classList.remove('hidden'); }
+    return;
+  }
+  if (err) err.classList.add('hidden');
+
+  const id = dvEditTarget;
+  document.getElementById('dv-edit-modal')?.classList.add('hidden');
+  if (!id) return;
+
+  try {
+    const res = await manualEditDavomat(id, new Date(checkinVal).toISOString(), new Date(checkoutVal).toISOString(), sabab);
+    if (res && res.ok === false) showNotify(res.message || 'Saqlanmadi', 'error');
+    else showNotify('Saqlandi', 'success');
+    loadDavomatList();
+  } catch (e) {
+    console.error('[davomat] edit xatosi', e);
+    showNotify('Xatolik: ' + (e.message || "noma'lum xato"), 'error');
+  }
+  dvEditTarget = null;
 }
