@@ -12,7 +12,7 @@ const { test, expect } = require('@playwright/test');
 test.describe('Login sahifasi', () => {
 
   test('sayt ochiladi va login forma ko\'rinadi', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('');
     await page.waitForLoadState('domcontentloaded');
 
     // Login ekrani ko'rinishi kerak
@@ -32,7 +32,7 @@ test.describe('Login sahifasi', () => {
   });
 
   test('noto\'g\'ri login xato xabar chiqaradi', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('');
     await page.waitForLoadState('domcontentloaded');
 
     // Noto'g'ri ma'lumot kiritish
@@ -61,7 +61,7 @@ test.describe('Login sahifasi', () => {
       return;
     }
 
-    await page.goto('/');
+    await page.goto('');
     await page.waitForLoadState('domcontentloaded');
 
     await page.locator('input[type="email"], #email').first().fill(email);
@@ -89,7 +89,7 @@ test.describe('Login sahifasi', () => {
       return;
     }
 
-    await page.goto('/');
+    await page.goto('');
     await page.waitForLoadState('domcontentloaded');
 
     await page.locator('input[type="email"], #email').first().fill(email);
@@ -115,7 +115,7 @@ test.describe('Login sahifasi', () => {
       return;
     }
 
-    await page.goto('/');
+    await page.goto('');
     await page.waitForLoadState('domcontentloaded');
 
     await page.locator('input[type="email"], #email').first().fill(email);

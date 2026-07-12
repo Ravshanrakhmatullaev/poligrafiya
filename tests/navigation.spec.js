@@ -12,7 +12,7 @@ async function loginAsAdmin(page) {
   const password = process.env.ADMIN_PASSWORD;
   if (!email || !password) return false;
 
-  await page.goto('/');
+  await page.goto('');
   await page.waitForLoadState('domcontentloaded');
   await page.locator('input[type="email"], #email').first().fill(email);
   await page.locator('input[type="password"], #password').first().fill(password);
@@ -128,7 +128,7 @@ test.describe('Navigatsiya — Dizayner rol', () => {
     const password = process.env.DESIGNER_PASSWORD;
     if (!email || !password) { test.skip(); return; }
 
-    await page.goto('/');
+    await page.goto('');
     await page.waitForLoadState('domcontentloaded');
     await page.locator('input[type="email"], #email').first().fill(email);
     await page.locator('input[type="password"], #password').first().fill(password);

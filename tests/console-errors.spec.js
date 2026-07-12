@@ -63,7 +63,7 @@ test.describe('Console va Network — Login qilinmagan holat', () => {
       }
     });
 
-    await page.goto('/');
+    await page.goto('');
     await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(3000);
 
@@ -91,14 +91,14 @@ test.describe('Console va Network — Login qilinmagan holat', () => {
       }
     });
 
-    await page.goto('/');
+    await page.goto('');
     await page.waitForLoadState('networkidle');
 
     expect(failedScripts, `Yuklanmagan fayllar:\n${failedScripts.join('\n')}`).toHaveLength(0);
   });
 
   test('AppStore va asosiy funksiyalar aniqlanadi', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('');
     await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(2000);
 
@@ -127,7 +127,7 @@ test.describe('Console va Network — Login qilingan holat', () => {
     const password = process.env.ADMIN_PASSWORD;
     if (!email || !password) { test.skip(); return; }
 
-    await page.goto('/');
+    await page.goto('');
     await page.waitForLoadState('domcontentloaded');
     await page.locator('input[type="email"], #email').first().fill(email);
     await page.locator('input[type="password"], #password').first().fill(password);
