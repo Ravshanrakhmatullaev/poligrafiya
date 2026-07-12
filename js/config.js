@@ -106,9 +106,15 @@ const QOLDA_KEY = '__qolda__';
 const OY_NOMLARI = ['Yan','Fev','Mar','Apr','May','Iyun','Iyul','Avg','Sen','Okt','Noy','Dek'];
 const OY_NOMI   = ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
 
-const ISH_FORMAT = { '44x31': {w:44,h:31}, '35x50': {w:35,h:50} };
+const ISH_FORMAT = {
+  '44x31': {eni:44, boyi:31, bolinish:4},
+  '35x50': {eni:35, boyi:50, bolinish:4},
+};
 const PECHAT_NARX = {
-  '1+0': n=>n*300, '4+0': n=>n*500,
-  '1+1s': n=>n*600, '4+4s': n=>n*900,
-  '1+1c': n=>n*700, '4+4c': n=>n*1100,
+  '1+0':  {base:170000, extra:70000},
+  '4+0':  {base:170000, extra:70000},
+  '1+1s': {base:240000, extra:140000},
+  '4+4s': {base:240000, extra:140000},
+  '1+1c': {base:340000, extra:140000},
+  '4+4c': {base:340000, extra:140000},
 };
