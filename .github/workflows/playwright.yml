@@ -1,0 +1,44 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          DESIGNER_EMAIL: ${{ secrets.DESIGNER_EMAIL }}
+          DESIGNER_PASSWORD: ${{ secrets.DESIGNER_PASSWORD }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          PRODUCTION_EMAIL: ${{ secrets.PRODUCTION_EMAIL }}
+          PRODUCTION_PASSWORD: ${{ secrets.PRODUCTION_PASSWORD }}
+
+      - name: Upload screenshots and traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failure-artifacts
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
