@@ -1171,6 +1171,84 @@ async function saveOnly(type){
 }
 
 
+// ── ADMIN TELEGRAM YUBORISH ──
+// Hozirgi adD qatorlarini Telegram ga POST orqali yuboradi
+// sendWeekly('admin') dan mustaqil ishlaydi
+async function sendAdminTg() {
+  const btn = document.getElementById('admin-tg-btn');
+
+  // Zakazlar tekshiruvi
+  const rows = (adD || []).filter(r => r.nom || (parseInt(r.sum) || 0));
+  if (!rows.length) {
+    showNotify('Avval zakaz kiriting', 'error');
+    return;
+  }
+
+  // Tugmani disable qil
+  if (btn) { btn.disabled = true; btn.textContent = 'Yuborilmoqda...'; }
+
+  try {
+    const name = currentUser
+      ? (currentUser.email.split('+')[1] || '').split('@')[0] || currentUser.email.split('@')[0]
+      : 'Admin';
+
+    const isAbror = currentUser && currentUser.email === ABROR_EMAIL;
+
+    let lines = [];
+    let totalZ = 0, totalD = 0;
+
+    lines.push(`\uD83D\uDC64 Admin: ${name}`);
+    lines.push('\uD83D\uDCCB Zakazlar:');
+
+    rows.forEach((r, i) => {
+      const s = parseInt(r.sum) || 0;
+      const f = getFoiz(s);
+      const base = Math.round(s * f);
+      const dr = (isAbror && r.bonus_50) ? Math.round(base * 1.5) : base;
+      totalZ += s;
+      totalD += dr;
+      const bonusTxt = (isAbror && r.bonus_50) ? ' \u2746+50%' : '';
+      lines.push(`  ${i + 1}. ${r.nom || '—'} — ${fmt(s)} so\'m`);
+      lines.push(`     Daromad: ${fmt(dr)} so\'m (${Math.round(f * 100)}%${bonusTxt})`);
+    });
+
+    lines.push('');
+    lines.push(`\uD83D\uDCB0 Jami: ${fmt(totalZ)} so\'m`);
+    lines.push(`\u2705 Daromad: ${fmt(totalD)} so\'m`);
+    lines.push(`\uD83D\uDD52 ${getSanaVaqt()}`);
+
+    const text = lines.join('\n').slice(0, 4000);
+
+    const res = await fetch(TG_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+
+    if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+      if (data.ok) {
+        showNotify('\u2705 Telegramga yuborildi!');
+      } else {
+        showNotify('\u26A0\uFE0F Server xato: ' + (data.error || 'noma\'lum'), 'error');
+        console.error('[sendAdminTg] server error:', data);
+      }
+    } else {
+      const errText = await res.text().catch(() => res.status + '');
+      showNotify('\u274C HTTP ' + res.status + ': ' + errText.slice(0, 80), 'error');
+      console.error('[sendAdminTg] HTTP error:', res.status, errText);
+    }
+  } catch (e) {
+    showNotify('\u274C Yuborishda xato: ' + e.message, 'error');
+    console.error('[sendAdminTg] fetch error:', e);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Telegram`;
+    }
+  }
+}
+
 async function sendWeekly(type){
   // Oxirgi 7 kunlik yozuvlarni yig'ib Telegram ga yuboradi
   const user = currentUser;
