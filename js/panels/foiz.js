@@ -72,7 +72,7 @@ function addEkoRow(){ekoD.push({nom:'',kv:'',brak:''});renderIshlab();}
 function delEko(i){ekoD.splice(i,1);renderIshlab();}
 function addProdRow(){prD.push({key:Object.keys(PR)[0],miq:'',ex:false});renderIshlab();}
 function delProd(i){prD.splice(i,1);renderIshlab();}
-function addAdminRow(){adD.push({nom:'',sum:''});renderAdmin();}
+function addAdminRow(){adD.push({nom:'',sum:'',bonus_50:false});renderAdmin();}
 function delAdmin(i){adD.splice(i,1);renderAdmin();}
 
 function numInput(el,cb){ el.addEventListener('keydown',e=>{if(e.key==='Enter')el.blur();}); el.addEventListener('blur',()=>cb(el.value)); }
