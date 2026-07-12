@@ -53,6 +53,25 @@ const ROLE_LABELS = {
   dizayner: 'Dizayner', uvdtf: 'UV DTF',
 };
 
+// Davomat paneli uchun: user_id -> email (XODIMLAR email bo'yicha indekslangan)
+const USER_ID_TO_EMAIL = {
+  '2a4548d6-8f63-4473-acce-b6b49710ff8f': 'ra.ravshan1998@gmail.com',
+  '4322b1ec-8266-47f0-8e10-15177750b12b': 'ra.ravshan1998+bayramali@gmail.com',
+  'd7ebd326-e725-49d4-ba21-75b42725f17b': 'ra.ravshan1998+umar@gmail.com',
+  '36724f68-e282-498f-a49f-e92a25ab23b8': 'ra.ravshan1998+parvina@gmail.com',
+  'f611587a-eee6-43f6-b246-a88e8a7de10e': 'ra.ravshan1998+mohlaroy@gmail.com',
+  'e7ee02e7-0139-462d-8682-f6603d323d1e': 'ra.ravshan1998+abror@gmail.com',
+  '6451a1db-666c-4194-848d-fb94636693db': 'ra.ravshan1998+umidjon@gmail.com',
+  'b81c0acd-6d7d-4866-8461-394591950bfe': 'ra.ravshan1998+ulugbek@gmail.com',
+  '5d170c9b-b524-45a9-bab1-8a6a7f62f903': 'ra.ravshan1998+zuhriddin@gmail.com',
+  '5dab55ac-af76-452d-8bb2-7b10593bc952': 'ra.ravshan1998+jorabek@gmail.com',
+  '916e5a5b-431e-48dc-9a7c-ba7bc9d45740': 'ra.ravshan1998+rashidulloh@gmail.com',
+  '9d23bc5f-1489-4400-b35f-899b99f0f3d2': 'ra.ravshan1998+ulugbekdesign@gmail.com',
+  '9333ea8d-06c4-44c4-8e92-54d9f915b250': 'ra.ravshan1998+begzodbek@gmail.com',
+  'e3e134df-7d35-4b63-8fb7-6fef9a9598ac': 'ra.ravshan1998+gaybulloh@gmail.com',
+  'a8b50ac0-79f9-4af5-8598-ef84f026fe7a': 'adsuzuvdtf@gmail.com',
+};
+
 const FOIZ = [
   [0,99999,.20],[100000,249999,.15],[250000,499999,.12],
   [500000,999999,.10],[1000000,1999999,.08],[2000000,2999999,.06],

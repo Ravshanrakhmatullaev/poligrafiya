@@ -14,11 +14,25 @@ let dvCtx = null;
 let dvScanning = false;    // true = kadr tsikli faol
 let dvBusy = false;        // true = RPC javobini kutyapmiz yoki modal ochiq — yangi skan qabul qilinmaydi
 let dvPendingToken = null; // "noaniq holat" davomida saqlanadigan token
+let dvBranchCache = null;  // {id: {id,name,code}} — Ro'yxat tabidagi filial filtri uchun
 
 async function initDavomatScanner() {
   dvBusy = false;
   dvPendingToken = null;
   hideDavomatModals();
+  dvShowTab('scan');
+
+  // Manager/owner uchun "Ro'yxat" tabini ko'rsatish
+  const listBtn = document.getElementById('dv-tab-list-btn');
+  if (listBtn) {
+    const isStaff = await checkIsAttendanceStaff();
+    listBtn.classList.toggle('hidden', !isStaff);
+  }
+
+  await dvStartCamera();
+}
+
+async function dvStartCamera() {
   setDavomatStatus('Kamera ochilmoqda...', 'info');
 
   const video = document.getElementById('dv-video');
@@ -244,4 +258,96 @@ function dvSababCancel() {
   dvPendingToken = null;
   dvBusy = false;
   setDavomatStatus("QR kodni kameraga ko'rsating", 'info');
+}
+
+// ═══════════════════════════════════════
+// MANAGER PANELI — "Ro'yxat" tabi (faqat attendance_manager/owner uchun ko'rinadi)
+// ═══════════════════════════════════════
+
+const DV_STATUS_LABELS = {
+  on_time: 'O\'z vaqtida', late: 'Kech qolgan', checked_out: 'Ketgan',
+  missing_check_in: 'Kelish qayd etilmagan', missing_check_out: 'Ketish qayd etilmagan',
+  absent: 'Kelmagan', day_off: 'Dam olish', pending_approval: 'Tasdiq kutilmoqda',
+  approved: 'Tasdiqlangan', rejected: 'Rad etilgan',
+};
+const DV_WARN_STATUSES = ['missing_check_in', 'missing_check_out'];
+
+function dvShowTab(tab) {
+  const scanTab = document.getElementById('dv-tab-scan');
+  const listTab = document.getElementById('dv-tab-list');
+  const scanBtn = document.getElementById('dv-tab-scan-btn');
+  const listBtn = document.getElementById('dv-tab-list-btn');
+  if (scanTab) scanTab.classList.toggle('hidden', tab !== 'scan');
+  if (listTab) listTab.classList.toggle('hidden', tab !== 'list');
+  if (scanBtn) { scanBtn.classList.toggle('btn-primary', tab === 'scan'); scanBtn.classList.toggle('btn-secondary', tab !== 'scan'); }
+  if (listBtn) { listBtn.classList.toggle('btn-primary', tab === 'list'); listBtn.classList.toggle('btn-secondary', tab !== 'list'); }
+
+  if (tab === 'scan') {
+    if (!dvScanning) dvStartCamera();
+  } else {
+    stopDavomatScanner();
+    dvSetToday(false);
+    loadDavomatList();
+  }
+}
+
+function dvSetToday(reload = true) {
+  const sanaInput = document.getElementById('dv-list-sana');
+  if (sanaInput && !sanaInput.value) {
+    const d = new Date();
+    sanaInput.value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  if (reload) loadDavomatList();
+}
+
+async function loadDavomatList() {
+  const tbody = document.getElementById('dv-list-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text3)">Yuklanmoqda...</td></tr>';
+
+  if (!dvBranchCache) {
+    const branches = await getBranches();
+    dvBranchCache = {};
+    branches.forEach(b => { dvBranchCache[b.id] = b; });
+  }
+
+  const sanaInput = document.getElementById('dv-list-sana');
+  const branchSelect = document.getElementById('dv-list-branch');
+  const sana = sanaInput ? sanaInput.value : '';
+  const branchCode = branchSelect ? branchSelect.value : '';
+
+  const filters = {};
+  if (sana) filters.sana = sana;
+  if (branchCode) {
+    const match = Object.values(dvBranchCache).find(b => b.code === branchCode);
+    if (match) filters.branch_id = match.id;
+  }
+
+  const rows = await getDavomatList(filters);
+
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text3)">Ma\'lumot topilmadi</td></tr>';
+    return;
+  }
+
+  const fmtTime = (iso) => iso ? new Date(iso).toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' }) : '—';
+
+  tbody.innerHTML = rows.map(r => {
+    const email = USER_ID_TO_EMAIL[r.user_id];
+    const name = email ? (typeof getName === 'function' ? getName(email) : email) : (r.user_id ? r.user_id.slice(0, 8) : '—');
+    const branch = dvBranchCache[r.branch_id];
+    const branchName = branch ? branch.name : '—';
+    const worked = r.worked_minutes != null ? (Math.round(r.worked_minutes / 6) / 10) + ' soat' : '—';
+    const isWarn = DV_WARN_STATUSES.includes(r.status);
+    const statusLabel = (isWarn ? '⚠️ ' : '') + (DV_STATUS_LABELS[r.status] || r.status);
+    const td = 'padding:8px;border-bottom:1px solid var(--gray-border)';
+    return '<tr>' +
+      '<td style="' + td + '">' + name + '</td>' +
+      '<td style="' + td + '">' + branchName + '</td>' +
+      '<td style="' + td + '">' + fmtTime(r.check_in) + '</td>' +
+      '<td style="' + td + '">' + fmtTime(r.check_out) + '</td>' +
+      '<td style="' + td + '">' + statusLabel + '</td>' +
+      '<td style="' + td + '">' + worked + '</td>' +
+      '</tr>';
+  }).join('');
 }

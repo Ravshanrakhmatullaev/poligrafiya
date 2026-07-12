@@ -485,3 +485,31 @@ async function resolveAttendance(token, choice, sabab = null, sababMatni = null)
   if (error) throw error;
   return data;
 }
+
+async function checkIsAttendanceStaff() {
+  try {
+    const { data, error } = await sb.rpc('is_attendance_staff');
+    if (error) throw error;
+    return !!data;
+  } catch (e) { console.error('[checkIsAttendanceStaff]', e); return false; }
+}
+
+async function getBranches() {
+  try {
+    const { data, error } = await sb.from('branches')
+      .select('id, name, code, is_active').eq('is_active', true).order('name');
+    if (error) throw error;
+    return data || [];
+  } catch (e) { console.error('[getBranches]', e); return []; }
+}
+
+async function getDavomatList(filters = {}) {
+  try {
+    let q = sb.from('davomat').select('*').order('check_in', { ascending: false });
+    if (filters.sana) q = q.eq('sana', filters.sana);
+    if (filters.branch_id) q = q.eq('branch_id', filters.branch_id);
+    const { data, error } = await q;
+    if (error) throw error;
+    return data || [];
+  } catch (e) { console.error('[getDavomatList]', e); return []; }
+}

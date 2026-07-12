@@ -53,8 +53,9 @@ function onLogin(){
   });
 
   if(currentRole === 'owner'){
-    // Owner: admin, ishlab, dizayner, stopwatch, uvdtf, davomat yashir (owner davomat qilmaydi)
-    ['nb-admin','nb-ishlab','nb-dizayner','nb-stopwatch','nb-uvdtf','nb-davomat'].forEach(id => {
+    // Owner: admin, ishlab, dizayner, stopwatch, uvdtf yashir
+    // (davomat yashirilmaydi — owner davomat manager Ro'yxat tabini ko'radi)
+    ['nb-admin','nb-ishlab','nb-dizayner','nb-stopwatch','nb-uvdtf'].forEach(id => {
       const el = document.getElementById(id); if(el) el.classList.add('hidden');
     });
     showScreen('app');
