@@ -1036,3 +1036,8 @@ input[type=email]:invalid:not(:placeholder-shown){
   .ugrid-bottom{grid-template-columns:1fr 1fr auto;gap:6px}
   .prod-row-bottom{grid-template-columns:1fr 80px auto}
 }
+
+/* ── DAVOMAT (QR skaner) ── */
+.dv-status-info{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-border)}
+.dv-status-success{background:var(--green-light);color:var(--green);border:1px solid var(--green-border)}
+.dv-status-error{background:var(--red-light);color:var(--red);border:1px solid var(--red-border)}

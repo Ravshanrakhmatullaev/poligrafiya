@@ -46,15 +46,15 @@ function onLogin(){
   const nbIshlab = document.getElementById('nb-ishlab');
 
   // Hammani ko'rsat
-  ['nb-owner','nb-admin','nb-ishlab','nb-dizayner','nb-dashboard','nb-tarix',
+  ['nb-owner','nb-admin','nb-ishlab','nb-dizayner','nb-dashboard','nb-davomat','nb-tarix',
    'nb-xabarlar','nb-sklad','nb-kalk','nb-bozorlik','nb-stopwatch','nb-foiz','nb-uvdtf'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.classList.remove('hidden');
   });
 
   if(currentRole === 'owner'){
-    // Owner: admin, ishlab, dizayner, stopwatch, uvdtf yashir
-    ['nb-admin','nb-ishlab','nb-dizayner','nb-stopwatch','nb-uvdtf'].forEach(id => {
+    // Owner: admin, ishlab, dizayner, stopwatch, uvdtf, davomat yashir (owner davomat qilmaydi)
+    ['nb-admin','nb-ishlab','nb-dizayner','nb-stopwatch','nb-uvdtf','nb-davomat'].forEach(id => {
       const el = document.getElementById(id); if(el) el.classList.add('hidden');
     });
     showScreen('app');
@@ -83,7 +83,7 @@ function onLogin(){
     }
     else { showScreen('dizayner_yoriq'); }
   } else if(currentRole === 'uvdtf'){
-    // UV DTF: faqat uvdtf ko'rsatiladi
+    // UV DTF: faqat uvdtf ko'rsatiladi (davomat bundan mustasno — UV DTF ham xodim)
     ['nb-owner','nb-admin','nb-ishlab','nb-dizayner','nb-dashboard','nb-tarix',
      'nb-xabarlar','nb-sklad','nb-kalk','nb-bozorlik','nb-stopwatch','nb-foiz'].forEach(id => {
       const el = document.getElementById(id); if(el) el.classList.add('hidden');

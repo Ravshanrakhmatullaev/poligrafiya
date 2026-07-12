@@ -464,3 +464,24 @@ async function upsertUvdtfHisobot(data) {
     return true;
   } catch (e) { console.error('[upsertUvdtfHisobot]', e); throw e; }
 }
+
+// ── DAVOMAT (QR skanerlash) ──
+// attendance_scan/attendance_resolve {ok:true|false, ...} obyektini qaytaradi —
+// bu normal oqim (masalan, "allaqachon yakunlangan"), throw qilinmaydi.
+// Faqat haqiqiy RPC xatosi (masalan, login yo'q, validatsiya) throw qilinadi.
+async function scanAttendance(token) {
+  const { data, error } = await sb.rpc('attendance_scan', { p_token: token });
+  if (error) throw error;
+  return data;
+}
+
+async function resolveAttendance(token, choice, sabab = null, sababMatni = null) {
+  const { data, error } = await sb.rpc('attendance_resolve', {
+    p_token: token,
+    p_choice: choice,
+    p_sabab: sabab,
+    p_sabab_matni: sababMatni,
+  });
+  if (error) throw error;
+  return data;
+}

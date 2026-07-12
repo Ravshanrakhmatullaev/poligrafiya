@@ -367,6 +367,10 @@
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       Dashboard
     </button>
+    <button class="nav-btn" onclick="showPanel('davomat')" id="nb-davomat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="14" y1="21" x2="21" y2="21"/><line x1="17.5" y1="14" x2="17.5" y2="21"/></svg>
+      Davomat
+    </button>
     <button class="nav-btn active" onclick="showPanel('tarix')" id="nb-tarix">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       Hisobotlar
@@ -2126,6 +2130,63 @@
   </div>
 </div>
 
+<!-- DAVOMAT -->
+<div class="panel" id="panel-davomat">
+  <div class="rp-header">
+    <div>
+      <div class="rp-title">Davomat</div>
+      <div class="rp-subtitle">Filialdagi QR kodni kameraga ko'rsating</div>
+    </div>
+  </div>
+
+  <div class="card" style="max-width:420px;margin:0 auto">
+    <video id="dv-video" autoplay muted playsinline
+      style="width:100%;border-radius:var(--radius-md);background:#000;aspect-ratio:1/1;object-fit:cover;display:block"></video>
+    <canvas id="dv-canvas" class="hidden"></canvas>
+    <div id="dv-status" class="dv-status-info"
+      style="margin-top:14px;padding:12px;border-radius:var(--radius-md);text-align:center;font-weight:600;font-size:14px">
+      Kamera ochilmoqda...
+    </div>
+  </div>
+
+  <!-- Noaniq holat: Ishga keldim / Ishdan ketyapman -->
+  <div class="modal-overlay hidden" id="dv-ambiguous-modal">
+    <div class="modal-box" style="max-width:360px">
+      <div class="modal-title">Bugungi birinchi skaningiz</div>
+      <div class="form-group" style="color:var(--text2);font-size:13px">
+        Bugun sizda hali davomat yozuvi yo'q va vaqt kech qolgan. Nima qilyapsiz?
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <button class="btn btn-primary" onclick="dvChoiceKeldim()">Ishga keldim</button>
+        <button class="btn btn-secondary" onclick="dvChoiceKetyapman()">Ishdan ketyapman</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sabab tanlash (Ishdan ketyapman uchun) -->
+  <div class="modal-overlay hidden" id="dv-sabab-modal">
+    <div class="modal-box" style="max-width:360px">
+      <div class="modal-title">Sababni tanlang</div>
+      <div class="form-group">
+        <select class="form-input" id="dv-sabab-select" onchange="dvSababChanged()">
+          <option value="">— Tanlang —</option>
+          <option value="Skaner qilishni unutdim">Skaner qilishni unutdim</option>
+          <option value="Telefon/internet ishlamadi">Telefon/internet ishlamadi</option>
+          <option value="Mijoznikidan ish boshladim">Mijoznikidan ish boshladim</option>
+          <option value="Boshqa">Boshqa</option>
+        </select>
+        <textarea class="form-input hidden" id="dv-sabab-matn" rows="2"
+          style="margin-top:8px;resize:vertical" placeholder="Sababni yozing..."></textarea>
+        <div class="form-error hidden" id="dv-sabab-error"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-secondary" style="flex:1" onclick="dvSababCancel()">Bekor</button>
+        <button class="btn btn-primary" style="flex:1" onclick="dvSababConfirm()">Tasdiqlash</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- EDIT MODAL -->
 <div class="modal-overlay hidden" id="edit-history-modal">
   <div class="modal-box" style="max-width:480px;max-height:85vh;overflow-y:auto">
@@ -2178,6 +2239,8 @@
   <!-- 1. CDN Libraries -->
   <script src="supabase.min.js"></script>
   <script src="chart.min.js"></script>
+  <script src="jsQR.js"></script>
+
   
   <!-- 2. Config (constants) -->
   <script src="js/config.js"></script>
@@ -2192,6 +2255,7 @@
   <script src="js/auth.js"></script>
   
   <!-- 6. Panel modules (mustaqil, bir-biriga bog'liq emas) -->
+  <script src="js/panels/davomat.js"></script>
   <script src="js/panels/foiz.js"></script>
   <script src="js/panels/xabar.js"></script>
   <script src="js/panels/history.js"></script>

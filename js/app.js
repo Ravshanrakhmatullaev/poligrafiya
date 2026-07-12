@@ -198,6 +198,11 @@ sb.auth.onAuthStateChange((event, session) => {
 
 // ── NAVIGATION ──
 function showPanel(id) {
+  const prevPanel = document.querySelector('.panel.active');
+  if (prevPanel && prevPanel.id === 'panel-davomat' && typeof stopDavomatScanner === 'function') {
+    stopDavomatScanner();
+  }
+
   saveLastPanel(id);
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active'); b.removeAttribute('aria-current'); });
@@ -217,6 +222,7 @@ function showPanel(id) {
     'ishlab':    () => safeInitPanel('Ishlab',        loadHiddenSections),
     'sklad':     () => safeInitPanel('Sklad',         loadSklad),
     'stopwatch': () => safeInitPanel('Stopwatch',     renderDizayner),
+    'davomat':   () => safeInitPanel('Davomat',       initDavomatScanner),
     'dashboard': () => safeInitPanel('Dashboard',     renderDashboard),
     'bozorlik':  () => safeInitPanel('Bozorlik',      async () => { await loadBozorlik(); if (!skladData.length) await loadSklad(); }),
     'uvdtf':     () => safeInitPanel('UV DTF',        async () => { await loadUvdtfHisobot(); document.getElementById('nb-uvdtf')?.classList.add('active'); }),
