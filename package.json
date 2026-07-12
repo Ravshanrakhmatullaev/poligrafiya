@@ -1,0 +1,18 @@
+{
+  "name": "poligrafiya-tests",
+  "version": "1.0.0",
+  "description": "Playwright avtomatik test tizimi — Ads uz Poligrafiya CRM",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:login": "playwright test tests/login.spec.js",
+    "test:nav": "playwright test tests/navigation.spec.js",
+    "test:admin": "playwright test tests/admin-orders.spec.js",
+    "test:console": "playwright test tests/console-errors.spec.js",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
+  }
+}
