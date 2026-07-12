@@ -265,9 +265,11 @@ async function init() {
   } catch (e) {
     console.error('[init]', e);
     showScreen('login');
+  } finally {
+    // Loading spinner har qanday holatda yashiriladi
+    const loadEl = document.getElementById('loading');
+    if (loadEl) loadEl.classList.add('hidden');
   }
 }
 
 document.addEventListener('DOMContentLoaded', init);
-
-
