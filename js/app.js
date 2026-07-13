@@ -219,7 +219,7 @@ function showPanel(id) {
     'tarix':     () => safeInitPanel('Hisobotlar',   () => { renderHistory(); if(currentRole==='owner') renderBiDashboard(); }),
     'owner':     () => safeInitPanel('Owner panel',  renderOwnerPanel),
     'xabarlar':  () => safeInitPanel('Xabarlar',     async () => { await loadMessages(); renderMessages(); }),
-    'ishlab':    () => safeInitPanel('Ishlab',        loadHiddenSections),
+    'ishlab':    () => safeInitPanel('Ishlab',        initIshlabPanel),
     'sklad':     () => safeInitPanel('Sklad',         loadSklad),
     'stopwatch': () => safeInitPanel('Stopwatch',     renderDizayner),
     'davomat':   () => safeInitPanel('Davomat',       initDavomatScanner),

@@ -14,6 +14,17 @@ function renderFoizTable(){
 
 function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.replace(/\D/g,''))||0; const f=getFoiz(v); document.getElementById('calc-foiz').textContent=v?Math.round(f*100)+'%':'— %'; document.getElementById('calc-daromad').textContent=v?fmt(Math.round(v*f))+" so'm":'— so\'m'; document.querySelectorAll('#foiz-tbody tr').forEach((tr,i)=>{ const[lo,hi]=FOIZ[i]; tr.className=(v>=lo&&v<=hi)?'hl':''; }); }
 
+// ── ISHLAB CHIQARISH PANELI — birinchi ochilishda prD/uvD/ekoD hali null
+// bo'ladi (faqat saveOnly muvaffaqiyatli saqlagandan keyin to'ldiriladi),
+// shuning uchun Mahsulot qo'shish/Saqlash tugmalari TypeError berardi ──
+function initIshlabPanel(){
+  if(prD===null) prD=[{key:'Futbolka DTF (old)',miq:'',brak:'',ex:false}];
+  if(uvD===null) uvD=[{nom:'',sig:'',don:''}];
+  if(ekoD===null) ekoD=[{nom:'',kv:''}];
+  loadHiddenSections();
+  renderIshlab();
+}
+
 // ── BO'LIMLARNI YASHIRISH/KO'RSATISH ──
 
 function loadHiddenSections(){
