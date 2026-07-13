@@ -12,13 +12,36 @@ let dvRafId = null;
 let dvCanvas = null;
 let dvCtx = null;
 let dvScanning = false;    // true = kadr tsikli faol
-let dvBusy = false;        // true = RPC javobini kutyapmiz yoki modal ochiq — yangi skan qabul qilinmaydi
-let dvPendingToken = null; // "noaniq holat" davomida saqlanadigan token
-let dvBranchCache = null;  // {id: {id,name,code}} — Ro'yxat tabidagi filial filtri uchun
+let dvBusy = false;        // true = RPC javobini kutyapmiz yoki modal/kartochka ochiq — yangi skan qabul qilinmaydi
+let dvPendingToken = null; // "noaniq holat" davomida saqlanadigan token (attendance_resolve uchun)
+let dvPreviewToken = null;       // attendance_preview orqali ko'rilgan, hali tasdiqlanmagan token
+let dvPreviewBranchName = null;  // preview javobidan olingan filial nomi — tasdiqlangan natijada qayta ishlatiladi
+let dvBranchCache = null;  // {id: {id,name,code}} — Ro'yxat tabidagi filial filtri uchun (faqat staff)
+let dvLastScannedToken = null;
+let dvLastScannedAt = 0;
+const DV_DUPLICATE_WINDOW_MS = 3000; // bir xil QR shu vaqt ichida qayta o'qilsa e'tiborga olinmaydi
+let dvAudioCtx = null;
+const DV_ACTION_LABELS = { check_in: 'Kelish (Check-in)', check_out: 'Ketish (Check-out)' };
+const DV_PREVIEW_TITLES = {
+  check_in: 'Kelish (Check-in) sifatida qayd etiladi',
+  check_out: 'Ketish (Check-out) sifatida qayd etiladi',
+  ambiguous: "Bugungi birinchi skaningiz — tasdiqlashda tanlov so'raladi",
+  already_completed: 'Bugungi davomat allaqachon yakunlangan',
+};
+const DV_PREVIEW_ACTION_LABELS = {
+  check_in: 'Kelish (Check-in)',
+  check_out: 'Ketish (Check-out)',
+  ambiguous: "Aniqlanmagan",
+  already_completed: '—',
+};
 
 async function initDavomatScanner() {
   dvBusy = false;
   dvPendingToken = null;
+  dvPreviewToken = null;
+  dvPreviewBranchName = null;
+  dvLastScannedToken = null;
+  dvLastScannedAt = 0;
   hideDavomatModals();
   dvShowTab('scan');
 
@@ -28,7 +51,25 @@ async function initDavomatScanner() {
     const isStaff = await checkIsAttendanceStaff();
     listBtn.classList.toggle('hidden', !isStaff);
   }
+}
 
+// ── SKAN OYNASI HOLATLARI: bo'sh (tugma) / kamera / tasdiqlash kartochkasi ──
+function dvShowScanIdle() {
+  stopDavomatScanner();
+  dvBusy = false;
+  document.getElementById('dv-scan-idle')?.classList.remove('hidden');
+  document.getElementById('dv-scan-camera')?.classList.add('hidden');
+  document.getElementById('dv-confirm-card')?.classList.add('hidden');
+}
+
+async function dvOpenScannerClicked() {
+  // Foydalanuvchi gesti — audio kontekstini shu yerda ochamiz (autoplay siyosati uchun)
+  const ctx = dvGetAudioCtx();
+  if (ctx && ctx.state === 'suspended') { try { await ctx.resume(); } catch (e) { /* jim */ } }
+
+  document.getElementById('dv-scan-idle')?.classList.add('hidden');
+  document.getElementById('dv-confirm-card')?.classList.add('hidden');
+  document.getElementById('dv-scan-camera')?.classList.remove('hidden');
   await dvStartCamera();
 }
 
@@ -109,7 +150,16 @@ async function dvScanFrame() {
         // Kadr darajasidagi dekodlash xatosi — jim o'tkazamiz, keyingi kadrda qayta urinamiz
       }
 
-      if (text) await handleScannedText(text.trim());
+      if (text) {
+        const token = text.trim();
+        const now = Date.now();
+        const isDuplicate = dvLastScannedToken === token && (now - dvLastScannedAt) < DV_DUPLICATE_WINDOW_MS;
+        if (!isDuplicate) {
+          dvLastScannedToken = token;
+          dvLastScannedAt = now;
+          await handleScannedText(token);
+        }
+      }
     }
   }
 
@@ -122,53 +172,183 @@ async function handleScannedText(text) {
     return;
   }
 
+  // QR topildi: kamera va skan tsikli darhol to'xtaydi, bitta oqimda faqat bir marta yuboriladi.
+  // Bu bosqichda faqat READ-ONLY attendance_preview chaqiriladi — bazaga hech narsa yozilmaydi.
+  stopDavomatScanner();
+  dvPlayBeep('found');
   dvBusy = true;
-  setDavomatStatus('Tekshirilmoqda...', 'info');
+  dvShowConfirmLoading();
 
   try {
-    const res = await scanAttendance(text);
-    renderDavomatResult(res, text);
+    const res = await previewAttendance(text);
+    renderPreview(res, text);
   } catch (e) {
-    console.error('[davomat] scan xatosi', e);
-    setDavomatStatus('Xatolik: ' + (e.message || "noma'lum xato"), 'error');
+    console.error('[davomat] preview xatosi', e);
+    dvPlayBeep('error');
+    renderScanError('Xatolik: ' + (e.message || "noma'lum xato"));
     dvBusy = false;
   }
 }
 
-function renderDavomatResult(res, token) {
+function renderPreview(res, token) {
+  if (!res || !res.ok) {
+    dvPlayBeep('error');
+    renderScanError((res && res.message) || "Javob olinmadi, qayta urinib ko'ring");
+    dvBusy = false;
+    return;
+  }
+
+  dvPreviewToken = token;
+  dvPreviewBranchName = res.branch_name || '—';
+
+  const icon = document.getElementById('dv-confirm-icon'); if (icon) icon.textContent = '🔍';
+  const title = document.getElementById('dv-confirm-title');
+  if (title) title.textContent = DV_PREVIEW_TITLES[res.action] || 'Tasdiqlaysizmi?';
+  const branchEl = document.getElementById('dv-confirm-branch'); if (branchEl) branchEl.textContent = dvPreviewBranchName;
+  const actionEl = document.getElementById('dv-confirm-action');
+  if (actionEl) actionEl.textContent = DV_PREVIEW_ACTION_LABELS[res.action] || res.action || '—';
+  const detailEl = document.getElementById('dv-confirm-detail'); if (detailEl) detailEl.textContent = '';
+
+  const isActionable = res.action === 'check_in' || res.action === 'check_out' || res.action === 'ambiguous';
+  dvSetConfirmButtonsDisabled(false);
+  dvSetOkButtonVisible(isActionable);
+  dvSetCancelButtonLabel(isActionable ? '❌ Bekor qilish' : 'Yopish');
+}
+
+function dvShowConfirmLoading() {
+  document.getElementById('dv-scan-idle')?.classList.add('hidden');
+  document.getElementById('dv-scan-camera')?.classList.add('hidden');
+  document.getElementById('dv-confirm-card')?.classList.remove('hidden');
+  dvSetCardLoading('Tekshirilmoqda...');
+  const branchEl = document.getElementById('dv-confirm-branch'); if (branchEl) branchEl.textContent = '—';
+  const actionEl = document.getElementById('dv-confirm-action'); if (actionEl) actionEl.textContent = '—';
+  const detailEl = document.getElementById('dv-confirm-detail'); if (detailEl) detailEl.textContent = '';
+  dvSetOkButtonVisible(false);
+}
+
+function dvSetCardLoading(title) {
+  const icon = document.getElementById('dv-confirm-icon'); if (icon) icon.textContent = '⏳';
+  const titleEl = document.getElementById('dv-confirm-title'); if (titleEl) titleEl.textContent = title;
+  dvSetConfirmButtonsDisabled(true);
+}
+
+function dvSetConfirmButtonsDisabled(disabled) {
+  ['dv-confirm-ok-btn', 'dv-confirm-rescan-btn', 'dv-confirm-cancel-btn'].forEach((id) => {
+    const btn = document.getElementById(id);
+    if (btn) btn.disabled = disabled;
+  });
+}
+
+function dvSetOkButtonVisible(visible) {
+  document.getElementById('dv-confirm-ok-btn')?.classList.toggle('hidden', !visible);
+}
+
+function dvSetCancelButtonLabel(text) {
+  const btn = document.getElementById('dv-confirm-cancel-btn');
+  if (btn) btn.textContent = text;
+}
+
+// Faqat shu funksiya attendance_scan'ni chaqiradi — "Tasdiqlash" bosilgandagina, bir marta
+async function dvConfirmApprove() {
+  if (!dvPreviewToken) { dvConfirmCancel(); return; }
+  const token = dvPreviewToken;
+  dvSetCardLoading('Yuborilmoqda...');
+
+  try {
+    const res = await scanAttendance(token);
+    dvPreviewToken = null;
+    await renderDavomatResult(res, token);
+  } catch (e) {
+    console.error('[davomat] scan xatosi', e);
+    dvPlayBeep('error');
+    renderScanError('Xatolik: ' + (e.message || "noma'lum xato"));
+    dvBusy = false;
+  }
+}
+
+async function renderDavomatResult(res, token) {
+  dvSetConfirmButtonsDisabled(false);
+
   if (!res) {
-    setDavomatStatus("Javob olinmadi, qayta urinib ko'ring", 'error');
+    dvPlayBeep('error');
+    renderScanError("Javob olinmadi, qayta urinib ko'ring");
     dvBusy = false;
     return;
   }
 
   if (res.action === 'ambiguous_choice_required') {
     dvPendingToken = token;
-    setDavomatStatus('Tanlov kutilmoqda...', 'info');
+    document.getElementById('dv-confirm-card')?.classList.add('hidden');
     showAmbiguousModal();
     return; // dvBusy=true qoladi — modal yopilguncha qayta skan qilinmaydi
   }
 
-  if (res.ok) {
-    if (res.action === 'check_in') {
-      const lateMsg = res.late_minutes > 0 ? ` (${res.late_minutes} daqiqa kech)` : '';
-      setDavomatStatus('✅ Kelish qayd etildi' + lateMsg, 'success');
-    } else if (res.action === 'check_out') {
-      const soat = res.worked_minutes != null ? Math.round(res.worked_minutes / 60 * 10) / 10 : null;
-      const workedMsg = soat != null ? ` — ${soat} soat ishladingiz` : '';
-      setDavomatStatus('✅ Ketish qayd etildi' + workedMsg, 'success');
-    } else {
-      setDavomatStatus('✅ Bajarildi', 'success');
-    }
-  } else {
-    setDavomatStatus(res.message || 'Xatolik yuz berdi', 'error');
+  if (!res.ok) {
+    dvPlayBeep('error');
+    renderScanError(res.message || 'Xatolik yuz berdi');
+    dvBusy = false;
+    return;
   }
 
-  // Natijani ko'rish uchun vaqt beramiz, keyin qayta skanerlashga ruxsat
-  setTimeout(() => {
-    dvBusy = false;
-    setDavomatStatus("QR kodni kameraga ko'rsating", 'info');
-  }, 3000);
+  dvPlayBeep('success');
+
+  const icon = document.getElementById('dv-confirm-icon'); if (icon) icon.textContent = '✅';
+  const title = document.getElementById('dv-confirm-title'); if (title) title.textContent = 'Bajarildi';
+  dvSetOkButtonVisible(false);
+
+  const actionEl = document.getElementById('dv-confirm-action');
+  if (actionEl) actionEl.textContent = DV_ACTION_LABELS[res.action] || res.action || '—';
+
+  const branchEl = document.getElementById('dv-confirm-branch');
+  if (branchEl) branchEl.textContent = dvPreviewBranchName || '—';
+
+  const detailEl = document.getElementById('dv-confirm-detail');
+  if (detailEl) {
+    if (res.action === 'check_in') {
+      detailEl.textContent = res.late_minutes > 0 ? `${res.late_minutes} daqiqa kech qoldingiz` : "O'z vaqtida keldingiz";
+    } else if (res.action === 'check_out') {
+      const soat = res.worked_minutes != null ? Math.round(res.worked_minutes / 60 * 10) / 10 : null;
+      detailEl.textContent = soat != null ? `${soat} soat ishladingiz` : '';
+    } else {
+      detailEl.textContent = '';
+    }
+  }
+
+  dvPreviewBranchName = null;
+  dvBusy = false; // yozuv amalga oshdi, kartochka faqat ma'lumot ko'rsatmoqda
+  dvSetCancelButtonLabel('✅ Yakunlash');
+}
+
+function renderScanError(message) {
+  dvPreviewToken = null;
+  dvPreviewBranchName = null;
+  document.getElementById('dv-scan-camera')?.classList.add('hidden');
+  document.getElementById('dv-confirm-card')?.classList.remove('hidden');
+
+  const icon = document.getElementById('dv-confirm-icon'); if (icon) icon.textContent = '❌';
+  const title = document.getElementById('dv-confirm-title'); if (title) title.textContent = message;
+  const branchEl = document.getElementById('dv-confirm-branch'); if (branchEl) branchEl.textContent = '—';
+  const actionEl = document.getElementById('dv-confirm-action'); if (actionEl) actionEl.textContent = '—';
+  const detailEl = document.getElementById('dv-confirm-detail'); if (detailEl) detailEl.textContent = '';
+  dvSetConfirmButtonsDisabled(false);
+  dvSetOkButtonVisible(false);
+  dvSetCancelButtonLabel('Yopish');
+}
+
+// "Bekor qilish" — attendance_scan hech qachon chaqirilmagan, bazaga hech narsa yozilmagan
+function dvConfirmCancel() {
+  dvPreviewToken = null;
+  dvPreviewBranchName = null;
+  dvShowScanIdle();
+}
+
+async function dvConfirmRescan() {
+  dvPreviewToken = null;
+  dvPreviewBranchName = null;
+  document.getElementById('dv-confirm-card')?.classList.add('hidden');
+  document.getElementById('dv-scan-idle')?.classList.add('hidden');
+  document.getElementById('dv-scan-camera')?.classList.remove('hidden');
+  await dvStartCamera();
 }
 
 function setDavomatStatus(text, type) {
@@ -176,6 +356,39 @@ function setDavomatStatus(text, type) {
   if (!el) return;
   el.textContent = text;
   el.className = 'dv-status-' + (type || 'info');
+}
+
+// ── AUDIO: Web Audio API orqali qisqa beep (tashqi fayl yo'q, vibratsiya yo'q) ──
+function dvGetAudioCtx() {
+  if (dvAudioCtx) return dvAudioCtx;
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    dvAudioCtx = new Ctx();
+    return dvAudioCtx;
+  } catch (e) { return null; }
+}
+
+const DV_BEEP_FREQ = { found: 880, success: 1046, error: 220 };
+
+function dvPlayBeep(kind) {
+  try {
+    const ctx = dvGetAudioCtx();
+    if (!ctx || ctx.state === 'suspended') return; // audio ishlamasa ham tizim davom etadi
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = DV_BEEP_FREQ[kind] || 660;
+    gain.gain.value = 0.15;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    const dur = kind === 'error' ? 0.28 : 0.12;
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+    osc.stop(ctx.currentTime + dur + 0.02);
+  } catch (e) {
+    // Audio ishlamasa ham tizim ishlashda davom etsin
+  }
 }
 
 // ── NOANIQ HOLAT: "Ishga keldim" / "Ishdan ketyapman" ──
@@ -197,15 +410,16 @@ function hideDavomatModals() {
 async function dvChoiceKeldim() {
   const token = dvPendingToken;
   document.getElementById('dv-ambiguous-modal')?.classList.add('hidden');
-  setDavomatStatus('Yuborilmoqda...', 'info');
+  dvShowConfirmLoading();
 
   try {
     const res = await resolveAttendance(token, 'came_in');
     dvPendingToken = null;
-    renderDavomatResult(res, token);
+    await renderDavomatResult(res, token);
   } catch (e) {
     console.error('[davomat] resolve xatosi', e);
-    setDavomatStatus('Xatolik: ' + (e.message || "noma'lum xato"), 'error');
+    dvPlayBeep('error');
+    renderScanError('Xatolik: ' + (e.message || "noma'lum xato"));
     dvBusy = false;
   }
 }
@@ -240,15 +454,16 @@ async function dvSababConfirm() {
 
   const token = dvPendingToken;
   document.getElementById('dv-sabab-modal')?.classList.add('hidden');
-  setDavomatStatus('Yuborilmoqda...', 'info');
+  dvShowConfirmLoading();
 
   try {
     const res = await resolveAttendance(token, 'leaving', sabab, matn ? matn.value.trim() : null);
     dvPendingToken = null;
-    renderDavomatResult(res, token);
+    await renderDavomatResult(res, token);
   } catch (e) {
     console.error('[davomat] resolve xatosi', e);
-    setDavomatStatus('Xatolik: ' + (e.message || "noma'lum xato"), 'error');
+    dvPlayBeep('error');
+    renderScanError('Xatolik: ' + (e.message || "noma'lum xato"));
     dvBusy = false;
   }
 }
@@ -256,8 +471,7 @@ async function dvSababConfirm() {
 function dvSababCancel() {
   document.getElementById('dv-sabab-modal')?.classList.add('hidden');
   dvPendingToken = null;
-  dvBusy = false;
-  setDavomatStatus("QR kodni kameraga ko'rsating", 'info');
+  dvShowScanIdle();
 }
 
 // ═══════════════════════════════════════
@@ -287,7 +501,7 @@ function dvShowTab(tab) {
   if (listBtn) { listBtn.classList.toggle('btn-primary', tab === 'list'); listBtn.classList.toggle('btn-secondary', tab !== 'list'); }
 
   if (tab === 'scan') {
-    if (!dvScanning) dvStartCamera();
+    dvShowScanIdle();
   } else if (tab === 'mine') {
     stopDavomatScanner();
     loadMyDavomatTab();

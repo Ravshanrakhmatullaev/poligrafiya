@@ -475,6 +475,14 @@ async function scanAttendance(token) {
   return data;
 }
 
+// Read-only: QR skanerlanganda, tasdiqlashdan oldin filial nomi/taxminiy amalni ko'rsatish uchun.
+// Hech qanday yozish qilmaydi — attendance_scan alohida, faqat "Tasdiqlash" bosilganda chaqiriladi.
+async function previewAttendance(token) {
+  const { data, error } = await sb.rpc('attendance_preview', { p_token: token });
+  if (error) throw error;
+  return data;
+}
+
 async function resolveAttendance(token, choice, sabab = null, sababMatni = null) {
   const { data, error } = await sb.rpc('attendance_resolve', {
     p_token: token,
