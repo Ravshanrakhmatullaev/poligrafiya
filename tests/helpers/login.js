@@ -25,18 +25,34 @@ const ONBOARDING = {
   production: { screen: '#yoriq-screen',           checkbox: '#agree-chk',       button: '#agree-btn' },
 };
 
-// If the given onboarding screen is showing, check its agreement checkbox
-// and click through it. If it never shows (returning session, or this
-// role doesn't get one), this is a no-op — not an error.
+// If the given onboarding screen shows up, check its agreement checkbox
+// and click through it. If it never shows within the wait window (returning
+// session, or this role doesn't get one), this is a no-op — not an error.
+//
+// `Locator.isVisible()` does NOT wait for an element to become visible — it
+// returns the current state immediately, timeout option or not. Calling it
+// right after clicking "Kirish" races the async login (Supabase auth) round
+// trip: locally the response is near-instant so the race is rarely lost,
+// but in CI it consistently loses, the check sees the screen still `hidden`,
+// and the function no-ops while the real onboarding screen shows up moments
+// later with nobody there to dismiss it. `Locator.waitFor()` actually polls,
+// so it's used here instead — this file must never call `isVisible()` again.
 async function dismissOnboarding(page, onboarding) {
   if (!onboarding) return;
   const screenEl = page.locator(onboarding.screen);
-  const isShown = await screenEl.isVisible({ timeout: 5_000 }).catch(() => false);
-  if (!isShown) return;
 
-  const chk = page.locator(onboarding.checkbox);
-  if (await chk.isVisible().catch(() => false)) await chk.check();
-  await page.locator(onboarding.button).click();
+  try {
+    await screenEl.waitFor({ state: 'visible', timeout: 10_000 });
+  } catch {
+    return;
+  }
+
+  await page.locator(onboarding.checkbox).check();
+
+  const btn = page.locator(onboarding.button);
+  await expect(btn).toBeEnabled({ timeout: 5_000 });
+  await btn.click();
+
   await expect(screenEl).toBeHidden({ timeout: 5_000 });
 }
 
@@ -84,4 +100,4 @@ async function loginAsProduction(page) {
   return true;
 }
 
-module.exports = { login, loginAsAdmin, loginAsDesigner, loginAsProduction, ONBOARDING };
+module.exports = { login, loginAsAdmin, loginAsDesigner, loginAsProduction, dismissOnboarding, ONBOARDING };

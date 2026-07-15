@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Onboarding race fixture</title>
+</head>
+<body>
+  <!--
+    Minimal standalone fixture for tests/helpers/login.js's dismissOnboarding()
+    race-condition regression test. It does NOT load any production code —
+    it only reproduces the shape that matters: an onboarding screen that is
+    hidden at page-load time and only becomes visible after a delay (the
+    ?delay= query param), same as the real app after its async login
+    round-trip. `screen` picks which of the three role ids to reveal.
+  -->
+  <div id="admin-yoriq-screen" style="display:none">
+    <input type="checkbox" id="admin-agree-chk" onchange="document.getElementById('admin-agree-btn').disabled = !this.checked">
+    <button id="admin-agree-btn" disabled onclick="enterApp('admin-yoriq-screen')">Tizimga kirish</button>
+  </div>
+
+  <div id="dizayner-yoriq-screen" style="display:none">
+    <input type="checkbox" id="diz-agree-chk" onchange="document.getElementById('diz-agree-btn').disabled = !this.checked">
+    <button id="diz-agree-btn" disabled onclick="enterApp('dizayner-yoriq-screen')">Tizimga kirish</button>
+  </div>
+
+  <div id="yoriq-screen" style="display:none">
+    <input type="checkbox" id="agree-chk" onchange="document.getElementById('agree-btn').disabled = !this.checked">
+    <button id="agree-btn" disabled onclick="enterApp('yoriq-screen')">Tizimga kirish</button>
+  </div>
+
+  <div id="app-screen" style="display:none">APP</div>
+
+  <script>
+    var params = new URLSearchParams(location.search);
+    var screenId = params.get('screen');
+    var delay = parseInt(params.get('delay') || '0', 10);
+
+    function enterApp(screenId) {
+      document.getElementById(screenId).style.display = 'none';
+      document.getElementById('app-screen').style.display = 'block';
+    }
+
+    if (screenId) {
+      setTimeout(function () {
+        document.getElementById(screenId).style.display = 'block';
+      }, delay);
+    }
+  </script>
+</body>
+</html>
