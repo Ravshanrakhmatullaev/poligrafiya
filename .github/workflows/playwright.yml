@@ -22,6 +22,49 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
+      # Xavfsiz diagnostika: qiymatlarning o'zini HECH QACHON chiqarmaydi,
+      # faqat har bir secret SET yoki MISSING ekanini yozadi. Agar birortasi
+      # MISSING bo'lsa, bu qadam FAIL bo'ladi va butun job to'xtaydi — shu
+      # bilan testlar "skip" bo'lib ketib, workflow yolg'ondan "success"
+      # ko'rsatishining oldi olinadi (continue-on-error hech qayerda
+      # ishlatilmaydi, shuning uchun bu FAIL chindan ham jobni to'xtatadi).
+      #
+      # Agar bu qadam MISSING deb yozsa-yu, siz secretlarni GitHub
+      # Settings > Secrets and variables > Actions'da ko'rayotgan bo'lsangiz —
+      # ular "Environment secrets" sifatida qo'shilgan bo'lishi mumkin.
+      # Repository secrets uchun quyidagi env mappingi yetarli; Environment
+      # secrets uchun esa shu job'ga `environment: <nomi>` qo'shilishi kerak
+      # (aniq nomni faqat siz bilasiz — GitHub'dagi Settings > Environments
+      # bo'limidan tekshiring).
+      - name: Verify required test credentials are present
+        env:
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          DESIGNER_EMAIL: ${{ secrets.DESIGNER_EMAIL }}
+          DESIGNER_PASSWORD: ${{ secrets.DESIGNER_PASSWORD }}
+          PRODUCTION_EMAIL: ${{ secrets.PRODUCTION_EMAIL }}
+          PRODUCTION_PASSWORD: ${{ secrets.PRODUCTION_PASSWORD }}
+        run: |
+          cat > /tmp/check-secrets.js <<'EOF'
+          const names = [
+            'ADMIN_EMAIL',
+            'ADMIN_PASSWORD',
+            'DESIGNER_EMAIL',
+            'DESIGNER_PASSWORD',
+            'PRODUCTION_EMAIL',
+            'PRODUCTION_PASSWORD',
+          ];
+          const missing = names.filter((name) => !process.env[name]);
+          console.log(
+            names.map((name) => `${name}: ${process.env[name] ? 'SET' : 'MISSING'}`).join('\n')
+          );
+          if (missing.length) {
+            console.error('Missing required secrets: ' + missing.join(', '));
+            process.exit(1);
+          }
+          EOF
+          node /tmp/check-secrets.js
+
       # Lokal server alohida qadam sifatida emas — playwright.config.js'dagi
       # `webServer` bloki `npx playwright test` ichida avtomatik ishga
       # tushadi, sog'lomligini tekshiradi va test tugagach o'chiradi. Shu
