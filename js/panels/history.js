@@ -620,7 +620,12 @@ function deleteHistoryItemCountdown(id, btnEl){
       deleteCountdownTimer = null;
       deleteCountdownId = null;
       // O'chirish
-      await deleteHistoryItem(id);
+      try {
+        await deleteHistoryItem(id);
+        showNotify("🗑️ Yozuv o'chirildi");
+      } catch (e) {
+        showNotify('❌ Xatolik: ' + (e.message || "noma'lum xato"));
+      }
     } else {
       if(btnEl && btnEl.isConnected){
         btnEl.textContent = count;
@@ -631,13 +636,6 @@ function deleteHistoryItemCountdown(id, btnEl){
       }
     }
   }, 1000);
-}
-
-async function deleteHistoryItem(id){
-  if(!confirm("Bu yozuvni rostdan ham o'chirmoqchimisiz?")) return;
-  await deleteHistoryItem(id);
-  showNotify("🗑️ Yozuv o'chirildi");
-  await loadHistory();
 }
 
 async function toggleBrak(id, val){
@@ -1111,62 +1109,68 @@ async function saveOnly(type){
   if(isSaving){ showNotify('Saqlanmoqda, kuting...'); return; }
   isSaving = true;
 
-  const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
-  let data={}, totalZakaz=0, totalDaromad=0, totalJami=0;
+  try {
+    const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
+    let data={}, totalZakaz=0, totalDaromad=0, totalJami=0;
 
-  if(type==='admin'){
-    const rows = adD.filter(r=>r.nom||(parseInt(r.sum)||0));
-    if(!rows.length){ showNotify('Hech narsa kiritilmagan'); isSaving=false; return; }
-    const _isAbror = currentUser && currentUser.email === ABROR_EMAIL;
-    rows.forEach(r=>{ const s=parseInt(r.sum)||0; const f=getFoiz(s); totalZakaz+=s; const base=Math.round(s*f); totalDaromad+=((_isAbror&&r.bonus_50)?Math.round(base*1.5):base); });
-    data = { rows };
-  } else {
-    const prodRows = prD.filter(r=>parseInt(r.miq)>0);
-    const uvRows   = uvD.filter(r=>parseInt(r.sig)>0&&parseInt(r.don)>0);
-    const ekoRows  = ekoD.filter(r=>parseFloat(r.kv)>0);
-    if(!prodRows.length&&!uvRows.length&&!ekoRows.length){ showNotify('Hech narsa kiritilmagan'); isSaving=false; return; }
-    prodRows.forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m)+(r.ex&&PR[r.key]&&PR[r.key].extra?200:0); totalJami+=m*np; });
-    uvRows.forEach(r=>{ const {jami}=calcUv(parseInt(r.sig),parseInt(r.don)); totalJami+=jami; });
-    ekoRows.forEach(r=>{ const {jami}=calcEko(parseFloat(r.kv)); totalJami+=jami; });
-    const brakRows = prodRows.filter(r=>parseInt(r.brak)>0);
-    data = { prodRows, uvRows, ekoRows, brakRows };
-  }
+    if(type==='admin'){
+      const rows = adD.filter(r=>r.nom||(parseInt(r.sum)||0));
+      if(!rows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+      const _isAbror = currentUser && currentUser.email === ABROR_EMAIL;
+      rows.forEach(r=>{ const s=parseInt(r.sum)||0; const f=getFoiz(s); totalZakaz+=s; const base=Math.round(s*f); totalDaromad+=((_isAbror&&r.bonus_50)?Math.round(base*1.5):base); });
+      data = { rows };
+    } else {
+      const prodRows = prD.filter(r=>parseInt(r.miq)>0);
+      const uvRows   = uvD.filter(r=>parseInt(r.sig)>0&&parseInt(r.don)>0);
+      const ekoRows  = ekoD.filter(r=>parseFloat(r.kv)>0);
+      if(!prodRows.length&&!uvRows.length&&!ekoRows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+      prodRows.forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m)+(r.ex&&PR[r.key]&&PR[r.key].extra?200:0); totalJami+=m*np; });
+      uvRows.forEach(r=>{ const {jami}=calcUv(parseInt(r.sig),parseInt(r.don)); totalJami+=jami; });
+      ekoRows.forEach(r=>{ const {jami}=calcEko(parseFloat(r.kv)); totalJami+=jami; });
+      const brakRows = prodRows.filter(r=>parseInt(r.brak)>0);
+      data = { prodRows, uvRows, ekoRows, brakRows };
+    }
 
-  const sanaVaqt = getSanaVaqt();
-  const row = {
-    user_id: currentUser.id,
-    user_email: currentUser.email,
-    user_name: name,
-    type,
-    data,
-    total_zakaz: totalZakaz,
-    total_daromad: totalDaromad,
-    total_jami: totalJami,
-    sana: sanaVaqt,
-    shift: getCurrentShift(),
-  };
+    const sanaVaqt = getSanaVaqt();
+    const row = {
+      user_id: currentUser.id,
+      user_email: currentUser.email,
+      user_name: name,
+      type,
+      data,
+      total_zakaz: totalZakaz,
+      total_daromad: totalDaromad,
+      total_jami: totalJami,
+      sana: sanaVaqt,
+      shift: getCurrentShift(),
+    };
 
-    const _r = await createHistoryItem(row); const error = _r ? null : new Error('insert failed');
-  isSaving = false;
-  if(error){ showNotify('❌ Xatolik: '+error.message); return; }
+    const _r = await createHistoryItem(row);
+    if(!_r) throw new Error('insert failed');
 
-  showNotify('✅ Saqlandi! — '+sanaVaqt+'. Tarixda ko\'rishingiz mumkin.');
+    showNotify('✅ Saqlandi! — '+sanaVaqt+'. Tarixda ko\'rishingiz mumkin.');
 
-  // Avval tarixni yangilab, keyin formani tozalamiz
-  await loadHistory();
+    // Avval tarixni yangilab, keyin formani tozalaymiz
+    await loadHistory();
 
-  // Formani tozalash
-  if(type==='admin'){
-    adD = [{nom:'',sum:'',bonus_50:false},{nom:'',sum:'',bonus_50:false},{nom:'',sum:'',bonus_50:false}];
-    renderAdmin();
-  } else if(type==='dizayner'){
-    dizD = [{nom:'', summa:'', tolovchi:'offis', tolov:null, kontakt:''}];
-    renderDizayner();
-  } else {
-    prD = [{key:'Futbolka DTF (old)',miq:'',brak:'',ex:false}];
-    uvD = [{nom:'',sig:'',don:''}];
-    ekoD = [{nom:'',kv:''}];
-    renderIshlab();
+    // Formani tozalash
+    if(type==='admin'){
+      adD = [{nom:'',sum:'',bonus_50:false},{nom:'',sum:'',bonus_50:false},{nom:'',sum:'',bonus_50:false}];
+      renderAdmin();
+    } else if(type==='dizayner'){
+      dizD = [{nom:'', summa:'', tolovchi:'offis', tolov:null, kontakt:''}];
+      renderDizayner();
+    } else {
+      prD = [{key:'Futbolka DTF (old)',miq:'',brak:'',ex:false}];
+      uvD = [{nom:'',sig:'',don:''}];
+      ekoD = [{nom:'',kv:''}];
+      renderIshlab();
+    }
+  } catch (e) {
+    console.error('[saveOnly]', e);
+    showNotify('❌ Xatolik: ' + (e.message || "noma'lum xato"));
+  } finally {
+    isSaving = false;
   }
 }
 

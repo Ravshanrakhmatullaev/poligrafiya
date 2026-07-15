@@ -14,6 +14,10 @@ let swMainInterval = null;
 
 // ── DIZAYNER ──
 
+function initDizaynerPanel(){
+  if(dizD===null) dizD=[{nom:'', summa:'', tolovchi:'offis', tolov:null, kontakt:''}];
+  renderDizayner();
+}
 function addDizRow(){ dizD.push({nom:'', summa:'', tolovchi:'offis', tolov:null, kontakt:''}); renderDizayner(); }
 function delDiz(i){ dizD.splice(i,1); renderDizayner(); }
 
@@ -134,6 +138,11 @@ async function sendWeeklyDizayner(){
   const truncated = msg.length > MAX ? msg.slice(0, MAX) + '\n...\n(qisqartirildi)' : msg;
   
   window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(truncated),'_blank');
+}
+
+function initAdminPanel(){
+  if(!Array.isArray(adD)) adD=[{nom:'',sum:'',bonus_50:false}];
+  renderAdmin();
 }
 
 function renderAdmin(){
