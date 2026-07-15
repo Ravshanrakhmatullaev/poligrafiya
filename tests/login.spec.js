@@ -1,5 +1,6 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
+const { login, ONBOARDING } = require('./helpers/login');
 
 /**
  * LOGIN TESTLAR
@@ -61,15 +62,7 @@ test.describe('Login sahifasi', () => {
       return;
     }
 
-    await page.goto('');
-    await page.waitForLoadState('domcontentloaded');
-
-    await page.locator('input[type="email"], #email').first().fill(email);
-    await page.locator('input[type="password"], #password').first().fill(password);
-    await page.locator('button[onclick*="doLogin"]').first().click();
-
-    // App ekrani ko'rinishi kerak
-    await expect(page.locator('#app-screen')).toBeVisible({ timeout: 15_000 });
+    await login(page, email, password, ONBOARDING.designer);
     await expect(page.locator('#login-screen')).toBeHidden();
 
     // Dizayner uchun nav tekshiruv
@@ -89,14 +82,7 @@ test.describe('Login sahifasi', () => {
       return;
     }
 
-    await page.goto('');
-    await page.waitForLoadState('domcontentloaded');
-
-    await page.locator('input[type="email"], #email').first().fill(email);
-    await page.locator('input[type="password"], #password').first().fill(password);
-    await page.locator('button[onclick*="doLogin"]').first().click();
-
-    await expect(page.locator('#app-screen')).toBeVisible({ timeout: 15_000 });
+    await login(page, email, password, ONBOARDING.admin);
 
     // Admin uchun nav itemlar
     await expect(page.locator('#nb-dashboard, [onclick*="dashboard"]').first()).toBeVisible();
@@ -115,14 +101,7 @@ test.describe('Login sahifasi', () => {
       return;
     }
 
-    await page.goto('');
-    await page.waitForLoadState('domcontentloaded');
-
-    await page.locator('input[type="email"], #email').first().fill(email);
-    await page.locator('input[type="password"], #password').first().fill(password);
-    await page.locator('button[onclick*="doLogin"]').first().click();
-
-    await expect(page.locator('#app-screen')).toBeVisible({ timeout: 15_000 });
+    await login(page, email, password, ONBOARDING.production);
 
     await page.locator('button[onclick*="doLogout"], .logout-btn').first().click();
     await expect(page.locator('#login-screen')).toBeVisible({ timeout: 5_000 });

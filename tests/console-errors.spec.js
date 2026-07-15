@@ -1,5 +1,6 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
+const { loginAsAdmin } = require('./helpers/login');
 
 /**
  * CONSOLE VA NETWORK XATO TESTLAR
@@ -123,25 +124,8 @@ test.describe('Console va Network — Login qilinmagan holat', () => {
 test.describe('Console va Network — Login qilingan holat', () => {
 
   test.beforeEach(async ({ page }) => {
-    const email    = process.env.ADMIN_EMAIL;
-    const password = process.env.ADMIN_PASSWORD;
-    if (!email || !password) { test.skip(); return; }
-
-    await page.goto('');
-    await page.waitForLoadState('domcontentloaded');
-    await page.locator('input[type="email"], #email').first().fill(email);
-    await page.locator('input[type="password"], #password').first().fill(password);
-    await page.locator('button[onclick*="doLogin"]').first().click();
-    await expect(page.locator('#app-screen')).toBeVisible({ timeout: 15_000 });
-
-    // Yoriq screendan o'tish
-    const yoriqBtn = page.locator('#admin-agree-btn, button[onclick*="enterAdminApp"]').first();
-    if (await yoriqBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-      const chk = page.locator('#admin-agree-chk').first();
-      if (await chk.isVisible()) await chk.check();
-      await yoriqBtn.click();
-      await page.waitForTimeout(300);
-    }
+    const ok = await loginAsAdmin(page);
+    if (!ok) test.skip();
   });
 
   test('panel ochilishida kritik xato yo\'q', async ({ page }) => {
