@@ -66,7 +66,7 @@ test.describe('Login sahifasi', () => {
     await expect(page.locator('#login-screen')).toBeHidden();
 
     // Dizayner uchun nav tekshiruv
-    await expect(page.locator('#nb-dizayner, [id*="dizayner"]').first()).toBeVisible();
+    await expect(page.locator('#nb-dizayner')).toBeVisible();
 
     // Logout
     await page.locator('button[onclick*="doLogout"], .logout-btn').first().click();

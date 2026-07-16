@@ -111,14 +111,16 @@ function enterApp(){
   sessionStorage.setItem('yoriq_'+currentUser.id, '1');
   showScreen('app');
   const defaultPanel = currentRole === 'admin' ? 'admin' : currentRole === 'ishlab' ? 'ishlab' : 'tarix';
-  loadHistory().then(()=>showPanel('dashboard'));
+  showPanel('dashboard');
+  loadHistory();
   setInterval(() => loadMessages(), 30000);
 }
 
 function enterAdminApp(){
   sessionStorage.setItem('admin_yoriq_'+currentUser.id, '1');
   showScreen('app');
-  loadHistory().then(()=>showPanel('dashboard'));
+  showPanel('dashboard');
+  loadHistory();
   setInterval(() => loadMessages(), 30000);
 }
 
@@ -127,7 +129,8 @@ function enterDizaynerApp(){
   document.getElementById('nb-stopwatch').classList.remove('hidden');
   loadTimers();
   showScreen('app');
-  loadHistory().then(()=>showPanel('dashboard'));
+  showPanel('dashboard');
+  loadHistory();
   setInterval(() => loadMessages(), 30000);
 }
 
