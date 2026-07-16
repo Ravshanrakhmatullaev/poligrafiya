@@ -57,7 +57,7 @@ test.describe('Navigatsiya — Admin rol', () => {
   });
 
   test('Kalkulyator paneli ochiladi', async ({ page }) => {
-    await page.locator('#nb-kalk, [onclick*="showPanel(\'kalk\')"]').first().click();
+    await page.locator('#nb-kalk').click();
     await page.waitForTimeout(500);
 
     const panel = page.locator('#panel-kalk');
@@ -90,7 +90,7 @@ test.describe('Navigatsiya — Admin rol', () => {
     const panels = [
       ['#nb-dashboard, [onclick*="showPanel(\'dashboard\')"]',  '#panel-dashboard'],
       ['#nb-tarix, [onclick*="showPanel(\'tarix\')"]',          '#panel-tarix'],
-      ['#nb-kalk, [onclick*="showPanel(\'kalk\')"]',            '#panel-kalk'],
+      ['#nb-kalk',                                               '#panel-kalk'],
     ];
 
     for (let cycle = 0; cycle < 3; cycle++) {

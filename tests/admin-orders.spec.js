@@ -22,6 +22,19 @@ test.describe('Admin zakaz forması', () => {
     // kutib bo'lgach qaytadi — bu yerda alohida qayta ishlov shart emas.
     const ok = await loginAsAdmin(page);
     if (!ok) test.skip();
+
+    // Login'dan keyingi standart landing panel — Dashboard (js/auth.js:
+    // enterAdminApp()) — bu fayldagi testlar esa Admin ("Zakazlarim")
+    // formasini tekshiradi, shuning uchun panelni bu yerda aniq ochamiz.
+    const adminNav = page.locator('#nb-admin');
+    if (await adminNav.isVisible().catch(() => false)) {
+      await adminNav.click();
+    } else {
+      await page.evaluate(() => showPanel('admin'));
+    }
+
+    await expect(page.locator('#panel-admin')).toHaveClass(/active/, { timeout: 5_000 });
+    await expect(page.locator('#admin-rows')).toBeVisible({ timeout: 5_000 });
   });
 
   test('"Zakaz qo\'shish" tugmasi yangi qator qo\'shadi', async ({ page }) => {
@@ -146,12 +159,15 @@ test.describe('Admin zakaz forması', () => {
     });
     await page.waitForTimeout(300);
 
-    // Telegram tugmasi
+    // Telegram tugmasi — Admin panel beforeEach'da allaqachon ochilgan,
+    // shuning uchun bu yerda faqat tugma ilovada umuman mavjudmi (feature
+    // bormi) tekshiramiz — panel yashirinligi endi skip sababi bo'la olmaydi.
     const tgBtn = page.locator('#admin-tg-btn, button[onclick*="sendAdminTg"]').first();
-    if (!(await tgBtn.isVisible())) {
-      test.skip(true, 'Telegram tugmasi topilmadi');
+    if (await tgBtn.count() === 0) {
+      test.skip(true, 'Telegram tugmasi ilovada mavjud emas');
       return;
     }
+    await expect(tgBtn).toBeVisible({ timeout: 5_000 });
     await tgBtn.click();
     await page.waitForTimeout(500);
 
@@ -184,10 +200,11 @@ test.describe('Admin zakaz forması', () => {
     await page.waitForTimeout(500);
 
     const tgBtn = page.locator('#admin-tg-btn, button[onclick*="sendAdminTg"]').first();
-    if (!(await tgBtn.isVisible())) {
-      test.skip(true, 'Telegram tugmasi topilmadi');
+    if (await tgBtn.count() === 0) {
+      test.skip(true, 'Telegram tugmasi ilovada mavjud emas');
       return;
     }
+    await expect(tgBtn).toBeVisible({ timeout: 5_000 });
 
     await tgBtn.click();
     await page.waitForTimeout(1500);

@@ -74,7 +74,7 @@ test.describe('CRUD regression — real create/delete flow', () => {
 
     await page.evaluate((id) => { showPanel(id); }, 'tarix');
     await page.waitForTimeout(500);
-    await expect(page.locator('#history-list, #panel-tarix')).toContainText(productName, { timeout: 5_000 });
+    await expect(page.locator('#history-list')).toContainText(productName, { timeout: 5_000 });
   });
 
   test('history delete muvaffaqiyatli — karta yo\'qoladi', async ({ page }) => {
