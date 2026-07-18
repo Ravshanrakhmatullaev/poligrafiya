@@ -12,6 +12,11 @@ const ABROR_EMAIL   = 'ra.ravshan1998+abror@gmail.com'; // bonus_50 checkbox faq
 // Telegram webhook: vercel endpoint orqali
 const TG_WEBHOOK    = 'https://adsuz-sklad-jaqpmu8qr-adsuz1.vercel.app/api/webhook';
 
+// CRM workflow integratsiyasi — hech qanday secret shu yerda yo'q. Har bir
+// so'rov joriy foydalanuvchining o'z Supabase sessiyasi (access_token) bilan
+// autentifikatsiya qilinadi (sendCrmWorkflowTransition, js/db.js).
+const CRM_WORKFLOW_API_URL = 'https://ads-uz-crm.vercel.app/api/integrations/erp/user/workflow/transition';
+
 const ROLES = {
   'ra.ravshan1998@gmail.com':              'owner',
   'ra.ravshan1998+bayramali@gmail.com':    'ishlab',

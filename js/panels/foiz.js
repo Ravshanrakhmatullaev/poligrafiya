@@ -23,6 +23,8 @@ function initIshlabPanel(){
   if(ekoD===null) ekoD=[{nom:'',kv:''}];
   loadHiddenSections();
   renderIshlab();
+  // CRM bog'lanishlar — alohida, tarmoq so'rovi kerak, qolgan panelni bloklamaydi.
+  if(typeof initCrmLinksSection === 'function') initCrmLinksSection();
 }
 
 // ── BO'LIMLARNI YASHIRISH/KO'RSATISH ──

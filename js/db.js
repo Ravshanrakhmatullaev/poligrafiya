@@ -562,3 +562,134 @@ async function deleteDavomat(davomatId, sabab) {
   if (error) throw error;
   return data;
 }
+
+// ── ERP <-> CRM BUYURTMA BOG'LASH ──
+// service_role yo'q — hammasi joriy foydalanuvchining o'z Supabase
+// sessiyasi (sb, RLS orqali) bilan ishlaydi. erp_crm_order_links jadvali
+// faqat director/designer/production rolidagi crm_profiles egalari uchun
+// ochiq (bog'liq migration: CRM repo,
+// supabase/migrations/20260719120000_erp_crm_order_links.sql — applied).
+
+async function searchCrmOrders(query) {
+  try {
+    let q = sb.from('crm_orders')
+      .select('id, order_number, product, contact:crm_contacts(name)')
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (query && query.trim()) {
+      const safe = query.trim().replace(/[%,]/g, '');
+      q = q.or(`order_number.ilike.%${safe}%,product.ilike.%${safe}%`);
+    }
+    const { data, error } = await q;
+    if (error) throw error;
+    return data || [];
+  } catch (e) {
+    console.error('[searchCrmOrders]', e);
+    showNotify('CRM buyurtmalarni qidirishda xato', 'error');
+    return [];
+  }
+}
+
+async function getErpCrmLinks() {
+  try {
+    const { data, error } = await sb.from('erp_crm_order_links')
+      .select('id, erp_item_key, crm_order_id, linked_by, created_at, crm_order:crm_orders(order_number, product, contact:crm_contacts(name))')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  } catch (e) {
+    console.error('[getErpCrmLinks]', e);
+    showNotify('Bog\'langan buyurtmalarni yuklashda xato', 'error');
+    return [];
+  }
+}
+
+async function createErpCrmLink(crmOrderId) {
+  try {
+    const itemKey = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+      : 'item-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+    const { data, error } = await sb.from('erp_crm_order_links')
+      .insert({ erp_item_key: itemKey, crm_order_id: crmOrderId, linked_by: currentUser.id })
+      .select('id, erp_item_key, crm_order_id, created_at')
+      .single();
+    if (error) throw error;
+    return data;
+  } catch (e) {
+    console.error('[createErpCrmLink]', e);
+    showNotify('Bog\'lashda xato: ' + e.message, 'error');
+    return null;
+  }
+}
+
+async function deleteErpCrmLink(linkId) {
+  try {
+    const { error } = await sb.from('erp_crm_order_links').delete().eq('id', linkId);
+    if (error) throw error;
+    return true;
+  } catch (e) {
+    console.error('[deleteErpCrmLink]', e);
+    showNotify('Bog\'lanishni o\'chirishda xato: ' + e.message, 'error');
+    return false;
+  }
+}
+
+// Joriy CRM workflow holati — to'g'ridan-to'g'ri hardened RPC orqali (xuddi
+// CRM'ning o'z UI'si kabi), service_role yo'q, faqat joriy sessiya.
+async function getCrmWorkflowStatus(crmOrderId) {
+  try {
+    const { data: wf, error: wfErr } = await sb.from('workflow_orders')
+      .select('id, current_status').eq('order_id', crmOrderId).maybeSingle();
+    if (wfErr) throw wfErr;
+    if (!wf) return null; // workflow hali yaratilmagan yoki ruxsat yo'q — farqlanmaydi
+    const { data: progress, error: progErr } = await sb.rpc('workflow_get_progress', { p_workflow_order_id: wf.id });
+    if (progErr) throw progErr;
+    return progress;
+  } catch (e) {
+    console.error('[getCrmWorkflowStatus]', e);
+    return null;
+  }
+}
+
+// CRM workflow statusini o'zgartirish / progress yuborish — CRM'ning
+// authenticated ERP endpointi orqali (Bearer joriy access_token). Hech
+// qanday secret bu yerda yo'q va bo'lmaydi.
+async function sendCrmWorkflowTransition(crmOrderId, status, extra) {
+  extra = extra || {};
+  try {
+    const { data: sessionData, error: sessionErr } = await sb.auth.getSession();
+    if (sessionErr || !sessionData || !sessionData.session) {
+      showNotify('Sessiya topilmadi — qayta kiring', 'error');
+      return { ok: false, error: 'no_session' };
+    }
+    const token = sessionData.session.access_token;
+
+    const res = await fetch(CRM_WORKFLOW_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify(Object.assign({ crmOrderId: crmOrderId, status: status }, extra)),
+    });
+    const body = await res.json().catch(() => null);
+
+    if (res.status === 401) {
+      showNotify('Sessiya tugagan — qayta kiring', 'error');
+      return { ok: false, error: 'unauthorized', status: 401 };
+    }
+    if (res.status === 403) {
+      showNotify((body && body.message) || 'Bu amal uchun ruxsat yo\'q', 'error');
+      return { ok: false, error: 'forbidden', status: 403 };
+    }
+    if (res.status === 404) {
+      showNotify((body && body.message) || 'Buyurtma yoki workflow topilmadi', 'error');
+      return { ok: false, error: 'not_found', status: 404 };
+    }
+    if (!res.ok || !body || !body.ok) {
+      showNotify((body && body.message) || 'Noto\'g\'ri so\'rov', 'error');
+      return { ok: false, error: (body && body.error) || 'unknown', status: res.status };
+    }
+    return body;
+  } catch (e) {
+    console.error('[sendCrmWorkflowTransition]', e);
+    showNotify('Tarmoq xatosi: ' + e.message, 'error');
+    return { ok: false, error: 'network_error' };
+  }
+}

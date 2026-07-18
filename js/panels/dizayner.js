@@ -537,3 +537,160 @@ function copyTasdiqXat(){
   if(!t) return;
   navigator.clipboard.writeText(t.value).then(()=>showNotify('Tasdiq xati nusxa olindi!')).catch(()=>{t.select();document.execCommand('copy');showNotify('Nusxa olindi!');});
 }
+
+// ── ERP <-> CRM BUYURTMA BOG'LASH (Ishlab chiqarish paneli) ──
+// Hech qanday secret bu yerda yo'q — hammasi joriy foydalanuvchining o'z
+// Supabase sessiyasi orqali ishlaydi (js/db.js: searchCrmOrders,
+// getErpCrmLinks, createErpCrmLink, deleteErpCrmLink, getCrmWorkflowStatus,
+// sendCrmWorkflowTransition).
+let erpCrmLinks = [];
+let erpCrmStatuses = {};
+let crmPickerResults = [];
+let crmPickerTimer = null;
+
+const CRM_STATUS_LABELS = {
+  NEW: 'Yangi', DESIGN: 'Dizayn', APPROVED: 'Tasdiqlangan', PRODUCTION: 'Ishlab chiqarilmoqda',
+  QUALITY_CONTROL: 'Sifat nazorati', READY: 'Tayyor', DELIVERED: 'Yetkazib berildi',
+  PICKED_UP: "Olib ketildi", COMPLETED: 'Yakunlangan',
+};
+
+async function initCrmLinksSection(){
+  erpCrmLinks = await getErpCrmLinks();
+  await refreshAllCrmStatuses();
+  renderCrmLinksSection();
+}
+
+async function refreshAllCrmStatuses(){
+  const results = await Promise.all(erpCrmLinks.map(l => getCrmWorkflowStatus(l.crm_order_id)));
+  erpCrmStatuses = {};
+  erpCrmLinks.forEach((l,i) => { erpCrmStatuses[l.crm_order_id] = results[i]; });
+}
+
+function renderCrmLinksSection(){
+  const el = document.getElementById('crm-links-rows');
+  if(!el) return;
+  el.innerHTML = '';
+  if(!erpCrmLinks.length){
+    el.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0">Hali bog\'langan CRM buyurtma yo\'q</div>';
+    return;
+  }
+  erpCrmLinks.forEach(link => {
+    const order = link.crm_order || {};
+    const status = erpCrmStatuses[link.crm_order_id];
+    const statusKnown = status && status.ok;
+    const statusLabel = statusKnown ? (CRM_STATUS_LABELS[status.status] || status.status)
+      : (status === null ? 'Workflow hali yaratilmagan' : 'Yuklanmoqda...');
+    const canProduction = statusKnown && status.status === 'APPROVED';
+    const canProgress   = statusKnown && status.status === 'PRODUCTION';
+    const canQc         = statusKnown && status.status === 'PRODUCTION';
+    const canReady       = statusKnown && status.status === 'QUALITY_CONTROL';
+
+    const div = document.createElement('div');
+    div.className = 'crm-link-row';
+    div.style.cssText = 'border:1px solid var(--gray-border);border-radius:var(--radius-md);padding:10px 12px;margin-bottom:8px';
+    div.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">' +
+        '<div>' +
+          '<div style="font-size:12px;font-weight:700;color:var(--text)">#' + (order.order_number||'—') + ' — ' + ((order.contact&&order.contact.name)||"Noma'lum mijoz") + '</div>' +
+          '<div style="font-size:11px;color:var(--text3);margin-top:2px">' + (order.product||'') + '</div>' +
+        '</div>' +
+        delIcon("erpUnlinkCrmOrder('" + link.id + "')") +
+      '</div>' +
+      '<div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+        '<span class="badge bp">' + statusLabel + '</span>' +
+        (statusKnown && typeof status.progress === 'number' ? '<span style="font-size:11px;color:var(--text3)">' + status.progress + '%</span>' : '') +
+      '</div>' +
+      '<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">' +
+        (canProduction ? '<button class="ish-add-btn" onclick="erpSendStatus(\'' + link.crm_order_id + '\',\'PRODUCTION\')">Ishlab chiqarishga berildi</button>' : '') +
+        (canProgress ? '<button class="ish-add-btn" onclick="erpOpenProgressPrompt(\'' + link.crm_order_id + '\')">Progress</button>' : '') +
+        (canQc ? '<button class="ish-add-btn" onclick="erpSendStatus(\'' + link.crm_order_id + '\',\'QUALITY_CONTROL\')">Tekshiruvga</button>' : '') +
+        (canReady ? '<button class="ish-add-btn" onclick="erpSendStatus(\'' + link.crm_order_id + '\',\'READY\')">Tayyor</button>' : '') +
+      '</div>';
+    el.appendChild(div);
+  });
+}
+
+async function erpSendStatus(crmOrderId, status){
+  const res = await sendCrmWorkflowTransition(crmOrderId, status);
+  if(res && res.ok){
+    showNotify('✅ Status yangilandi: ' + (CRM_STATUS_LABELS[res.status]||res.status));
+    await refreshAllCrmStatuses();
+    renderCrmLinksSection();
+  }
+  // Xato holatida sendCrmWorkflowTransition o'zi showNotify chaqiradi — jim yutilmaydi.
+}
+
+function erpOpenProgressPrompt(crmOrderId){
+  const val = window.prompt('Progress foizi (40-80):', '50');
+  if(val === null) return;
+  const n = parseInt(val, 10);
+  if(isNaN(n) || n < 40 || n > 80){ showNotify('Progress 40-80 oralig\'ida bo\'lishi kerak', 'error'); return; }
+  erpSendProgress(crmOrderId, n);
+}
+
+async function erpSendProgress(crmOrderId, manualProgress){
+  const res = await sendCrmWorkflowTransition(crmOrderId, 'PRODUCTION', { productionProgress: { manualProgress: manualProgress } });
+  if(res && res.ok){
+    showNotify('✅ Progress yuborildi: ' + manualProgress + '%');
+    await refreshAllCrmStatuses();
+    renderCrmLinksSection();
+  }
+}
+
+function erpUnlinkCrmOrder(linkId){
+  showConfirm('Bog\'lanishni o\'chirish', 'Bu CRM buyurtma bilan bog\'lanishni o\'chirmoqchimisiz?', async () => {
+    const ok = await deleteErpCrmLink(linkId);
+    if(ok){
+      erpCrmLinks = erpCrmLinks.filter(l => l.id !== linkId);
+      renderCrmLinksSection();
+      showNotify('Bog\'lanish o\'chirildi');
+    }
+  });
+}
+
+// ── CRM BUYURTMA PICKER MODAL ──
+function openCrmOrderPicker(){
+  crmPickerResults = [];
+  const modal = document.getElementById('crm-picker-modal');
+  const input = document.getElementById('crm-picker-input');
+  const results = document.getElementById('crm-picker-results');
+  if(input) input.value = '';
+  if(results) results.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0">Qidirilmoqda...</div>';
+  if(modal) modal.classList.remove('hidden');
+  searchCrmOrderPickerNow('');
+}
+
+function closeCrmOrderPicker(){
+  const modal = document.getElementById('crm-picker-modal');
+  if(modal) modal.classList.add('hidden');
+}
+
+function onCrmPickerInput(value){
+  if(crmPickerTimer) clearTimeout(crmPickerTimer);
+  crmPickerTimer = setTimeout(() => searchCrmOrderPickerNow(value), 300);
+}
+
+async function searchCrmOrderPickerNow(query){
+  crmPickerResults = await searchCrmOrders(query);
+  const results = document.getElementById('crm-picker-results');
+  if(!results) return;
+  if(!crmPickerResults.length){
+    results.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0">Hech narsa topilmadi</div>';
+    return;
+  }
+  results.innerHTML = crmPickerResults.map(o =>
+    '<div class="crm-picker-item" style="padding:8px 10px;border:1px solid var(--gray-border);border-radius:var(--radius-md);margin-bottom:6px;cursor:pointer" onclick="selectCrmOrderForLink(\'' + o.id + '\')">' +
+      '<div style="font-size:12px;font-weight:700">#' + o.order_number + ' — ' + ((o.contact&&o.contact.name)||"Noma'lum mijoz") + '</div>' +
+      '<div style="font-size:11px;color:var(--text3)">' + (o.product||'') + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+async function selectCrmOrderForLink(crmOrderId){
+  const link = await createErpCrmLink(crmOrderId);
+  closeCrmOrderPicker();
+  if(link){
+    showNotify('✅ CRM buyurtma bog\'landi');
+    await initCrmLinksSection();
+  }
+}
