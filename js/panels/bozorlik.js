@@ -211,36 +211,35 @@ async function sendBozorlikToTelegram(){
   if(sendBtn && sendBtn.disabled) return;
   if(sendBtn){ sendBtn.disabled = true; sendBtn.style.opacity = '0.5'; sendBtn.innerHTML = 'Yuborilmoqda...'; }
 
-  const BOT_TOKEN = '8636816129:AAE-sBNfcLy8e4EXqepHhDfhHG_p6PDZPxU';
-  const CHAT_ID = '-4273189072';
+  // Bot token bu yerda saqlanmaydi — server (CRM Vercel) tomonda. Har bir
+  // so'rov joriy foydalanuvchining o'z Supabase sessiyasi bilan
+  // autentifikatsiya qilinadi (xuddi CRM_WORKFLOW_API_URL kabi).
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){
+    showNotify("Sessiya topilmadi, qayta kiring");
+    if(sendBtn){ sendBtn.disabled = false; sendBtn.style.opacity = '1'; }
+    return;
+  }
 
   let sentCount = 0;
   for(const item of active){
-    const caption = item.nom + '\n' +
-      'Kerak: ' + item.miqdor + ' ' + item.birlik +
-      (item.izoh ? '\nIzoh: ' + item.izoh : '');
-
-    const keyboard = { inline_keyboard: [[
-      { text: '🔍 Qidirayapman', callback_data: 'search_' + item.id }
-    ]]};
-
     try {
-      if(item.rasm_url){
-        await fetch('https://api.telegram.org/bot'+BOT_TOKEN+'/sendPhoto', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: CHAT_ID, photo: item.rasm_url, caption, reply_markup: keyboard })
-        });
+      const res = await fetch(ERP_TELEGRAM_NOTIFY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+        body: JSON.stringify({
+          itemId: item.id, nom: item.nom, miqdor: item.miqdor, birlik: item.birlik,
+          izoh: item.izoh || null, rasmUrl: item.rasm_url || null
+        })
+      });
+      const body = await res.json().catch(() => null);
+      if(res.ok && body && body.ok){
+        // Statusni yuborildi deb belgilaymiz
+        await updateShoppingItem(item.id, {status:'yuborildi'});
+        sentCount++;
       } else {
-        await fetch('https://api.telegram.org/bot'+BOT_TOKEN+'/sendMessage', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: CHAT_ID, text: '🛒 ' + caption, reply_markup: keyboard })
-        });
+        console.error('Telegram notify xato', item.id, body);
       }
-      // Statusni yuborildi deb belgilaymiz
-      await updateShoppingItem(item.id, {status:'yuborildi'});
-      sentCount++;
       await new Promise(r => setTimeout(r, 400));
     } catch(e){ console.error(e); }
   }

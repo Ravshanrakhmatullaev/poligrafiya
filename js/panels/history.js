@@ -893,8 +893,7 @@ async function deleteHisobKitob(id, safeId){
     if(error){ showNotify('❌ Xato: '+error.message); return; }
     showNotify('Ochirildi ✅');
     // Email ni safeId dan tiklash
-    const email = Object.keys(XODIMLAR).find(e => e.replace(/[^a-z0-9]/gi,'_') === safeId) ||
-                  Object.keys(ROLES).find(e => e.replace(/[^a-z0-9]/gi,'_') === safeId);
+    const email = Object.keys(XODIMLAR).find(e => e.replace(/[^a-z0-9]/gi,'_') === safeId);
     if(email) await loadHisobTarix(email, safeId);
     renderOwnerPanel();
   });

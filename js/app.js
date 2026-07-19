@@ -184,11 +184,11 @@ document.addEventListener('click', e => {
   }
 });
 
-sb.auth.onAuthStateChange((event, session) => {
+sb.auth.onAuthStateChange(async (event, session) => {
   if(event === 'SIGNED_IN' && session && session.user){
     currentUser = session.user;
     document.getElementById('loading').classList.add('hidden');
-    onLogin();
+    await onLogin();
   } else if(event === 'SIGNED_OUT'){
     currentUser = null;
     showScreen('login');

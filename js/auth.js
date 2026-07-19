@@ -29,8 +29,27 @@ async function doLogout(){
   window.location.reload();
 }
 
-function onLogin(){
-  currentRole = ROLES[currentUser.email] || 'admin';
+// crm_profiles.role -> ERP role. Xatolik yoki qator topilmasa (masalan
+// tarmoq xatosi) null qaytadi — bu holatda ishonchli fallback sifatida
+// LEGACY_ROLE_FALLBACK (faqat uvdtf uchun) tekshiriladi, aks holda ruxsat
+// berilmaydi (onLogin quyida chiqarib yuboradi).
+async function resolveCurrentRole(){
+  try {
+    const { data, error } = await sb.from('crm_profiles').select('role').eq('id', currentUser.id).maybeSingle();
+    if(!error && data && CRM_ROLE_TO_ERP_ROLE[data.role]){
+      return CRM_ROLE_TO_ERP_ROLE[data.role];
+    }
+  } catch(e){ console.error('[resolveCurrentRole]', e); }
+  return LEGACY_ROLE_FALLBACK[currentUser.email] || null;
+}
+
+async function onLogin(){
+  currentRole = await resolveCurrentRole();
+  if(!currentRole){
+    showNotify("Ruxsat yo'q — administratorga murojaat qiling");
+    await doLogout();
+    return;
+  }
   const name = ((currentUser.email.split('+')[1] || '').split('@')[0]) || currentUser.email.split('@')[0];
 
   document.getElementById('user-name-chip').textContent = name;

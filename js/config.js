@@ -17,22 +17,33 @@ const TG_WEBHOOK    = 'https://adsuz-sklad-jaqpmu8qr-adsuz1.vercel.app/api/webho
 // autentifikatsiya qilinadi (sendCrmWorkflowTransition, js/db.js).
 const CRM_WORKFLOW_API_URL = 'https://ads-uz-crm.vercel.app/api/integrations/erp/user/workflow/transition';
 
-const ROLES = {
-  'ra.ravshan1998@gmail.com':              'owner',
-  'ra.ravshan1998+bayramali@gmail.com':    'ishlab',
-  'ra.ravshan1998+umar@gmail.com':         'ishlab',
-  'ra.ravshan1998+parvina@gmail.com':      'ishlab',
-  'ra.ravshan1998+mohlaroy@gmail.com':     'admin',
-  'ra.ravshan1998+abror@gmail.com':        'admin',
-  'ra.ravshan1998+umidjon@gmail.com':      'admin',
-  'ra.ravshan1998+ulugbek@gmail.com':      'admin',
-  'ra.ravshan1998+zuhriddin@gmail.com':    'ishlab',
-  'ra.ravshan1998+jorabek@gmail.com':      'ishlab',
-  'ra.ravshan1998+rashidulloh@gmail.com':  'admin',
-  'ra.ravshan1998+ulugbekdesign@gmail.com':'dizayner',
-  'ra.ravshan1998+begzodbek@gmail.com':    'dizayner',
-  'ra.ravshan1998+gaybulloh@gmail.com':    'dizayner',
-  'adsuzuvdtf@gmail.com':                  'uvdtf',
+// Bozorlik Telegram bildirishnomasi — xuddi shu naqsh: bot token bu yerda
+// yo'q, faqat server (CRM Vercel) tomonda. Joriy foydalanuvchining o'z
+// Supabase sessiyasi bilan autentifikatsiya qilinadi (sendBozorlikToTelegram,
+// js/panels/bozorlik.js). Yakuniy hardening sprint — avval BOT_TOKEN/CHAT_ID
+// shu faylda ochiq yozilgan edi.
+const ERP_TELEGRAM_NOTIFY_URL = 'https://ads-uz-crm.vercel.app/api/integrations/erp/telegram-notify';
+
+// ROL MANBAI — crm_profiles.role (Supabase), auth.uid() bo'yicha.
+// Yakuniy hardening sprint, Phase 2: avval shu yerda email->role hardcoded
+// map bo'lgan (har bir yangi/o'zgargan xodim uchun kod deploy talab qilardi,
+// unlisted email esa xatolik bilan emas — jim ravishda 'admin'ga tushardi).
+// Endi resolveCurrentRole() (js/auth.js) currentUser.id bo'yicha
+// crm_profiles.role'ni o'qiydi va shu mapga solishtiradi.
+const CRM_ROLE_TO_ERP_ROLE = {
+  director: 'owner',
+  manager: 'admin',
+  designer: 'dizayner',
+  production: 'ishlab',
+};
+
+// VAQTINCHALIK FALLBACK — faqat crm_profiles'da umuman qatori yo'q
+// foydalanuvchilar uchun (crm_profiles.role'da 'uvdtf' degan qiymat yo'q —
+// UV DTF CRM xodimi emas, tashqi sherik). Bu yerga YANGI xodim qo'shilmasin:
+// haqiqiy xodim uchun to'g'ri yo'l — crm_profiles'da qator yaratish
+// (PRODUCTION_RUNBOOK.md, "Yangi xodim qo'shish").
+const LEGACY_ROLE_FALLBACK = {
+  'adsuzuvdtf@gmail.com': 'uvdtf',
 };
 
 const XODIMLAR = {
