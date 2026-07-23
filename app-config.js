@@ -3,7 +3,9 @@
 // SUPABASE CONFIG
 // ══════════════════════════════════════
 const SUPABASE_URL = 'https://jxxmbgmbaqausqunfyna.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4eG1iZ21iYXFhdXNxdW5meW5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3MjU2MzUsImV4cCI6MjA5ODMwMTYzNX0.G3bULfygRDeqZxOdBDUop296K60_cWCVLFBCZfXkWPo';
+// Eslatma: bu fayl index.html tomonidan yuklanmaydi (js/config.js ishlatiladi) —
+// shunga qaramay, 2026-07 kalit migratsiyasiga mos qilib yangilandi.
+const SUPABASE_KEY = 'sb_publishable_FEqgX7REH1r-cJPfQK8a5w_-5V_-RYG';
 const OWNER_EMAIL  = 'ra.ravshan1998@gmail.com';
 
 // Rollar — email bo'yicha

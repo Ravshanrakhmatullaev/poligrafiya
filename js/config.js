@@ -4,7 +4,12 @@
 // ═══════════════════════════════════════
 
 const SUPABASE_URL  = 'https://jxxmbgmbaqausqunfyna.supabase.co';
-const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4eG1iZ21iYXFhdXNxdW5meW5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3MjU2MzUsImV4cCI6MjA5ODMwMTYzNX0.G3bULfygRDeqZxOdBDUop296K60_cWCVLFBCZfXkWPo';
+// 2026-07 kalit migratsiyasi: eski legacy anon JWT o'rniga yangi
+// publishable kalit (sb_publishable_...) — funksional jihatdan bir xil
+// (public/xavfsiz, RLS haqiqiy chegara), lekin legacy JWT chiqarilishidan
+// mustaqil. SECRET_ROTATION_2026-07-20.md va shu sana atrofidagi migratsiya
+// hisobotiga qarang.
+const SUPABASE_KEY  = 'sb_publishable_FEqgX7REH1r-cJPfQK8a5w_-5V_-RYG';
 const OWNER_EMAIL   = 'ra.ravshan1998@gmail.com';
 const SKLAD_EDITOR  = 'ra.ravshan1998+bayramali@gmail.com';
 const ABROR_EMAIL   = 'ra.ravshan1998+abror@gmail.com'; // bonus_50 checkbox faqat Abror uchun
