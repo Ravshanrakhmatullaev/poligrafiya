@@ -83,31 +83,44 @@ async function saveDizayner(){
   if(isSaving){ showNotify('Saqlanmoqda, kuting...'); return; }
   const rows = dizD.filter(r=>r.nom||(parseInt(r.summa)||0));
   if(!rows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+
   isSaving = true;
-  const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
-  let jami=0, tolandi=0, tolanmadi=0;
-  rows.forEach(r=>{ const s=parseInt(r.summa)||0; jami+=s; if(r.tolov===true) tolandi+=s; else if(r.tolov===false) tolanmadi+=s; });
-  const sanaVaqt = getSanaVaqt();
-  const row = {
-    user_id: currentUser.id,
-    user_email: currentUser.email,
-    user_name: name,
-    type: 'dizayner',
-    data: { rows },
-    total_zakaz: jami,
-    total_daromad: tolandi,
-    total_jami: jami,
-    sana: sanaVaqt,
-  };
-  const res = await createHistoryItem(row); const error = res ? null : new Error('insert failed');
-  isSaving = false;
-  if(error){ showNotify('❌ Xatolik: '+error.message); return; }
-  showNotify('✅ Saqlandi! — '+sanaVaqt);
-  // Avval tarixni yangilab, keyin formani tozalaymiz
-  await loadHistory();
-  dizD = [{nom:'', summa:'', tolovchi:'offis', tolov:null, kontakt:''}];
-  dizTimers = {};
-  renderDizayner();
+  try {
+    const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
+    // summa har doim son sifatida saqlanadi — dizD dan kelayotgan xom
+    // qatorlar (rows) ham data.rows ichida sonlashtiriladi, matn holida emas.
+    const numericRows = rows.map(r=>({ ...r, summa: parseInt(r.summa)||0 }));
+    let jami=0, tolandi=0, tolanmadi=0;
+    numericRows.forEach(r=>{ jami+=r.summa; if(r.tolov===true) tolandi+=r.summa; else if(r.tolov===false) tolanmadi+=r.summa; });
+    const sanaVaqt = getSanaVaqt();
+    const row = {
+      user_id: currentUser.id,
+      user_email: currentUser.email,
+      user_name: name,
+      type: 'dizayner',
+      data: { rows: numericRows },
+      total_zakaz: jami,
+      total_daromad: tolandi,
+      total_jami: jami,
+      sana: sanaVaqt,
+    };
+
+    const saved = await createHistoryItem(row);
+    if(!saved) throw new Error('insert failed');
+
+    showNotify('✅ Saqlandi! — '+sanaVaqt);
+
+    // Avval tarixni yangilab, keyin formani tozalaymiz
+    await loadHistory();
+    dizD = [{nom:'', summa:'', tolovchi:'offis', tolov:null, kontakt:''}];
+    dizTimers = {};
+    renderDizayner();
+  } catch (e) {
+    console.error('[saveDizayner]', e);
+    showNotify('❌ Xatolik: ' + (e.message || "noma'lum xato"));
+  } finally {
+    isSaving = false;
+  }
 }
 
 async function sendWeeklyDizayner(){
@@ -174,7 +187,7 @@ function renderAdmin(){
 function renderAdminStats(){
   // Tarixdagi barcha "admin" turdagi yozuvlarni shu user uchun yig'amiz
   if(!currentUser) return;
-  const myHistory = (allHistory||[]).filter(h => h.user_email===currentUser.email && h.type==='admin');
+  const myHistory = (allHistory||[]).filter(h => h.user_id===currentUser.id && h.type==='admin');
   let tz=0, tdJami=0, tdQoldiq=0, soni=0;
   myHistory.forEach(h=>{
     tz += h.total_zakaz||0;
@@ -195,7 +208,7 @@ function renderAdminStats(){
 function renderIshlabStats(){
   // Tarixdagi barcha "ishlab" turdagi yozuvlarni shu user uchun yig'amiz
   if(!currentUser) return;
-  const myHistory = (allHistory||[]).filter(h => h.user_email===currentUser.email && h.type==='ishlab');
+  const myHistory = (allHistory||[]).filter(h => h.user_id===currentUser.id && h.type==='ishlab');
   let soni=0, brakSumma=0, qoldiqSumma=0;
   myHistory.forEach(h=>{
     soni++;
