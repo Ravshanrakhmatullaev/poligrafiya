@@ -343,6 +343,7 @@ function dvConfirmCancel() {
 }
 
 async function dvConfirmRescan() {
+  dvBusy = false;
   dvPreviewToken = null;
   dvPreviewBranchName = null;
   document.getElementById('dv-confirm-card')?.classList.add('hidden');
@@ -512,19 +513,38 @@ function dvShowTab(tab) {
   }
 }
 
+// Server har doim Asia/Tashkent bo'yicha "sana" hisoblaydi (attendance_scan RPC) —
+// mijoz tomonida qurilma vaqt zonasi boshqacha bo'lsa ham shu bilan mos kelishi uchun
+// bu yerda ham aniq Asia/Tashkent ishlatiladi, qurilmaning lokal soati emas.
+function dvTashkentDateStr(date) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Tashkent', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(date);
+  const p = {};
+  parts.forEach(({ type, value }) => { p[type] = value; });
+  return `${p.year}-${p.month}-${p.day}`;
+}
+
 function dvTodayStr() {
-  const d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  return dvTashkentDateStr(new Date());
 }
 
 function dvMonthStartStr() {
-  const d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-01';
+  const today = dvTodayStr();
+  return today.slice(0, 7) + '-01';
 }
 
 async function loadMyDavomatTab() {
   const today = dvTodayStr();
-  const rows = await getMyDavomat(dvMonthStartStr(), today);
+  let rows;
+  try {
+    rows = await getMyDavomat(dvMonthStartStr(), today);
+  } catch (e) {
+    const statusEl = document.getElementById('dv-mine-status');
+    if (statusEl) statusEl.textContent = 'Xatolik — yuklab bo\'lmadi';
+    showNotify?.('❌ Davomat maʼlumotini yuklashda xatolik: ' + (e.message || "noma'lum xato"));
+    return;
+  }
   const fmtTime = (iso) => iso ? new Date(iso).toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' }) : '—';
 
   const todayRow = rows.find(r => r.sana === today);
@@ -545,11 +565,11 @@ async function loadMyDavomatTab() {
   const totalMinutes = rows.reduce((sum, r) => sum + (r.worked_minutes || 0), 0);
   const totalHours = Math.round(totalMinutes / 6) / 10;
 
-  // Shu oyning bugungacha bo'lgan ish kunlari (yakshanbadan tashqari)
-  const now = new Date();
+  // Shu oyning bugungacha bo'lgan ish kunlari (yakshanbadan tashqari) — Asia/Tashkent bo'yicha
+  const [todayYear, todayMonth, todayDay] = today.split('-').map(Number);
   let workDays = 0;
-  for (let d = 1; d <= now.getDate(); d++) {
-    if (new Date(now.getFullYear(), now.getMonth(), d).getDay() !== 0) workDays++;
+  for (let d = 1; d <= todayDay; d++) {
+    if (new Date(Date.UTC(todayYear, todayMonth - 1, d)).getUTCDay() !== 0) workDays++;
   }
   const percent = workDays > 0 ? Math.round((daysPresent / workDays) * 100) : 0;
 
@@ -562,8 +582,7 @@ async function loadMyDavomatTab() {
 function dvSetToday(reload = true) {
   const sanaInput = document.getElementById('dv-list-sana');
   if (sanaInput && !sanaInput.value) {
-    const d = new Date();
-    sanaInput.value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    sanaInput.value = dvTodayStr();
   }
   if (reload) loadDavomatList();
 }
@@ -575,25 +594,32 @@ async function loadDavomatList() {
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text3)">Yuklanmoqda...</td></tr>';
 
-  if (!dvBranchCache) {
-    const branches = await getBranches();
-    dvBranchCache = {};
-    branches.forEach(b => { dvBranchCache[b.id] = b; });
+  let rows;
+  try {
+    if (!dvBranchCache) {
+      const branches = await getBranches();
+      dvBranchCache = {};
+      branches.forEach(b => { dvBranchCache[b.id] = b; });
+    }
+
+    const sanaInput = document.getElementById('dv-list-sana');
+    const branchSelect = document.getElementById('dv-list-branch');
+    const sana = sanaInput ? sanaInput.value : '';
+    const branchCode = branchSelect ? branchSelect.value : '';
+
+    const filters = {};
+    if (sana) filters.sana = sana;
+    if (branchCode) {
+      const match = Object.values(dvBranchCache).find(b => b.code === branchCode);
+      if (match) filters.branch_id = match.id;
+    }
+
+    rows = await getDavomatList(filters);
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--danger, #e03131)">Xatolik — ro\'yxatni yuklab bo\'lmadi</td></tr>';
+    showNotify?.('❌ Davomat ro\'yxatini yuklashda xatolik: ' + (e.message || "noma'lum xato"));
+    return;
   }
-
-  const sanaInput = document.getElementById('dv-list-sana');
-  const branchSelect = document.getElementById('dv-list-branch');
-  const sana = sanaInput ? sanaInput.value : '';
-  const branchCode = branchSelect ? branchSelect.value : '';
-
-  const filters = {};
-  if (sana) filters.sana = sana;
-  if (branchCode) {
-    const match = Object.values(dvBranchCache).find(b => b.code === branchCode);
-    if (match) filters.branch_id = match.id;
-  }
-
-  const rows = await getDavomatList(filters);
   dvListRowsCache = {};
   rows.forEach(r => { dvListRowsCache[r.id] = r; });
 

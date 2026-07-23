@@ -506,37 +506,31 @@ async function checkIsAttendanceStaff() {
 }
 
 async function getBranches() {
-  try {
-    const { data, error } = await sb.from('branches')
-      .select('id, name, code, is_active').eq('is_active', true).order('name');
-    if (error) throw error;
-    return data || [];
-  } catch (e) { console.error('[getBranches]', e); return []; }
+  const { data, error } = await sb.from('branches')
+    .select('id, name, code, is_active').eq('is_active', true).order('name');
+  if (error) { console.error('[getBranches]', error); throw error; }
+  return data || [];
 }
 
 async function getDavomatList(filters = {}) {
-  try {
-    let q = sb.from('davomat').select('*').order('check_in', { ascending: false });
-    if (filters.sana) q = q.eq('sana', filters.sana);
-    if (filters.branch_id) q = q.eq('branch_id', filters.branch_id);
-    const { data, error } = await q;
-    if (error) throw error;
-    return data || [];
-  } catch (e) { console.error('[getDavomatList]', e); return []; }
+  let q = sb.from('davomat').select('*').order('check_in', { ascending: false });
+  if (filters.sana) q = q.eq('sana', filters.sana);
+  if (filters.branch_id) q = q.eq('branch_id', filters.branch_id);
+  const { data, error } = await q;
+  if (error) { console.error('[getDavomatList]', error); throw error; }
+  return data || [];
 }
 
 // Xodimning o'z davomat yozuvlari — RLS orqali ham himoyalangan, bu yerda .eq('user_id',...)
 // bilan qo'shimcha aniq filtr (staff/owner ham shu funksiyani chaqirsa faqat o'zinikini ko'radi)
 async function getMyDavomat(fromDate, toDate) {
-  try {
-    if (!currentUser) return [];
-    let q = sb.from('davomat').select('*').eq('user_id', currentUser.id).order('sana', { ascending: false });
-    if (fromDate) q = q.gte('sana', fromDate);
-    if (toDate) q = q.lte('sana', toDate);
-    const { data, error } = await q;
-    if (error) throw error;
-    return data || [];
-  } catch (e) { console.error('[getMyDavomat]', e); return []; }
+  if (!currentUser) return [];
+  let q = sb.from('davomat').select('*').eq('user_id', currentUser.id).order('sana', { ascending: false });
+  if (fromDate) q = q.gte('sana', fromDate);
+  if (toDate) q = q.lte('sana', toDate);
+  const { data, error } = await q;
+  if (error) { console.error('[getMyDavomat]', error); throw error; }
+  return data || [];
 }
 
 // ── DAVOMAT MANAGER AMALLARI (owner/attendance_manager) ──

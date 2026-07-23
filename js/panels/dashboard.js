@@ -517,5 +517,13 @@ async function renderMyAttendanceWidget(){
     document.getElementById('db-att-checkout').textContent = row ? fmtTime(row.check_out) : '—';
     document.getElementById('db-att-worked').textContent = (row && row.worked_minutes != null) ? (Math.round(row.worked_minutes/6)/10) + ' soat' : '—';
     document.getElementById('db-att-late').textContent = (row && row.late_minutes != null) ? row.late_minutes + ' daq' : '—';
-  } catch(e){ console.error('[renderMyAttendanceWidget]', e); }
+  } catch(e){
+    console.error('[renderMyAttendanceWidget]', e);
+    widget.classList.remove('hidden');
+    const statusEl = document.getElementById('db-att-status');
+    if (statusEl) statusEl.textContent = 'Xatolik — yuklanmadi';
+    ['db-att-checkin', 'db-att-checkout', 'db-att-worked', 'db-att-late'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.textContent = '—';
+    });
+  }
 }
