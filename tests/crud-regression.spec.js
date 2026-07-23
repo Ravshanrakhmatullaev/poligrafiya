@@ -1,6 +1,6 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
-const { loginAsAdmin } = require('./helpers/login');
+const { loginAsAdmin, loginAsDesigner } = require('./helpers/login');
 
 /**
  * CRUD REGRESSION TESTS
@@ -303,5 +303,95 @@ test.describe('CRUD regression — real create/delete flow', () => {
 
     await page.unroute('**/rest/v1/zakazlar*');
     // cleanup handled by afterEach's E2E_TEST sweep
+  });
+});
+
+test.describe('Dizayner Saqlash — real create flow (2026-07-22 fix)', () => {
+  // Regression coverage for two bugs fixed together, both required for a
+  // designer save to actually work end-to-end:
+  //   1. zakazlar_type_check never allowed type='dizayner' (DB-level —
+  //      every designer save was rejected with a 23514 check_violation
+  //      before any client-side code even mattered; confirmed live: zero
+  //      type='dizayner' rows existed in production before this fix).
+  //   2. saveDizayner() had no try/catch/finally — an unhandled Supabase
+  //      error left the (app-wide, shared) isSaving flag stuck true
+  //      forever, matching the "Saqlanmoqda..." stuck-UI report.
+
+  test.beforeEach(async ({ page }) => {
+    const ok = await loginAsDesigner(page);
+    if (!ok) test.skip();
+  });
+
+  test.afterEach(async ({ page }) => {
+    await cleanupAllE2ETestRecords(page);
+  });
+
+  test('dizayner Saqlash real DB insertga yetadi va tarixda ko\'rinadi', async ({ page }) => {
+    const productName = E2E_MARK + '_dizayner_save';
+
+    await page.evaluate((id) => { showPanel(id); }, 'dizayner');
+    await page.waitForTimeout(300);
+
+    const rowsContainer = page.locator('#diz-rows');
+    await expect(rowsContainer).toBeVisible({ timeout: 5_000 });
+    const firstRow = rowsContainer.locator('.diz-row').first();
+    await firstRow.locator('input[placeholder*="nom" i], input[placeholder*="mahsulot" i]').first().fill(productName);
+    const sumInput = firstRow.locator('input[inputmode="numeric"]').first();
+    await sumInput.fill('150000');
+    await sumInput.press('Tab');
+    await page.waitForTimeout(300);
+
+    const saveBtn = page.locator('button[onclick*="saveDizayner"]').first();
+    await saveBtn.click();
+    await page.waitForTimeout(1_500);
+
+    // Must reach a real success — never a stuck "Saqlanmoqda..." and never
+    // a silent check-constraint rejection.
+    await expect(page.locator('.toast', { hasText: 'Saqlanmoqda, kuting' })).toHaveCount(0);
+    await expect(page.locator('.toast', { hasText: /Saqlandi/i })).toBeVisible({ timeout: 5_000 });
+
+    await page.evaluate((id) => { showPanel(id); }, 'tarix');
+    await page.waitForTimeout(500);
+    await expect(page.locator('.rp-card', { hasText: productName })).toBeVisible({ timeout: 5_000 });
+  });
+
+  test('dizayner isSaving flag regressiyasi: xatodan keyin qayta saqlash ishlaydi', async ({ page }) => {
+    const productName = E2E_MARK + '_dizayner_isSaving_recovery';
+
+    await page.evaluate((id) => { showPanel(id); }, 'dizayner');
+    await page.waitForTimeout(300);
+
+    const rowsContainer = page.locator('#diz-rows');
+    await expect(rowsContainer).toBeVisible({ timeout: 5_000 });
+    const firstRow = rowsContainer.locator('.diz-row').first();
+    await firstRow.locator('input[placeholder*="nom" i], input[placeholder*="mahsulot" i]').first().fill(productName);
+    const sumInput = firstRow.locator('input[inputmode="numeric"]').first();
+    await sumInput.fill('160000');
+    await sumInput.press('Tab');
+    await page.waitForTimeout(300);
+
+    let failFirstAttempt = true;
+    await page.route('**/rest/v1/zakazlar*', async (route) => {
+      if (route.request().method() === 'POST' && failFirstAttempt) {
+        failFirstAttempt = false;
+        await route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ message: 'simulated failure' }) });
+      } else {
+        await route.continue();
+      }
+    });
+
+    const saveBtn = page.locator('button[onclick*="saveDizayner"]').first();
+    await saveBtn.click();
+    await page.waitForTimeout(1_500);
+
+    await expect(page.locator('.toast', { hasText: /Xatolik|xato/i })).toBeVisible({ timeout: 3_000 });
+
+    await saveBtn.click();
+    await page.waitForTimeout(1_500);
+
+    await expect(page.locator('.toast', { hasText: 'Saqlanmoqda, kuting' })).toHaveCount(0);
+    await expect(page.locator('.toast', { hasText: /Saqlandi/i })).toBeVisible({ timeout: 5_000 });
+
+    await page.unroute('**/rest/v1/zakazlar*');
   });
 });

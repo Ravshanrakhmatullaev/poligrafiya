@@ -151,14 +151,17 @@ async function deleteZakaz(id) {
 // ═══════════════════════════════════════
 
 // ── HISTORY (zakazlar) ──
+// Muhim: xato bo'lsa THROW qiladi — "ma'lumot yo'q" bilan "so'rov
+// muvaffaqiyatsiz tugadi" holatlarini chaqiruvchi kod (loadHistory va h.k.)
+// aniq ajratishi uchun. Hech qachon xatoni jimgina []ga aylantirmaydi —
+// aks holda hisobotlar sahifasi haqiqiy xato paytida ham "ma'lumot yo'q"
+// bo'lib ko'rinadi (2026-07-22 topilgan va tuzatilgan xato).
 async function getHistory(filter = {}) {
-  try {
-    let q = sb.from('zakazlar').select('*').order('created_at', { ascending: false });
-    if (filter.user_id) q = q.eq('user_id', filter.user_id);
-    const { data, error } = await q;
-    if (error) throw error;
-    return data || [];
-  } catch (e) { console.error('[getHistory]', e); return []; }
+  let q = sb.from('zakazlar').select('*').order('created_at', { ascending: false });
+  if (filter.user_id) q = q.eq('user_id', filter.user_id);
+  const { data, error } = await q;
+  if (error) { console.error('[getHistory]', error); throw error; }
+  return data || [];
 }
 
 async function createHistoryItem(data) {

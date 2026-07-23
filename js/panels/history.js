@@ -34,10 +34,19 @@ AppStore.on('historyChanged', () => {
 
 
 // ── HISTORY ──
+// getHistory xato bo'lsa THROW qiladi (js/db.js) — bu yerda ushlanadi va
+// haqiqiy xato foydalanuvchiga ko'rsatiladi, "ma'lumot yo'q" bilan
+// aralashtirilmaydi (2026-07-22 tuzatilgan xato: avval xato jimgina
+// bo'sh hisobot sifatida ko'rsatilardi).
 async function loadHistory(){
   if (!currentUser) return;
-  const data = await getHistory(currentRole !== 'owner' ? {user_id: currentUser.id} : {}); const error = null;
-  if(!error) allHistory = data || [];
+  try {
+    allHistory = await getHistory(currentRole !== 'owner' ? {user_id: currentUser.id} : {});
+  } catch (e) {
+    console.error('[loadHistory]', e);
+    showNotify('❌ Tarixni yuklashda xato: ' + (e.message || "noma'lum xato"));
+    return;
+  }
   renderHistory();
   if(currentRole === 'owner') renderOwnerPanel();
   if(currentRole === 'admin') renderAdminStats();
@@ -1008,11 +1017,17 @@ async function saveIzoh(email, oy, yil, izoh){
 
 async function copyWeekly(type){
   const user = currentUser;
+  let data;
+  try {
     const _raw = await getHistory({user_id: user.id});
-    const data = (_raw||[]).filter(h=>h.type===type).sort((a,b)=>a.created_at.localeCompare(b.created_at));
-    const error = null;
+    data = (_raw||[]).filter(h=>h.type===type).sort((a,b)=>a.created_at.localeCompare(b.created_at));
+  } catch (e) {
+    console.error('[copyWeekly]', e);
+    showNotify('❌ Yuklashda xato: ' + (e.message || "noma'lum xato"));
+    return;
+  }
 
-  if(error || !data || !data.length){
+  if(!data.length){
     showNotify('Haftalik yozuvlar topilmadi');
     return;
   }
@@ -1078,8 +1093,15 @@ async function copyWeekly(type){
 async function copyWeeklyDizayner(){
   const user = currentUser;
   const name = user.email.split('+')[1] ? user.email.split('+')[1].split('@')[0] : user.email.split('@')[0];
-    const data = await getHistory({user_id: user.id}); const error = null;
-  if(error||!data||!data.length){ showNotify('Haftalik yozuvlar topilmadi'); return; }
+  let data;
+  try {
+    data = await getHistory({user_id: user.id});
+  } catch (e) {
+    console.error('[copyWeeklyDizayner]', e);
+    showNotify('❌ Yuklashda xato: ' + (e.message || "noma'lum xato"));
+    return;
+  }
+  if(!data.length){ showNotify('Haftalik yozuvlar topilmadi'); return; }
   let lines3 = ['Dizayner: '+name,'Haftalik hisobot',''];
   let totalJ=0, totalT=0, totalTM=0;
   data.forEach(h=>{
@@ -1258,11 +1280,17 @@ async function sendWeekly(type){
   const weekAgo = new Date();
   weekAgo.setDate(weekAgo.getDate() - 7);
 
+  let data;
+  try {
     const _raw = await getHistory({user_id: user.id});
-    const data = (_raw||[]).filter(h=>h.type===type).sort((a,b)=>a.created_at.localeCompare(b.created_at));
-    const error = null;
+    data = (_raw||[]).filter(h=>h.type===type).sort((a,b)=>a.created_at.localeCompare(b.created_at));
+  } catch (e) {
+    console.error('[sendWeekly]', e);
+    showNotify('❌ Yuklashda xato: ' + (e.message || "noma'lum xato"));
+    return;
+  }
 
-  if(error || !data || !data.length){
+  if(!data.length){
     showNotify('Haftalik yozuvlar topilmadi');
     return;
   }

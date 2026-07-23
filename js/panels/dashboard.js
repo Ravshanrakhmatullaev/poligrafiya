@@ -23,7 +23,11 @@ function setDbMode(mode, el){
 function renderDashboard(){
   if(!currentUser || !allHistory) return;
   renderMyAttendanceWidget();
-  const myData = allHistory.filter(h => h.user_email === currentUser.email);
+  // user_id bo'yicha filtrlanadi (email emas) — user_email'da katta/kichik
+  // harf yoki bo'shliq farqi bo'lsa ham xato ishlamaslik uchun (2026-07-22
+  // aniqlangan zaif joy: eski/noaniq user_email qatorlar jimgina
+  // tashlab yuborilishi mumkin edi).
+  const myData = allHistory.filter(h => h.user_id === currentUser.id);
   if(!myData.length){
     document.getElementById('db-recent-list').innerHTML = '<div class="empty-state"><p>Hali yozuvlar yoq</p></div>';
     return;
