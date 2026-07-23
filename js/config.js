@@ -7,8 +7,8 @@ const SUPABASE_URL  = 'https://jxxmbgmbaqausqunfyna.supabase.co';
 // 2026-07 kalit migratsiyasi: eski legacy anon JWT o'rniga yangi
 // publishable kalit (sb_publishable_...) — funksional jihatdan bir xil
 // (public/xavfsiz, RLS haqiqiy chegara), lekin legacy JWT chiqarilishidan
-// mustaqil. SECRET_ROTATION_2026-07-20.md va shu sana atrofidagi migratsiya
-// hisobotiga qarang.
+// mustaqil. Migratsiya hisoboti: ads-uz-crm repo,
+// SECRET_ROTATION_2026-07-20.md va SECRET_ROTATION_2026-07-23.md.
 const SUPABASE_KEY  = 'sb_publishable_FEqgX7REH1r-cJPfQK8a5w_-5V_-RYG';
 const OWNER_EMAIL   = 'ra.ravshan1998@gmail.com';
 const SKLAD_EDITOR  = 'ra.ravshan1998+bayramali@gmail.com';
