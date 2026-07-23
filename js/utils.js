@@ -50,11 +50,26 @@ function showConfirm(title, msg, onConfirm, onCancel) {
 }
 
 // ── Hisoblash (bir joyda!) ──
-function getFoiz(summa) {
-  for (const [min, max, f] of FOIZ) {
-    if (summa >= min && summa <= max) return f;
+// Kanonik funksiya — dizayner komissiya bosqichini SUMMA bo'yicha aniqlaydi.
+// FOIZ jadvali (config.js) yagona haqiqat manbai: bu yerda yoki boshqa
+// hech qayerda foizlar qayta hisoblanmaydi/ikkilanmaydi (masalan hech qachon
+// /100 qo'shimcha bo'linish yo'q — decimal to'g'ridan-to'g'ri FOIZ dan olinadi).
+function getDesignerRate(summa) {
+  const amount = Number(summa) || 0;
+  for (let i = 0; i < FOIZ.length; i++) {
+    const [min, max, decimal] = FOIZ[i];
+    if (amount >= min && amount <= max) {
+      return { percent: Math.round(decimal * 1000) / 10, decimal, label: FL[i] ?? '' };
+    }
   }
-  return 0.015;
+  // FOIZ jadvali 0 dan Infinity gacha to'liq qamrab oladi — bu yerga
+  // yetib kelish mumkin emas, faqat manfiy/NaN summalar uchun xavfsizlik to'ri.
+  const last = FOIZ[FOIZ.length - 1];
+  return { percent: Math.round(last[2] * 1000) / 10, decimal: last[2], label: FL[FL.length - 1] ?? '' };
+}
+
+function getFoiz(summa) {
+  return getDesignerRate(summa).decimal;
 }
 
 // NOTE: quyidagi uvNarx/calcUv/ekoNarx/calcEko/gUN — app-history.js (commit b9bb5bb)
