@@ -72,6 +72,21 @@ function getFoiz(summa) {
   return getDesignerRate(summa).decimal;
 }
 
+// ── Zakaz daromadi/summasi (YAGONA MANBA) ──
+// Bitta zakaz yozuvidan xodim daromadini (va zakaz summasini) qaytaradi.
+// Butun ilova shu funksiyalarni ishlatishi kerak — dashboard, owner report,
+// hisob berish — shunda panellar bir-biridan farq qilib qolmaydi.
+// Qoida: admin turi total_daromad da; qolgan barcha turlar (ishlab, dizayner
+// va kelajakdagilar) total_jami da saqlanadi.
+function orderEarning(h) {
+  if (!h) return 0;
+  return h.type === 'admin' ? (h.total_daromad || 0) : (h.total_jami || 0);
+}
+function orderZakaz(h) {
+  if (!h) return 0;
+  return h.type === 'admin' ? (h.total_zakaz || 0) : (h.total_jami || 0);
+}
+
 // NOTE: quyidagi uvNarx/calcUv/ekoNarx/calcEko/gUN — app-history.js (commit b9bb5bb)
 // dagi tasdiqlangan ishlaydigan formulalar bilan almashtirildi (Ishlab chiqarish
 // panelidagi ko'rsatilgan narxlarga mos: UV list-asosli, Eko kv.m-asosli)

@@ -664,13 +664,10 @@ function renderOwnerPanel(){
       daromad: 0,
       count: 0
     };
-    if(h.type==='admin'){
-      byUser[key].zakaz   += h.total_zakaz||0;
-      byUser[key].daromad += h.total_daromad||0;
-    } else if(h.type==='ishlab'){
-      byUser[key].zakaz   += h.total_jami||0;
-      byUser[key].daromad += h.total_jami||0;
-    }
+    // Yagona manba: admin -> total_daromad, qolganlar (ishlab, dizayner) -> total_jami.
+    // Dashboard va berHisob() bilan aynan bir xil hisob — panellar farq qilmaydi.
+    byUser[key].zakaz   += orderZakaz(h);
+    byUser[key].daromad += orderEarning(h);
     byUser[key].count++;
   });
 
@@ -706,10 +703,13 @@ function renderOwnerPanel(){
       const wrap = document.createElement('div');
       wrap.style.marginBottom = '4px';
 
-      const qolganColor = qolgan > 0 ? 'var(--red)' : qolgan < 0 ? '#6366F1' : 'var(--green)';
+      // "Hisob yopiq" faqat haqiqiy hisob-kitob bo'lganda ko'rsatiladi.
+      // Daromad ham, berilgan pul ham 0 bo'lsa (0-0=0) — bu yopilgan hisob emas, umuman hisob yo'q.
+      const hasActivity = u.daromad > 0 || totalBerildi > 0;
+      const qolganColor = qolgan > 0 ? 'var(--red)' : qolgan < 0 ? '#6366F1' : hasActivity ? 'var(--green)' : 'var(--text3)';
       const qolganText  = qolgan > 0 ? fmt(qolgan)+" so'm" :
                           qolgan < 0 ? fmt(Math.abs(qolgan))+" so'm (ortiq)" :
-                          '✅ Hisob yopiq';
+                          hasActivity ? '✅ Hisob yopiq' : '—';
 
       wrap.innerHTML = `<div class="owner-row" style="cursor:pointer;margin-bottom:0" onclick="toggleOwnerDetail('${safeId}')">
         <div class="av" style="background:${c.bg};color:${c.clr}">${(u.name||'?')[0].toUpperCase()}</div>
@@ -809,10 +809,7 @@ async function berHisob(email, name, safeId){
 
   // Hodimning umumiy daromadi (allHistory dan)
   const userData = allHistory.filter(h => h.user_email === email);
-  const jami = userData.reduce((s,h) => {
-    if(h.type==='admin') return s + (h.total_daromad||0);
-    return s + (h.total_jami||0);
-  }, 0);
+  const jami = userData.reduce((s,h) => s + orderEarning(h), 0);
 
   // Oldingi to'lovlar jami
   const oldHisoblar = await getHisobKitob(email);

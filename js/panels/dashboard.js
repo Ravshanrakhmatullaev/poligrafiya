@@ -44,8 +44,8 @@ function renderDashboard(){
 
   myData.forEach(h => {
     const d = new Date(h.created_at);
-    const val = h.type === 'admin' ? (h.total_daromad||0) : (h.total_jami||0);
-    jamiZakaz += (h.type === 'admin' ? (h.total_zakaz||0) : val);
+    const val = orderEarning(h); // yagona manba — owner report bilan bir xil
+    jamiZakaz += orderZakaz(h);
     if(!h.is_paid && !h.is_brak) sofDaromad += val;
     if(d.getMonth() === thisMonth && d.getFullYear() === thisYear) buOy += val;
     if(d.getMonth() === lastMonth && d.getFullYear() === lastMonthYear) utganOy += val;
@@ -129,7 +129,7 @@ function renderDashboard(){
   const listEl = el('db-recent-list');
   if(!listEl) return;
   listEl.innerHTML = recent.map(h => {
-    const val = h.type === 'admin' ? (h.total_daromad||0) : (h.total_jami||0);
+    const val = orderEarning(h);
     const statusColor = h.is_brak ? 'var(--red)' : h.is_paid ? 'var(--green)' : 'var(--amber)';
     const statusText = h.is_brak ? 'Brak' : h.is_paid ? "To'landi" : 'Kutilmoqda';
     const typeLabel = h.type === 'admin' ? '👤' : h.type === 'ishlab' ? '🏭' : '🎨';
