@@ -12,7 +12,12 @@ const SUPABASE_URL  = 'https://jxxmbgmbaqausqunfyna.supabase.co';
 const SUPABASE_KEY  = 'sb_publishable_FEqgX7REH1r-cJPfQK8a5w_-5V_-RYG';
 const OWNER_EMAIL   = 'ra.ravshan1998@gmail.com';
 const SKLAD_EDITOR  = 'ra.ravshan1998+bayramali@gmail.com';
-const ABROR_EMAIL   = 'ra.ravshan1998+abror@gmail.com'; // bonus_50 checkbox faqat Abror uchun
+const ABROR_EMAIL   = 'ra.ravshan1998+abror@gmail.com';
+const RASHIDULLOH_EMAIL = 'ra.ravshan1998+rashidulloh@gmail.com';
+// bonus_50 ("+50%" / "Jarayoni bilan") checkbox faqat quyidagi xodimlarga.
+// Yagona ruxsat ro'yxati — email bo'yicha barqaror identifikatsiya
+// (canUseBonus50, utils.js). Yangi xodim qo'shish = shu ro'yxatga email qo'shish.
+const BONUS50_EMAILS = [ABROR_EMAIL, RASHIDULLOH_EMAIL];
 // TG_BOT_TOKEN frontendda saqlanmaydi!
 // Telegram webhook: vercel endpoint orqali
 const TG_WEBHOOK    = 'https://adsuz-sklad-jaqpmu8qr-adsuz1.vercel.app/api/webhook';
@@ -114,27 +119,68 @@ const FL = [
   '49 999 001 – 99 999 000','100 000 000 +',
 ];
 
+// Xodim -> daraja tayinlanishi (email bo'yicha). getKpi(email) shu jadvaldan
+// {daraja, maqsad, fiks} qaytaradi (utils.js). Ro'yxatda yo'q sotuvchida KPI
+// kartasi ko'rsatilmaydi. Manba: oldingi ishlaydigan KPI konfiguratsiyasi.
 const KPI_DARAJALAR = {
-  boshlangich:  { label: "Boshlang'ich", maqsad: 30000000, fiks: 1500000 },
-  tajriba:      { label: "Tajriba oshirgan", maqsad: 45000000, fiks: 1800000 },
-  professional: { label: "Professional", maqsad: 60000000, fiks: 1000000 },
+  'ra.ravshan1998+umidjon@gmail.com':    { daraja: 'boshlangich',  maqsad: 30000000, fiks: 1500000 },
+  'ra.ravshan1998+ulugbek@gmail.com':    { daraja: 'boshlangich',  maqsad: 30000000, fiks: 1500000 },
+  'ra.ravshan1998+mohlaroy@gmail.com':   { daraja: 'boshlangich',  maqsad: 30000000, fiks: 1500000 },
+  'ra.ravshan1998+rashidulloh@gmail.com':{ daraja: 'tajriba',      maqsad: 45000000, fiks: 1800000 },
+  'ra.ravshan1998+abror@gmail.com':      { daraja: 'professional', maqsad: 60000000, fiks: 1000000 },
 };
 
+// Har daraja uchun oylik sotuv -> bonus bosqichlari. getCurrentBonus/getNextBonus
+// (utils.js) shu jadvaldan foydalanadi. min = shu bosqichga kirish chegarasi.
 const KPI_BONUS = {
+  boshlangich: [
+    { min: 0,        max: 14999999,  bonus: 0,       label: 'Minimal natija' },
+    { min: 15000000, max: 24999999,  bonus: 300000,  label: "Boshlang'ich rag'bat" },
+    { min: 25000000, max: 29999999,  bonus: 500000,  label: 'Rejaga yaqin' },
+    { min: 30000000, max: 39999999,  bonus: 800000,  label: 'Reja bajarilgan' },
+    { min: 40000000, max: 59999999,  bonus: 1200000, label: 'Yuqori natija' },
+    { min: 60000000, max: Infinity,  bonus: 1500000, label: "A'lo darajadagi natija" },
+  ],
+  tajriba: [
+    { min: 0,        max: 24999999,  bonus: 0,       label: 'Minimal natija' },
+    { min: 25000000, max: 39999999,  bonus: 400000,  label: "Rag'bat darajasi" },
+    { min: 40000000, max: 49999999,  bonus: 800000,  label: 'Barqaror natija' },
+    { min: 50000000, max: 69999999,  bonus: 1200000, label: 'Reja bajarilgan' },
+    { min: 70000000, max: 89999999,  bonus: 1800000, label: 'Yuqori daraja' },
+    { min: 90000000, max: Infinity,  bonus: 2500000, label: 'Professionalga tayyor' },
+  ],
   professional: [
-    { min:0, max:60000000, bonus:0 },
-    { min:60000000, max:80000000, bonus:500000 },
-    { min:80000000, max:100000000, bonus:1000000 },
-    { min:100000000, max:Infinity, bonus:1500000 },
-  ]
+    { min: 0,        max: 29999999,  bonus: 0,       label: 'Minimal natija' },
+    { min: 30000000, max: 44999999,  bonus: 200000,  label: '40+ bitimga yaqinlashish' },
+    { min: 45000000, max: 59999999,  bonus: 400000,  label: 'Qayta buyurtma ulushi 60%' },
+    { min: 60000000, max: 79999999,  bonus: 700000,  label: 'Reja bajarilgan' },
+    { min: 80000000, max: 99999999,  bonus: 1000000, label: 'Kross/apsell 20%' },
+    { min: 100000000, max: Infinity, bonus: 1500000, label: 'Elita daraja' },
+  ],
 };
 
-const KPI_JARIMA = [
-  { text:"Ish qoidasini buzish", summa:200000 },
-  { text:"Mijozga noto'g'ri muomala", summa:300000 },
-  { text:"Kech kelish (3+ marta)", summa:150000 },
-  { text:"Vazifani bajarmaslik", summa:500000 },
-];
+// Jarima tizimi — daraja bo'yicha. dashboard KPI_JARIMA[daraja] dan {sabab, miqdor} o'qiydi.
+const KPI_JARIMA = {
+  boshlangich: [
+    { sabab: "Oxirgi xabar mijozniki bo'lsa yoki xabarga javob berilmay qolib ketsa", miqdor: -100000 },
+    { sabab: "3 kun davomida yangi mijoz bilan aloqa qilinmagan", miqdor: -100000 },
+    { sabab: "Buyurtmani kechiktirgan yoki noto'g'ri ma'lumot bergan", miqdor: -200000 },
+    { sabab: "Mijoz shikoyati (yozma tarzda tushgan)", miqdor: -300000 },
+    { sabab: "Yolg'on narx yoki va'da bergan", miqdor: -400000 },
+  ],
+  tajriba: [
+    { sabab: "3 kun davomida yangi mijoz bilan aloqa qilinmagan", miqdor: -100000 },
+    { sabab: "Buyurtmani kechiktirgan yoki noto'g'ri ma'lumot bergan", miqdor: -200000 },
+    { sabab: "Mijoz shikoyati (rasmiy)", miqdor: -300000 },
+    { sabab: "Qasddan noto'g'ri narx yoki soxta ma'lumot bergan", miqdor: -500000 },
+  ],
+  professional: [
+    { sabab: "2 kun davomida mavjud mijozlar bilan rejalangan aloqa qilinmagan", miqdor: -150000 },
+    { sabab: "Buyurtma yoki yetkazib berishda kechikish (aybi sotuvchida)", miqdor: -300000 },
+    { sabab: "Mijoz shikoyati (rasmiy)", miqdor: -400000 },
+    { sabab: "Noto'g'ri narx yoki noto'g'ri va'da bergan", miqdor: -600000 },
+  ],
+};
 
 const KPI_MUKOFOT = [
   { text:"Eng ko'p yangi mijoz", summa:300000 },
@@ -143,9 +189,9 @@ const KPI_MUKOFOT = [
 ];
 
 const DARAJA_LABELS = {
-  boshlangich: "Boshlang'ich",
-  tajriba: "Tajriba oshirgan",
-  professional: "Professional",
+  boshlangich: "🥉 Boshlang'ich",
+  tajriba: '🥈 Tajriba oshirgan',
+  professional: '🥇 Professional',
 };
 
 const QOLDA_KEY = '__qolda__';

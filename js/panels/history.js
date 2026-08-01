@@ -369,7 +369,7 @@ function renderHistoryCards(list, searchQuery=''){
     let items = [];
     if(isAdmin && d.rows){
       items = d.rows.filter(r=>r.nom||(parseInt(r.sum)||0)).map(r=>{
-        const s=parseInt(r.sum)||0; const f=getFoiz(s); const base=Math.round(s*f); const profit=(h.user_email===ABROR_EMAIL&&r.bonus_50)?Math.round(base*1.5):base;
+        const s=parseInt(r.sum)||0; const f=getFoiz(s); const base=Math.round(s*f); const profit=(canUseBonus50(h.user_email)&&r.bonus_50)?Math.round(base*1.5):base;
         return {name:r.nom, qty:'—', brak:'', price:fmt(s)+" so'm", extra: Math.round(f*100)+'%'+(r.bonus_50?' ✦+50%':'')+' → '+fmt(profit)+" so'm"};
       });
     } else if(!isAdmin && !isDiz) {
@@ -518,7 +518,7 @@ function editHistoryItem(id){
   if(h.type === 'admin'){
     const rows = editingHistoryData.rows || [];
     html = '<div style="font-size:12px;color:var(--text3);margin-bottom:10px">Zakaz summalarini tahrirlang:</div>';
-    const _editAbror = h.user_email === ABROR_EMAIL;
+    const _editAbror = canUseBonus50(h.user_email);
     rows.forEach((r, i) => {
       const bonusEl = _editAbror
         ? `<label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--green);cursor:pointer"><input type="checkbox" ${r.bonus_50?'checked':''} onchange="editingHistoryData.rows[${i}].bonus_50=this.checked"> +50% bonus</label>`
@@ -572,7 +572,7 @@ async function saveEditedHistory(){
   const h = allHistory.find(x => x.id === editingHistoryId);
 
   if(h.type === 'admin'){
-    const _editIsAbror = (allHistory.find(x=>x.id===editingHistoryId)||{}).user_email === ABROR_EMAIL;
+    const _editIsAbror = canUseBonus50((allHistory.find(x=>x.id===editingHistoryId)||{}).user_email);
     (d.rows||[]).forEach(r=>{ const s=parseInt(r.sum)||0; total_zakaz+=s; const base=Math.round(s*getFoiz(s)); total_daromad+=(_editIsAbror&&r.bonus_50)?Math.round(base*1.5):base; });
   } else if(h.type === 'ishlab'){
     (d.prodRows||[]).forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m); total_jami+=m*np; });
@@ -1134,7 +1134,7 @@ async function saveOnly(type){
     if(type==='admin'){
       const rows = adD.filter(r=>r.nom||(parseInt(r.sum)||0));
       if(!rows.length){ showNotify('Hech narsa kiritilmagan'); return; }
-      const _isAbror = currentUser && currentUser.email === ABROR_EMAIL;
+      const _isAbror = canUseBonus50(currentUser && currentUser.email);
       rows.forEach(r=>{ const s=parseInt(r.sum)||0; const f=getFoiz(s); totalZakaz+=s; const base=Math.round(s*f); totalDaromad+=((_isAbror&&r.bonus_50)?Math.round(base*1.5):base); });
       data = { rows };
     } else {
@@ -1214,7 +1214,7 @@ async function sendAdminTg() {
       ? (currentUser.email.split('+')[1] || '').split('@')[0] || currentUser.email.split('@')[0]
       : 'Admin';
 
-    const isAbror = currentUser && currentUser.email === ABROR_EMAIL;
+    const isAbror = canUseBonus50(currentUser && currentUser.email);
 
     let lines = [];
     let totalZ = 0, totalD = 0;

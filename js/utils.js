@@ -87,6 +87,37 @@ function orderZakaz(h) {
   return h.type === 'admin' ? (h.total_zakaz || 0) : (h.total_jami || 0);
 }
 
+// ── bonus_50 ("+50%" / "Jarayoni bilan") ruxsati — YAGONA MANBA ──
+// Email bo'yicha barqaror identifikatsiya (config.js BONUS50_EMAILS). Butun
+// ilova (dizayner paneli, hisobot, saqlash) shu predikatni ishlatishi kerak —
+// shunda ruxsat qoidasi bir joyda va xodimlar orasida farq qilmaydi.
+function canUseBonus50(email) {
+  return !!email && Array.isArray(BONUS50_EMAILS) && BONUS50_EMAILS.indexOf(email) !== -1;
+}
+
+// ── KPI daraja/bonus (YAGONA MANBA) ──
+// getKpi(email) -> {daraja, maqsad, fiks} (KPI_DARAJALAR, config.js) yoki null.
+// getCurrentBonus/getNextBonus oylik sotuv (summa) bo'yicha bonus bosqichini
+// aniqlaydi. Dashboard va istalgan hisobot shu funksiyalarni chaqiradi —
+// hisob-kitob farq qilib qolmaydi.
+function getKpi(email) { return (typeof KPI_DARAJALAR !== 'undefined' && KPI_DARAJALAR[email]) || null; }
+
+function getCurrentBonus(email, summa) {
+  const kpi = getKpi(email);
+  if (!kpi) return null;
+  const jadval = KPI_BONUS[kpi.daraja] || [];
+  for (let i = jadval.length - 1; i >= 0; i--) { if (summa >= jadval[i].min) return jadval[i]; }
+  return jadval[0] || null;
+}
+
+function getNextBonus(email, summa) {
+  const kpi = getKpi(email);
+  if (!kpi) return null;
+  const jadval = KPI_BONUS[kpi.daraja] || [];
+  for (let i = 0; i < jadval.length; i++) { if (summa < jadval[i].min) return jadval[i]; }
+  return null;
+}
+
 // NOTE: quyidagi uvNarx/calcUv/ekoNarx/calcEko/gUN — app-history.js (commit b9bb5bb)
 // dagi tasdiqlangan ishlaydigan formulalar bilan almashtirildi (Ishlab chiqarish
 // panelidagi ko'rsatilgan narxlarga mos: UV list-asosli, Eko kv.m-asosli)

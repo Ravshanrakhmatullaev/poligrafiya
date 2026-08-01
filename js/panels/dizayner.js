@@ -161,7 +161,7 @@ function initAdminPanel(){
 function renderAdmin(){
   const el=document.getElementById('admin-rows'); el.innerHTML='';
   let tz=0,td=0,soni=0;
-  const isAbror = currentUser && currentUser.email === ABROR_EMAIL;
+  const isAbror = canUseBonus50(currentUser && currentUser.email);
   adD.forEach((r,i)=>{
     const s=parseInt(r.sum)||0; const foiz=getFoiz(s);
     const baseDr = Math.round(s*foiz);

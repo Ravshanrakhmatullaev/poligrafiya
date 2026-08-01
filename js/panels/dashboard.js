@@ -454,30 +454,8 @@ function renderOwnerStats(){
 }
 
 // ── KPI DARAJALAR ──
-// Bonus jadvallar
-// Jarima tizimi (uch daraja uchun bir xil asosiy jarimalar)
-// Qo'shimcha mukofotlar
-function getKpi(email){ return KPI_DARAJALAR[email] || null; }
-
-function getCurrentBonus(email, summa){
-  const kpi = getKpi(email);
-  if(!kpi) return null;
-  const jadval = KPI_BONUS[kpi.daraja] || [];
-  for(let i = jadval.length-1; i >= 0; i--){
-    if(summa >= jadval[i].min) return jadval[i];
-  }
-  return jadval[0];
-}
-
-function getNextBonus(email, summa){
-  const kpi = getKpi(email);
-  if(!kpi) return null;
-  const jadval = KPI_BONUS[kpi.daraja] || [];
-  for(let i = 0; i < jadval.length; i++){
-    if(summa < jadval[i].min) return jadval[i];
-  }
-  return null;
-}
+// getKpi / getCurrentBonus / getNextBonus endi utils.js da (yagona manba) —
+// dashboard va hisobot bir xil hisob-kitobdan foydalanadi.
 
 
 
