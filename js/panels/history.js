@@ -692,7 +692,9 @@ function renderOwnerPanel(){
     Object.entries(byUser).forEach(([email,u],i)=>{
       const c = colors[i%colors.length];
       const totalBerildi = berilgan[email]||0;
-      const qolgan = u.daromad - totalBerildi; // manfiy = ortiqcha berildi
+      // Xodim dashboardi bilan bir xil shared helper — farq qilmaydi.
+      const bal = calculateEmployeeBalance(u.daromad, totalBerildi);
+      const qolgan = bal.remaining; // manfiy = ortiqcha berildi
 
       owZ += u.zakaz;
       owT += u.daromad;
@@ -703,13 +705,9 @@ function renderOwnerPanel(){
       const wrap = document.createElement('div');
       wrap.style.marginBottom = '4px';
 
-      // "Hisob yopiq" faqat haqiqiy hisob-kitob bo'lganda ko'rsatiladi.
-      // Daromad ham, berilgan pul ham 0 bo'lsa (0-0=0) — bu yopilgan hisob emas, umuman hisob yo'q.
-      const hasActivity = u.daromad > 0 || totalBerildi > 0;
-      const qolganColor = qolgan > 0 ? 'var(--red)' : qolgan < 0 ? '#6366F1' : hasActivity ? 'var(--green)' : 'var(--text3)';
-      const qolganText  = qolgan > 0 ? fmt(qolgan)+" so'm" :
-                          qolgan < 0 ? fmt(Math.abs(qolgan))+" so'm (ortiq)" :
-                          hasActivity ? '✅ Hisob yopiq' : '—';
+      const _view = employeeBalanceView(bal);
+      const qolganColor = _view.color;
+      const qolganText  = _view.text;
 
       wrap.innerHTML = `<div class="owner-row" style="cursor:pointer;margin-bottom:0" onclick="toggleOwnerDetail('${safeId}')">
         <div class="av" style="background:${c.bg};color:${c.clr}">${(u.name||'?')[0].toUpperCase()}</div>

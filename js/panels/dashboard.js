@@ -40,13 +40,13 @@ function renderDashboard(){
   const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
 
   // Hisoblash
-  let jamiZakaz = 0, sofDaromad = 0, buOy = 0, utganOy = 0, brakSoni = 0;
+  let jamiZakaz = 0, baseEarnings = 0, buOy = 0, utganOy = 0, brakSoni = 0;
 
   myData.forEach(h => {
     const d = new Date(h.created_at);
     const val = orderEarning(h); // yagona manba — owner report bilan bir xil
     jamiZakaz += orderZakaz(h);
-    if(!h.is_paid && !h.is_brak) sofDaromad += val;
+    baseEarnings += val; // jami ishlab topilgan (owner report / berHisob bilan bir xil)
     if(d.getMonth() === thisMonth && d.getFullYear() === thisYear) buOy += val;
     if(d.getMonth() === lastMonth && d.getFullYear() === lastMonthYear) utganOy += val;
     if(h.is_brak) brakSoni++;
@@ -57,7 +57,19 @@ function renderDashboard(){
   // Stat kartalar
   const el = id => document.getElementById(id);
   el('db-jami').textContent = myData.length + ' ta';
-  el('db-daromad').textContent = fmt(sofDaromad) + " so'm";
+  // QOLGAN DAROMAD = ishlab topilgan − berilgan (hisob_kitob). Owner report bilan
+  // bir xil shared helper (calculateEmployeeBalance). Hisob yopilганда 0 ko'rsatadi.
+  const daromadEl = el('db-daromad');
+  if(daromadEl){
+    daromadEl.textContent = fmt(baseEarnings) + " so'm"; // payoutlar yuklanguncha
+    getHisobKitob(currentUser.email).then(payouts => {
+      const paidOut = (payouts||[]).reduce((s,p) => s + (p.summa||0), 0);
+      const bal = calculateEmployeeBalance(baseEarnings, paidOut);
+      const view = employeeBalanceView(bal);
+      daromadEl.textContent = view.text;
+      daromadEl.style.color = view.color;
+    }).catch(() => {}); // xato bo'lsa jami daromad ko'rinib turadi
+  }
   el('db-bu-oy').textContent = fmt(buOy) + " so'm";
   el('db-utgan-oy').textContent = fmt(utganOy) + " so'm";
   el('db-osish').textContent = (osish >= 0 ? '+' : '') + osish + '%';

@@ -1041,3 +1041,18 @@ input[type=email]:invalid:not(:placeholder-shown){
 .dv-status-info{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-border)}
 .dv-status-success{background:var(--green-light);color:var(--green);border:1px solid var(--green-border)}
 .dv-status-error{background:var(--red-light);color:var(--red);border:1px solid var(--red-border)}
+
+/* ── "Qidirish" (global search) tugmasi — dark mode ko'rinuvchanlik tuzatildi ──
+   Muammo: default fon var(--gray-light) (#1f2937) va chegara var(--gray-border)
+   (#374151) dark rejimda topbar surface (--white #1e293b) bilan deyarli bir xil
+   bo'lib, tugma faqat hoverda (ko'k) ko'rinardi. Yechim: elevatsiyalangan
+   surface + yorqin matn — hoversiz ham aniq. Faqat shu tugma; light mode tegilmaydi. */
+[data-theme="dark"] .gs-trigger-btn{background:#334155;border-color:#475569;color:var(--text2)}
+[data-theme="dark"] .gs-trigger-btn:hover{background:#3b4a61;border-color:var(--blue);color:var(--blue)}
+[data-theme="dark"] .gs-trigger-btn kbd{background:#1e293b;border-color:#475569;color:var(--text2)}
+/* Klaviatura fokusi ikkala mavzuda ham ko'rinsin. */
+.gs-trigger-btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* Ofset: Oddiy/Katalog rejim tugmasi */
+.of-mode-btn{flex:1;cursor:pointer}
+.of-mode-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}

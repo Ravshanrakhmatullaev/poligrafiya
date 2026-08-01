@@ -362,12 +362,17 @@ function autoSigim(mEni, mBoyi, ishEni, ishBoyi){
 }
 
 function ofAutoFill(inputId, hiddenId){
-  // Focus: avtomatik qiymatni ko'rsatish uchun hint bosiladi
+  // Fokusda avtomatik qiymat hinti allaqachon calcOfset() da ko'rsatiladi.
+  // Maydonni to'ldirish uchun hint ustiga bosiladi (ofUseAuto).
 }
 
+// "Avtomatik: N ta (bosing)" hintini bosganda tegishli maydonni to'ldiradi.
+// applySuggestedValue -> qiymatni set qiladi va input/change ni bir marta yuboradi
+// (calcOfset oninput orqali aynan bir marta ishga tushadi; += yo'q, ko'paymaydi).
 function ofUseAuto(inputId, hiddenId){
-  const autoVal = document.getElementById(hiddenId).value;
-  if(autoVal){ document.getElementById(inputId).value = autoVal; calcOfset(); }
+  const hidden = document.getElementById(hiddenId);
+  const autoVal = hidden ? hidden.value : '';
+  if(autoVal) applySuggestedValue(inputId, autoVal);
 }
 
 function toggleOfBlok(key){
@@ -378,6 +383,121 @@ function toggleOfBlok(key){
 
 function updateOfsetFormats(){ calcOfset(); }
 function updateOfsetQogoz(){ calcOfset(); }
+
+// ── KATALOG REJIMI ──
+let _catPaperCloned = false;
+function setOfsetMode(mode){
+  const ord = document.getElementById('of-ordinary-mode');
+  const cat = document.getElementById('of-catalog-mode');
+  if(!ord || !cat) return;
+  const isCat = mode === 'katalog';
+  ord.classList.toggle('hidden', isCat);
+  cat.classList.toggle('hidden', !isCat);
+  const bOd = document.getElementById('of-mode-oddiy');
+  const bKa = document.getElementById('of-mode-katalog');
+  if(bOd) bOd.classList.toggle('active', !isCat);
+  if(bKa) bKa.classList.toggle('active', isCat);
+  if(isCat){
+    // Qog'oz narxlar ro'yxatini oddiy kalkulyatordan klonlaymiz (narxlar takrorlanmaydi).
+    if(!_catPaperCloned){
+      const src = document.getElementById('of-qogoz-tur');
+      const dst = document.getElementById('of-cat-qogoz-tur');
+      if(src && dst && src.innerHTML.trim()){ dst.innerHTML = src.innerHTML; _catPaperCloned = true; }
+    }
+    calcCatalog();
+  }
+}
+
+// Katalog hisob-kitobi — barcha formulalar utils.js dagi sof funksiyalarda
+// (calculateCatalogLayout/Paper/Services). Bu yerda faqat DOM o'qish/yozish.
+function calcCatalog(){
+  if(!document.getElementById('of-cat-bet')) return;
+  const bet     = parseInt(document.getElementById('of-cat-bet').value)||0;
+  const nusxa   = parseInt(document.getElementById('of-cat-nusxa').value)||0;
+  const fmtStr  = document.getElementById('of-cat-format').value;
+  const ishFmt  = document.getElementById('of-cat-ishformat').value;
+  const pechatTur = document.getElementById('of-cat-pechat-tur').value;
+  const preladka  = parseInt(document.getElementById('of-cat-preladka').value)||0;
+  const formaNarx = parseInt(document.getElementById('of-cat-forma-tur').value)||0;
+  const paperUnit = parseInt(document.getElementById('of-cat-qogoz-tur').value)||0;
+
+  const ishInfo = ISH_FORMAT[ishFmt] || ISH_FORMAT['44x31'];
+  const dims = String(fmtStr).split('x');
+  const fe = parseFloat(dims[0]), fb = parseFloat(dims[1]);
+  const pieces = autoSigim(fe, fb, ishInfo.eni, ishInfo.boyi) || 1; // 1 varaqdan chiqadigan varoq
+
+  // Layout + bet yaxlitlash taklifi (kiritilgan qiymat o'zgartirilmaydi)
+  const layout = calculateCatalogLayout(bet);
+  const roundHint = document.getElementById('of-cat-round-hint');
+  if(roundHint) roundHint.textContent = layout.rounded
+    ? `${layout.pagesEntered} bet ishlab chiqarish qoidasi bo'yicha ${layout.pagesProd} betga yaxlitlandi (${layout.leaves} varoq).`
+    : (bet>0 ? `${layout.pagesProd} bet = ${layout.leaves} varoq` : '');
+  const betAuto = document.getElementById('of-cat-bet-auto');
+  if(betAuto) betAuto.value = layout.rounded ? layout.pagesProd : '';
+  const betHint = document.getElementById('of-cat-bet-hint');
+  if(betHint) betHint.textContent = layout.rounded ? `Tavsiya: ${layout.pagesProd} bet (bosing)` : '';
+
+  // Forma soni — qo'lda kiritilgan bo'lsa o'sha, aks holda tavsiya (layout.forms)
+  const formaManual = parseInt(document.getElementById('of-cat-forma-son').value);
+  const formaOverridden = Number.isFinite(formaManual) && formaManual > 0;
+  const forms = formaOverridden ? formaManual : layout.forms;
+  const formaAuto = document.getElementById('of-cat-forma-auto');
+  if(formaAuto) formaAuto.value = layout.forms || '';
+  const formaHint = document.getElementById('of-cat-forma-hint');
+  if(formaHint) formaHint.textContent = (layout.forms ? `Tavsiya: ${layout.forms} forma (bosing)` : '')
+    + (formaOverridden && formaManual !== layout.forms ? " · qo'lda" : '');
+
+  // Qog'oz miqdori
+  const paper = calculateCatalogPaper(layout.leaves, pieces, forms, preladka, nusxa);
+  const qogozManual = parseInt(document.getElementById('of-cat-qogoz-son').value);
+  const qogozOverridden = Number.isFinite(qogozManual) && qogozManual > 0;
+  const paperQty = qogozOverridden ? qogozManual : paper.totalSheets;
+  const qogozAuto = document.getElementById('of-cat-qogoz-auto');
+  if(qogozAuto) qogozAuto.value = paper.totalSheets || '';
+  const qogozHint = document.getElementById('of-cat-qogoz-hint');
+  if(qogozHint) qogozHint.textContent = (paper.totalSheets ? `Tavsiya: ${fmt(paper.totalSheets)} list (bosing)` : '')
+    + (qogozOverridden && qogozManual !== paper.totalSheets ? " · qo'lda" : '');
+
+  // Xizmatlar — pechat narxi mavjud manbadan (calcPechatNarx: oborot + nusxa bosqichi)
+  const pechatPerForm = calcPechatNarx(nusxa, pechatTur);
+  const lamOn = document.getElementById('of-cat-lam-check').checked;
+  const lamRate = parseInt(document.getElementById('of-cat-lam-narx').value)||0;
+  const termOn = document.getElementById('of-cat-term-check').checked;
+  const termRate = parseInt(document.getElementById('of-cat-term-narx').value)||0;
+
+  const svc = calculateCatalogServices({
+    forms, formaNarx, pechatPerForm, copies:nusxa, paperUnit,
+    totalSheets:paperQty, lamination:lamOn, lamRate, bind:termOn, bindRate:termRate
+  });
+
+  const setSum = (id,v,show) => { const e=document.getElementById(id); if(e) e.textContent = show ? fmt(v)+" so'm" : '—'; };
+  setSum('of-cat-forma-jami', svc.formCost, forms>0 && formaNarx>0);
+  setSum('of-cat-pechat-jami', svc.printCost, svc.printCost>0);
+  setSum('of-cat-qogoz-jami', svc.paperCost, svc.paperCost>0);
+  setSum('of-cat-per', svc.perCatalog, svc.perCatalog>0);
+
+  const lamJamiEl = document.getElementById('of-cat-lam-jami');
+  if(lamJamiEl) lamJamiEl.textContent = lamOn ? `= ${fmt(svc.lamCost)} so'm` : (nusxa>0?`Tavsiya: ${fmt(nusxa*lamRate)} so'm`:'');
+  const termJamiEl = document.getElementById('of-cat-term-jami');
+  if(termJamiEl) termJamiEl.textContent = termOn ? `= ${fmt(svc.bindCost)} so'm` : (nusxa>0?`Tavsiya: ${fmt(nusxa*termRate)} so'm`:'');
+
+  const paperDetail = document.getElementById('of-cat-paper-detail');
+  if(paperDetail) paperDetail.innerHTML = bet>0
+    ? `Varoq: <b>${layout.leaves}</b> · 1 varaqdan: <b>${pieces}</b> ta · Toza qog'oz: <b>${fmt(paper.cleanSheets)}</b> · Preladka: <b>${fmt(paper.makeready)}</b> · Jami qog'oz: <b>${fmt(paper.totalSheets)}</b> list`
+    : '';
+
+  const res = document.getElementById('kalk-cat-result');
+  if(res){
+    if(svc.total > 0){
+      res.innerHTML = `<div style="font-size:12px;color:var(--text3)">${nusxa} dona · ${layout.pagesProd} bet · ${forms} forma</div>`
+        + `<div style="font-size:28px;font-weight:700;color:var(--blue)">${fmt(svc.total)} so'm</div>`
+        + `<div style="font-size:12px;color:var(--text3);margin-top:2px">1 dona: <b>${fmt(svc.perCatalog)}</b> so'm</div>`;
+      kalkLastResult = `Katalog: ${layout.pagesProd} bet × ${nusxa} dona = ${fmt(svc.total)} so'm (1 dona ${fmt(svc.perCatalog)} so'm)`;
+    } else {
+      res.innerHTML = `<div style="font-size:12px;color:var(--text3)">Ma'lumotlarni kiriting</div><div style="font-size:28px;font-weight:700;color:var(--blue)">—</div>`;
+    }
+  }
+}
 
 function calcOfset(){
   const son      = parseInt(document.getElementById('of-son').value)||0;

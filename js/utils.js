@@ -118,6 +118,93 @@ function getNextBonus(email, summa) {
   return null;
 }
 
+// ── XODIM HISOB BALANSI (YAGONA MANBA) ──
+// Xodim dashboardi ("QOLGAN DAROMAD") va owner hisoboti AYNAN shu funksiyani
+// ishlatadi — shunda farq qilmaydi.
+//   baseEarnings = ishlab topilgan (orderEarning yig'indisi)
+//   paidOut      = hisob_kitob dan berilgan pul (summa yig'indisi)
+//   remaining    = baseEarnings - paidOut
+// state: 'remaining' (qarz bor) | 'closed' (0 va faoliyat bor) |
+//        'none' (umuman faoliyat yo'q) | 'over' (ortiqcha to'langan)
+function calculateEmployeeBalance(baseEarnings, paidOut) {
+  const base = Number(baseEarnings) || 0;
+  const paid = Number(paidOut) || 0;
+  const remaining = base - paid;
+  const hasActivity = base > 0 || paid > 0;
+  let state;
+  if (remaining > 0) state = 'remaining';
+  else if (remaining < 0) state = 'over';
+  else state = hasActivity ? 'closed' : 'none';
+  return { baseEarnings: base, paidOut: paid, remaining, hasActivity, state,
+           overpaid: remaining < 0 ? -remaining : 0 };
+}
+
+// Balansni matn+rang ko'rinishida qaytaradi (dashboard va owner panel birga ishlatadi).
+function employeeBalanceView(bal) {
+  const color = { remaining: 'var(--red)', over: '#6366F1', closed: 'var(--green)', none: 'var(--text3)' };
+  let text;
+  if (bal.state === 'remaining') text = fmt(bal.remaining) + " so'm";
+  else if (bal.state === 'over') text = "Ortiqcha to'lov: " + fmt(bal.overpaid) + " so'm";
+  else if (bal.state === 'closed') text = '✅ Hisob yopiq';
+  else text = '—';
+  return { text, color: color[bal.state] };
+}
+
+// ── Taklif qiymatini maydonga qo'yish (YAGONA MEXANIZM) ──
+// "Avtomatik" hint va katalog takliflari shu funksiya orqali maydonni to'ldiradi:
+// qiymatni o'rnatadi va input/change hodisalarini bir marta yuboradi (bog'liq
+// hisob-kitob shular orqali ishga tushadi). Qayta-qayta bosish qiymatni
+// ko'paytirmaydi (to'g'ridan-to'g'ri set, += emas).
+function applySuggestedValue(inputId, value) {
+  const el = document.getElementById(inputId);
+  if (!el) return false;
+  el.value = value;
+  el.dispatchEvent(new Event('input',  { bubbles: true }));
+  el.dispatchEvent(new Event('change', { bubbles: true }));
+  return true;
+}
+
+// ── KATALOG KALKULYATORI (sof funksiyalar — DOM ga bog'liq emas, test qilinadi) ──
+// Ishlab chiqarish qoidasi: 1 varoq = 2 bet; katalog varog'i 4 varoqqa (ya'ni
+// bet 8 betga) yuqoriga yaxlitlanadi. forma = varoq soni (1 forma / varoq).
+function calculateCatalogLayout(pagesEntered) {
+  const p = Math.max(0, Math.floor(Number(pagesEntered) || 0));
+  const pagesProd = Math.ceil(p / 8) * 8;   // 8 betga yaxlitlash
+  const leaves = pagesProd / 2;             // 1 varoq = 2 bet -> 4 ga karrali
+  const forms = leaves;                     // 1 forma / varoq (layout qoidasi)
+  return { pagesEntered: p, pagesProd, leaves, forms, rounded: pagesProd !== p };
+}
+
+// Qog'oz miqdori. piecesPerSheet = bitta katta varaqdan chiqadigan katalog
+// varog'i soni (autoSigim, kalk.js). makeready (preladka) = forma boshiga list.
+function calculateCatalogPaper(leaves, piecesPerSheet, forms, makereadyPerForm, copies) {
+  const pieces = Math.max(1, Number(piecesPerSheet) || 1);
+  const cps = Number(copies) || 0;
+  const lv = Number(leaves) || 0;
+  const cleanPerCatalog = lv / pieces;                 // 1 katalog uchun list
+  const cleanSheets = Math.ceil(cleanPerCatalog * cps);
+  const makeready = (Number(makereadyPerForm) || 0) * (Number(forms) || 0);
+  const totalSheets = cleanSheets + makeready;
+  return { cleanPerCatalog, cleanSheets, makeready, totalSheets };
+}
+
+// Xarajatlar. pechatPerForm = calcPechatNarx(copies, tur) (mavjud manba, oborot
+// va nusxa bosqichini o'zi hisobga oladi). formaNarx/paperUnit — mavjud select
+// qiymatlari. lamRate/bindRate — 1 katalog uchun narx.
+function calculateCatalogServices(o) {
+  o = o || {};
+  const forms = Number(o.forms) || 0;
+  const copies = Number(o.copies) || 0;
+  const formCost  = forms * (Number(o.formaNarx) || 0);
+  const printCost = forms * (Number(o.pechatPerForm) || 0);
+  const paperCost = (Number(o.totalSheets) || 0) * (Number(o.paperUnit) || 0);
+  const lamCost   = o.lamination ? copies * (Number(o.lamRate)  || 0) : 0;
+  const bindCost  = o.bind       ? copies * (Number(o.bindRate) || 0) : 0;
+  const total = formCost + printCost + paperCost + lamCost + bindCost;
+  return { formCost, printCost, paperCost, lamCost, bindCost, total,
+           perCatalog: copies > 0 ? Math.round(total / copies) : 0 };
+}
+
 // NOTE: quyidagi uvNarx/calcUv/ekoNarx/calcEko/gUN — app-history.js (commit b9bb5bb)
 // dagi tasdiqlangan ishlaydigan formulalar bilan almashtirildi (Ishlab chiqarish
 // panelidagi ko'rsatilgan narxlarga mos: UV list-asosli, Eko kv.m-asosli)

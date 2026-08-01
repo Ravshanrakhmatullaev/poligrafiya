@@ -729,7 +729,7 @@
     </div>
     <div class="stat-row" id="db-stats-row">
       <div class="stat"><div class="stat-label">Jami zakaz</div><div class="stat-val" style="color:var(--blue)" id="db-jami">0 so'm</div></div>
-      <div class="stat"><div class="stat-label">Sof daromad</div><div class="stat-val" style="color:var(--green)" id="db-daromad">0 so'm</div></div>
+      <div class="stat"><div class="stat-label">Qolgan daromad</div><div class="stat-val" style="color:var(--green)" id="db-daromad">0 so'm</div><div class="stat-label" style="font-weight:400;margin-top:2px;font-size:10px">Ishlab topilgan − berilgan</div></div>
       <div class="stat"><div class="stat-label">Bu oy</div><div class="stat-val" style="color:var(--blue)" id="db-bu-oy">0 so'm</div></div>
     </div>
     <div class="stat-row">
@@ -1469,6 +1469,13 @@
           </div>
         </div>
 
+        <!-- Rejim: Oddiy / Katalog -->
+        <div class="kc-block" style="display:flex;gap:8px;padding:8px">
+          <button type="button" class="kc-btn-secondary of-mode-btn active" id="of-mode-oddiy" onclick="setOfsetMode('oddiy')">Oddiy</button>
+          <button type="button" class="kc-btn-secondary of-mode-btn" id="of-mode-katalog" onclick="setOfsetMode('katalog')">Katalog</button>
+        </div>
+
+        <div id="of-ordinary-mode">
         <!-- 1. Mahsulot -->
         <div class="kc-block">
           <div class="kc-block-title"><span class="kc-step">1</span> Mahsulot</div>
@@ -1485,12 +1492,12 @@
           <div class="kc-block-title"><span class="kc-step">2</span> Ish formati</div>
           <div class="kc-grid-3">
             <div class="kc-field"><label class="kc-label">Format</label><select id="of-ishformat" class="kc-select" onchange="calcOfset()"><option value="44x31">44×31 sm</option><option value="35x50">35×50 sm</option></select></div>
-            <div class="kc-field"><label class="kc-label">Sig'im (avtomatik)</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-sigim" placeholder="auto" onfocus="ofAutoFill('of-sigim','of-sigim-auto')" oninput="calcOfset()"><input type="hidden" id="of-sigim-auto"></div><div class="kc-hint" id="of-sigim-hint"></div></div>
+            <div class="kc-field"><label class="kc-label">Sig'im (avtomatik)</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-sigim" placeholder="auto" onfocus="ofAutoFill('of-sigim','of-sigim-auto')" oninput="calcOfset()"><input type="hidden" id="of-sigim-auto"></div><div class="kc-hint kc-hint-click" id="of-sigim-hint" role="button" tabindex="0" style="cursor:pointer" onclick="ofUseAuto('of-sigim','of-sigim-auto')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ofUseAuto('of-sigim','of-sigim-auto');}"></div></div>
             <div class="kc-field"><label class="kc-label">Preladka</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-preladka" value="100" oninput="calcOfset()"><span class="kc-unit">list</span></div></div>
           </div>
           <div class="kc-grid-2" style="margin-top:12px">
-            <div class="kc-field"><label class="kc-label">Toza pechat</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-ishson" placeholder="auto" onfocus="ofAutoFill('of-ishson','of-ishson-auto')" oninput="calcOfset()"><input type="hidden" id="of-ishson-auto"></div><div class="kc-hint" id="of-ishson-hint"></div></div>
-            <div class="kc-field"><label class="kc-label">Katta qog'oz</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-qogoz" onfocus="ofAutoFill('of-qogoz','of-qogoz-auto')" oninput="calcOfset()"><input type="hidden" id="of-qogoz-auto"></div><div class="kc-hint" id="of-qogoz-hint"></div></div>
+            <div class="kc-field"><label class="kc-label">Toza pechat</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-ishson" placeholder="auto" onfocus="ofAutoFill('of-ishson','of-ishson-auto')" oninput="calcOfset()"><input type="hidden" id="of-ishson-auto"></div><div class="kc-hint kc-hint-click" id="of-ishson-hint" role="button" tabindex="0" style="cursor:pointer" onclick="ofUseAuto('of-ishson','of-ishson-auto')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ofUseAuto('of-ishson','of-ishson-auto');}"></div></div>
+            <div class="kc-field"><label class="kc-label">Katta qog'oz</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-qogoz" onfocus="ofAutoFill('of-qogoz','of-qogoz-auto')" oninput="calcOfset()"><input type="hidden" id="of-qogoz-auto"></div><div class="kc-hint kc-hint-click" id="of-qogoz-hint" role="button" tabindex="0" style="cursor:pointer" onclick="ofUseAuto('of-qogoz','of-qogoz-auto')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ofUseAuto('of-qogoz','of-qogoz-auto');}"></div></div>
           </div>
         </div>
 
@@ -1731,6 +1738,69 @@
           <div style="font-size:12px;color:var(--text3)">Ma'lumotlarni kiriting</div>
           <div style="font-size:28px;font-weight:700;color:var(--blue)">—</div>
         </div>
+        </div><!-- /of-ordinary-mode -->
+
+        <!-- ══ KATALOG REJIMI ══ -->
+        <div id="of-catalog-mode" class="hidden">
+          <!-- 1. Katalog -->
+          <div class="kc-block">
+            <div class="kc-block-title"><span class="kc-step">1</span> Katalog</div>
+            <div class="kc-grid-3">
+              <div class="kc-field"><label class="kc-label">Tayyor format</label><select id="of-cat-format" class="kc-select" onchange="calcCatalog()"><option value="21x29.7">A4 (21×29.7)</option><option value="14.8x21">A5 (14.8×21)</option><option value="10.5x14.8">A6 (10.5×14.8)</option></select></div>
+              <div class="kc-field"><label class="kc-label">Betlar soni</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-cat-bet" placeholder="52" oninput="calcCatalog()"><span class="kc-unit">bet</span></div><input type="hidden" id="of-cat-bet-auto"><div class="kc-hint kc-hint-click" id="of-cat-bet-hint" role="button" tabindex="0" style="cursor:pointer" onclick="ofUseAuto('of-cat-bet','of-cat-bet-auto')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ofUseAuto('of-cat-bet','of-cat-bet-auto');}"></div></div>
+              <div class="kc-field"><label class="kc-label">Nusxa soni</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-cat-nusxa" placeholder="100" oninput="calcCatalog()"><span class="kc-unit">dona</span></div></div>
+            </div>
+            <div class="kc-hint" id="of-cat-round-hint" style="margin-top:8px;color:var(--amber)"></div>
+          </div>
+          <!-- 2. Bosma -->
+          <div class="kc-block">
+            <div class="kc-block-title"><span class="kc-step">2</span> Bosma</div>
+            <div class="kc-grid-3">
+              <div class="kc-field"><label class="kc-label">Qog'oz formati</label><select id="of-cat-ishformat" class="kc-select" onchange="calcCatalog()"><option value="44x31">44×31 sm</option><option value="35x50">35×50 sm</option></select></div>
+              <div class="kc-field"><label class="kc-label">Pechat turi</label><select id="of-cat-pechat-tur" class="kc-select" onchange="calcCatalog()"><option value="1+0">1+0</option><option value="4+0" selected>4+0</option><option value="1+1s">1+1 svoy</option><option value="4+4s">4+4 svoy</option><option value="1+1c">1+1 chujoy</option><option value="4+4c">4+4 chujoy</option></select></div>
+              <div class="kc-field"><label class="kc-label">Preladka / forma</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-cat-preladka" value="100" oninput="calcCatalog()"><span class="kc-unit">list</span></div></div>
+            </div>
+          </div>
+          <!-- 3. Forma -->
+          <div class="kc-block">
+            <div class="kc-block-title"><span class="kc-step">3</span> Forma</div>
+            <div class="kc-grid-3">
+              <div class="kc-field"><label class="kc-label">Turi</label><select id="of-cat-forma-tur" class="kc-select" onchange="calcCatalog()"><option value="0">Yo'q</option><option value="22000">1 talik — 22 000</option><option value="88000" selected>4 talik — 88 000</option></select></div>
+              <div class="kc-field"><label class="kc-label">Forma soni</label><input type="text" inputmode="numeric" id="of-cat-forma-son" placeholder="auto" oninput="calcCatalog()"><input type="hidden" id="of-cat-forma-auto"><div class="kc-hint kc-hint-click" id="of-cat-forma-hint" role="button" tabindex="0" style="cursor:pointer" onclick="ofUseAuto('of-cat-forma-son','of-cat-forma-auto')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ofUseAuto('of-cat-forma-son','of-cat-forma-auto');}"></div></div>
+              <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-cat-forma-jami">—</div></div>
+            </div>
+          </div>
+          <!-- 4. Qog'oz -->
+          <div class="kc-block">
+            <div class="kc-block-title"><span class="kc-step">4</span> Qog'oz</div>
+            <div class="kc-grid-3">
+              <div class="kc-field"><label class="kc-label">Qog'oz turi</label><select id="of-cat-qogoz-tur" class="kc-select" onchange="calcCatalog()"><option value="">— Tanlang —</option></select></div>
+              <div class="kc-field"><label class="kc-label">Qog'oz soni (list)</label><input type="text" inputmode="numeric" id="of-cat-qogoz-son" placeholder="auto" oninput="calcCatalog()"><input type="hidden" id="of-cat-qogoz-auto"><div class="kc-hint kc-hint-click" id="of-cat-qogoz-hint" role="button" tabindex="0" style="cursor:pointer" onclick="ofUseAuto('of-cat-qogoz-son','of-cat-qogoz-auto')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ofUseAuto('of-cat-qogoz-son','of-cat-qogoz-auto');}"></div></div>
+              <div class="kc-field kc-result-field"><label class="kc-label">Jami</label><div class="of-part-sum" id="of-cat-qogoz-jami">—</div></div>
+            </div>
+            <div class="kc-hint" id="of-cat-paper-detail" style="margin-top:8px"></div>
+          </div>
+          <!-- 5. Qo'shimcha xizmatlar -->
+          <div class="kc-block">
+            <div class="kc-block-title"><span class="kc-step">5</span> Qo'shimcha xizmatlar</div>
+            <div class="kc-grid-2">
+              <div class="kc-field"><label class="kc-label"><input type="checkbox" id="of-cat-lam-check" onchange="calcCatalog()"> Laminatsiya</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-cat-lam-narx" value="500" oninput="calcCatalog()"><span class="kc-unit">/dona</span></div><div class="kc-hint" id="of-cat-lam-jami"></div></div>
+              <div class="kc-field"><label class="kc-label"><input type="checkbox" id="of-cat-term-check" onchange="calcCatalog()"> Termokley / zborka</label><div class="kc-input-wrap"><input type="text" inputmode="numeric" id="of-cat-term-narx" value="2000" oninput="calcCatalog()"><span class="kc-unit">/dona</span></div><div class="kc-hint" id="of-cat-term-jami"></div></div>
+            </div>
+          </div>
+          <!-- 6. Pechat / natija -->
+          <div class="kc-block">
+            <div class="kc-block-title"><span class="kc-step">6</span> Pechat</div>
+            <div class="kc-grid-2">
+              <div class="kc-field kc-result-field"><label class="kc-label">Pechat jami</label><div class="of-part-sum" id="of-cat-pechat-jami">—</div></div>
+              <div class="kc-field kc-result-field"><label class="kc-label">1 katalog narxi</label><div class="of-part-sum" id="of-cat-per">—</div></div>
+            </div>
+          </div>
+          <div class="kalk-result" id="kalk-cat-result" style="margin-top:8px">
+            <div style="font-size:12px;color:var(--text3)">Ma'lumotlarni kiriting</div>
+            <div style="font-size:28px;font-weight:700;color:var(--blue)">—</div>
+          </div>
+        </div><!-- /of-catalog-mode -->
 
       </div>
     </div>
@@ -2413,30 +2483,30 @@
   
   <!-- Cache-busting: har deployda ?v= ni yangilang (brauzer eski JS ni keshdan bermasligi uchun) -->
   <!-- 2. Config (constants) -->
-  <script src="js/config.js?v=20260801"></script>
+  <script src="js/config.js?v=20260802"></script>
 
   <!-- 3. Utils (fmt, showNotify, hisoblash) -->
-  <script src="js/utils.js?v=20260801"></script>
+  <script src="js/utils.js?v=20260802"></script>
 
   <!-- 4. DB (Supabase client + AppStore) -->
-  <script src="js/db.js?v=20260801"></script>
+  <script src="js/db.js?v=20260802"></script>
 
   <!-- 5. Auth (login/logout) -->
-  <script src="js/auth.js?v=20260801"></script>
+  <script src="js/auth.js?v=20260802"></script>
 
   <!-- 6. Panel modules (mustaqil, bir-biriga bog'liq emas) -->
-  <script src="js/panels/davomat.js?v=20260801"></script>
-  <script src="js/panels/foiz.js?v=20260801"></script>
-  <script src="js/panels/xabar.js?v=20260801"></script>
-  <script src="js/panels/history.js?v=20260801"></script>
-  <script src="js/panels/dashboard.js?v=20260801"></script>
-  <script src="js/panels/sklad.js?v=20260801"></script>
-  <script src="js/panels/kalk.js?v=20260801"></script>
-  <script src="js/panels/bozorlik.js?v=20260801"></script>
-  <script src="js/panels/dizayner.js?v=20260801"></script>
-  <script src="js/panels/uvdtf.js?v=20260801"></script>
+  <script src="js/panels/davomat.js?v=20260802"></script>
+  <script src="js/panels/foiz.js?v=20260802"></script>
+  <script src="js/panels/xabar.js?v=20260802"></script>
+  <script src="js/panels/history.js?v=20260802"></script>
+  <script src="js/panels/dashboard.js?v=20260802"></script>
+  <script src="js/panels/sklad.js?v=20260802"></script>
+  <script src="js/panels/kalk.js?v=20260802"></script>
+  <script src="js/panels/bozorlik.js?v=20260802"></script>
+  <script src="js/panels/dizayner.js?v=20260802"></script>
+  <script src="js/panels/uvdtf.js?v=20260802"></script>
 
   <!-- 7. App controller (oxirida) -->
-  <script src="js/app.js?v=20260801"></script>
+  <script src="js/app.js?v=20260802"></script>
 </body>
 </html>
