@@ -458,6 +458,11 @@ function calcCatalog(){
   if(qogozHint) qogozHint.textContent = (paper.totalSheets ? `Tavsiya: ${fmt(paper.totalSheets)} list (bosing)` : '')
     + (qogozOverridden && qogozManual !== paper.totalSheets ? " · qo'lda" : '');
 
+  // A1 ekvivalenti: qog'oz narxi 1 A1 varaq uchun; ishchi list A1 dan kesiladi.
+  // piecesPerA1 = ishchi format bolinishi (44×31 -> 4), oddiy rejim bilan bir xil.
+  const piecesPerA1 = (ishInfo && ishInfo.bolinish) || 1;
+  const a1Quantity = catalogA1Sheets(paperQty, piecesPerA1);
+
   // Xizmatlar — pechat narxi mavjud manbadan (calcPechatNarx: oborot + nusxa bosqichi)
   const pechatPerForm = calcPechatNarx(nusxa, pechatTur);
   const lamOn = document.getElementById('of-cat-lam-check').checked;
@@ -467,7 +472,7 @@ function calcCatalog(){
 
   const svc = calculateCatalogServices({
     forms, formaNarx, pechatPerForm, copies:nusxa, paperUnit,
-    totalSheets:paperQty, lamination:lamOn, lamRate, bind:termOn, bindRate:termRate
+    a1Sheets:a1Quantity, lamination:lamOn, lamRate, bind:termOn, bindRate:termRate
   });
 
   const setSum = (id,v,show) => { const e=document.getElementById(id); if(e) e.textContent = show ? fmt(v)+" so'm" : '—'; };
@@ -483,7 +488,8 @@ function calcCatalog(){
 
   const paperDetail = document.getElementById('of-cat-paper-detail');
   if(paperDetail) paperDetail.innerHTML = bet>0
-    ? `Varoq: <b>${layout.leaves}</b> · 1 varaqdan: <b>${pieces}</b> ta · Toza qog'oz: <b>${fmt(paper.cleanSheets)}</b> · Preladka: <b>${fmt(paper.makeready)}</b> · Jami qog'oz: <b>${fmt(paper.totalSheets)}</b> list`
+    ? `Varoq: <b>${layout.leaves}</b> · 1 varaqdan: <b>${pieces}</b> ta · Toza qog'oz: <b>${fmt(paper.cleanSheets)}</b> · Preladka: <b>${fmt(paper.makeready)}</b><br>`
+      + `Ishchi listlar soni: <b>${fmt(paperQty)}</b> · 1 A1 ga sig'imi: <b>${piecesPerA1}</b> ta · A1 qog'oz ekvivalenti: <b>${fmt(a1Quantity)}</b> · Qog'oz jami: <b>${fmt(svc.paperCost)}</b> so'm`
     : '';
 
   const res = document.getElementById('kalk-cat-result');

@@ -188,16 +188,27 @@ function calculateCatalogPaper(leaves, piecesPerSheet, forms, makereadyPerForm, 
   return { cleanPerCatalog, cleanSheets, makeready, totalSheets };
 }
 
+// Qog'oz narxi A1 (to'liq bosma varaq) uchun beriladi; ishchi list (masalan
+// 44×31) A1 dan kesiladi. piecesPerA1 = bitta A1 ga sig'adigan ishchi list soni
+// (ISH_FORMAT[fmt].bolinish — oddiy rejim ham shuni ishlatadi, 44×31 -> 4).
+// a1Quantity = ceil(ishchiList / piecesPerA1). Narx = a1Quantity × A1narx.
+function catalogA1Sheets(workingSheets, piecesPerA1) {
+  const per = Math.max(1, Number(piecesPerA1) || 1);
+  const ws = Math.max(0, Number(workingSheets) || 0);
+  return Math.ceil(ws / per);
+}
+
 // Xarajatlar. pechatPerForm = calcPechatNarx(copies, tur) (mavjud manba, oborot
-// va nusxa bosqichini o'zi hisobga oladi). formaNarx/paperUnit — mavjud select
-// qiymatlari. lamRate/bindRate — 1 katalog uchun narx.
+// va nusxa bosqichini o'zi hisobga oladi). formaNarx — forma narxi; paperUnit —
+// 1 A1 varaq narxi; a1Sheets — A1 ekvivalenti (catalogA1Sheets). lamRate/bindRate
+// — 1 katalog uchun narx.
 function calculateCatalogServices(o) {
   o = o || {};
   const forms = Number(o.forms) || 0;
   const copies = Number(o.copies) || 0;
   const formCost  = forms * (Number(o.formaNarx) || 0);
   const printCost = forms * (Number(o.pechatPerForm) || 0);
-  const paperCost = (Number(o.totalSheets) || 0) * (Number(o.paperUnit) || 0);
+  const paperCost = (Number(o.a1Sheets) || 0) * (Number(o.paperUnit) || 0); // A1 ekvivalenti × A1 narx
   const lamCost   = o.lamination ? copies * (Number(o.lamRate)  || 0) : 0;
   const bindCost  = o.bind       ? copies * (Number(o.bindRate) || 0) : 0;
   const total = formCost + printCost + paperCost + lamCost + bindCost;

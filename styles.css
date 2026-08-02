@@ -755,6 +755,12 @@ input[type=email]:invalid:not(:placeholder-shown){
 .kc-unit{position:absolute;right:12px;font-size:12px;color:var(--text3);pointer-events:none;font-weight:500}
 .kc-select{width:100%;padding:9px 12px;border:1.5px solid var(--gray-border);border-radius:var(--radius-md);font-size:13px;color:var(--text);background:var(--white);font-family:inherit;cursor:pointer;outline:none;transition:border-color .15s}
 .kc-select:focus{border-color:#3B82F6}
+/* Light mode: ochilgan ro'yxat o'qilishi uchun aniq oq fon + qora matn (dark
+   qoidalar [data-theme="dark"] bilan pastda override qiladi). Faqat .kc-select. */
+.kc-select option{background:#fff;color:#1e293b}
+.kc-select optgroup{background:#f1f5f9;color:#475569;font-weight:600}
+/* Switch: klaviatura fokusi ko'rinsin (input opacity:0 bo'lgani uchun trackda). */
+.kc-switch-input:focus-visible + .kc-switch{outline:2px solid #3B82F6;outline-offset:2px}
 .kc-hint{font-size:11px;color:#3B82F6;margin-top:2px;cursor:pointer}
 .kc-result-field{justify-content:flex-end}
 .of-part-sum{font-size:15px;font-weight:700;color:#3B82F6;padding:9px 0}
@@ -817,7 +823,7 @@ input[type=email]:invalid:not(:placeholder-shown){
 [data-theme="dark"] select{background:#1E293B !important;color:#F8FAFC !important;border-color:#334155 !important}
 [data-theme="dark"] select option{background:#1E293B;color:#F8FAFC}
 [data-theme="dark"] select optgroup{background:#273449;color:#94A3B8;font-weight:600}
-[data-theme="dark"] .kc-select option,.kc-select optgroup{background:#1E293B}
+[data-theme="dark"] .kc-select option,[data-theme="dark"] .kc-select optgroup{background:#1E293B}
 [data-theme="dark"] .kalk-result{background:var(--blue-light);border-color:var(--blue-border)}
 [data-theme="dark"] #panel-kalk .filter-btn{background:var(--gray-light);color:var(--text3);border-color:var(--gray-border)}
 [data-theme="dark"] #panel-kalk .filter-btn.active{background:var(--blue-light);color:var(--blue);border-color:var(--blue-border)}
