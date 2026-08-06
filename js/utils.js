@@ -150,6 +150,73 @@ function employeeBalanceView(bal) {
   return { text, color: color[bal.state] };
 }
 
+// ── OY CHEGARALARI — Asia/Tashkent (YAGONA MANBA) ──────────────────────────
+// O'zbekiston UTC+5, yil bo'yi DST yo'q. Sana ob'ektidan Tashkent bo'yicha
+// yil/oyni aniqlab, [start, end) UTC ms diapazonini qaytaradi (end = keyingi oy
+// boshlanishi). Barcha panel shu funksiyani ishlatishi kerak — oy mantig'i
+// takrorlanmaydi. Argumentsiz "hozir" (test uchun har doim aniq sana bering).
+const TASHKENT_OFFSET_MS = 5 * 60 * 60 * 1000;
+function getTashkentMonthRange(date) {
+  const d = date != null ? new Date(date) : new Date();
+  const t = new Date(d.getTime() + TASHKENT_OFFSET_MS); // Tashkent "mahalliy" vaqti UTC sifatida
+  const y = t.getUTCFullYear(), m = t.getUTCMonth();
+  const start = Date.UTC(y, m, 1)     - TASHKENT_OFFSET_MS; // Tashkent oy boshlanishi -> UTC ms
+  const end   = Date.UTC(y, m + 1, 1) - TASHKENT_OFFSET_MS; // keyingi oy boshlanishi (Dek->Yan avtomatik)
+  return { start, end, year: y, month: m };
+}
+function prevTashkentMonthRange(date) {
+  const cur = getTashkentMonthRange(date);
+  return getTashkentMonthRange(cur.start - 1); // joriy oy boshlanishidan 1ms oldin = o'tgan oy
+}
+// Kanonik biznes sanasi = created_at (timestamptz). `sana` (matn) ishonchsiz.
+function orderBusinessTime(order) {
+  return order && order.created_at ? new Date(order.created_at).getTime() : NaN;
+}
+function isOrderInMonth(order, range) {
+  const t = orderBusinessTime(order);
+  return Number.isFinite(t) && t >= range.start && t < range.end;
+}
+
+// Bir oydagi xodim ko'rsatkichlari (summa / sof daromad / soni). Faqat shu oy
+// buyurtmalari. Hech narsa chiqarib tashlanmaydi (is_brak ustuni mavjud emas).
+function calculateMonthlyEmployeeStats(orders, range) {
+  let total = 0, earnings = 0, count = 0;
+  (orders || []).forEach(o => {
+    if (!isOrderInMonth(o, range)) return;
+    total    += orderZakaz(o);
+    earnings += orderEarning(o);
+    count++;
+  });
+  return { total, earnings, count };
+}
+
+// To'lanadigan qoldiq va oldingi davrdan qoldiq (jadval o'zgarishisiz — mavjud
+// allHistory + hisob_kitob dan). payable = butun davr ishlab topilgan − berilgan.
+// carryover = payable − shu oy daromadi (oldingi davrlardan qolgan qarz).
+function calculateEmployeeCarryover(baseEarningsAllTime, paidOutAllTime, currentMonthEarnings) {
+  const payable = (Number(baseEarningsAllTime) || 0) - (Number(paidOutAllTime) || 0);
+  const cur = Number(currentMonthEarnings) || 0;
+  const carryover = Math.max(0, payable - cur); // salbiy = ortiqcha to'langan -> 0
+  return { payable, currentMonthEarnings: cur, carryover, totalDue: Math.max(0, payable),
+           overpaid: payable < 0 ? -payable : 0 };
+}
+
+// Oy taqqoslash (motivatsiya). O'tgan oy 0 bo'lsa foiz null (Infinity% ko'rsatilmaydi).
+function monthComparison(cur, prev) {
+  const growth = (a, b) => (b === 0 ? null : Math.round(((a - b) / b) * 1000) / 10);
+  return {
+    countDiff:      cur.count    - prev.count,
+    countGrowth:    growth(cur.count,    prev.count),
+    totalDiff:      cur.total    - prev.total,
+    totalGrowth:    growth(cur.total,    prev.total),
+    earningsDiff:   cur.earnings - prev.earnings,
+    earningsGrowth: growth(cur.earnings, prev.earnings),
+    reachRemaining: Math.max(0, prev.count - cur.count), // o'tgan oyga yetish uchun yana N ta
+    exceeded:       cur.count > prev.count,
+    prevEmpty:      prev.count === 0 && prev.total === 0 && prev.earnings === 0,
+  };
+}
+
 // ── Taklif qiymatini maydonga qo'yish (YAGONA MEXANIZM) ──
 // "Avtomatik" hint va katalog takliflari shu funksiya orqali maydonni to'ldiradi:
 // qiymatni o'rnatadi va input/change hodisalarini bir marta yuboradi (bog'liq

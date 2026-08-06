@@ -36,19 +36,19 @@ function renderDashboard(){
   const now = new Date();
   const thisMonth = now.getMonth();
   const thisYear = now.getFullYear();
-  const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
-  const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
+  // Oy chegaralari — Asia/Tashkent (yagona helper, panel-admin bilan bir xil).
+  const curRange  = getTashkentMonthRange();
+  const prevRange = prevTashkentMonthRange();
 
   // Hisoblash
   let jamiZakaz = 0, baseEarnings = 0, buOy = 0, utganOy = 0, brakSoni = 0;
 
   myData.forEach(h => {
-    const d = new Date(h.created_at);
     const val = orderEarning(h); // yagona manba — owner report bilan bir xil
     jamiZakaz += orderZakaz(h);
     baseEarnings += val; // jami ishlab topilgan (owner report / berHisob bilan bir xil)
-    if(d.getMonth() === thisMonth && d.getFullYear() === thisYear) buOy += val;
-    if(d.getMonth() === lastMonth && d.getFullYear() === lastMonthYear) utganOy += val;
+    if(isOrderInMonth(h, curRange))  buOy += val;
+    if(isOrderInMonth(h, prevRange)) utganOy += val;
     if(h.is_brak) brakSoni++;
   });
 
@@ -85,10 +85,9 @@ function renderDashboard(){
   if(kpi && kpiCard && currentRole === 'admin'){
     kpiCard.classList.remove('hidden');
     
-    // Bu oylik summa
-    const now2 = new Date();
+    // Bu oylik summa (Asia/Tashkent — yagona helper, local-time yo'q)
     const oylikSumma = myData
-      .filter(h => { const d=new Date(h.created_at); return d.getMonth()===now2.getMonth()&&d.getFullYear()===now2.getFullYear(); })
+      .filter(h => isOrderInMonth(h, curRange))
       .reduce((s,h)=>s+(h.total_zakaz||h.total_daromad||0), 0);
     
     const pct = Math.min(Math.round((oylikSumma/kpi.maqsad)*100), 100);
@@ -430,27 +429,21 @@ function renderOwnerStats(){
   // Sof foyda taxminiy = umumiy daromad (chunki hozircha xarajat alohida hisoblanmaydi)
   const sofFoyda = umumiyDaromad;
   
-  // O'sish hisoblash - shu oy vs o'tgan oy
-  const now = new Date();
-  const thisMonth = now.getMonth();
-  const thisYear = now.getFullYear();
+  // O'sish — shu oy vs o'tgan oy (Asia/Tashkent, yagona helper; local-time yo'q)
+  const curRange  = getTashkentMonthRange();
+  const prevRange = prevTashkentMonthRange();
   let thisMonthTotal = 0, lastMonthTotal = 0;
-  
-  const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
-  const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
-  
   allHistory.forEach(h => {
-    const d = new Date(h.created_at);
-    const val = h.type === 'admin' ? (h.total_daromad||0) : (h.total_jami||0);
-    if(d.getMonth() === thisMonth && d.getFullYear() === thisYear) thisMonthTotal += val;
-    if(d.getMonth() === lastMonth && d.getFullYear() === lastMonthYear) lastMonthTotal += val;
+    const val = orderEarning(h); // yagona manba (admin->daromad, boshqa->jami)
+    if(isOrderInMonth(h, curRange))  thisMonthTotal += val;
+    if(isOrderInMonth(h, prevRange)) lastMonthTotal += val;
   });
-  
+
   let osishPct = 0;
   if(lastMonthTotal > 0){
     osishPct = Math.round(((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100);
   } else if(thisMonthTotal > 0){
-    osishPct = 100;
+    osishPct = 100; // o'tgan oy 0 -> Infinity emas
   }
   
   const umumiyEl = document.getElementById('ow-umumiy-daromad');

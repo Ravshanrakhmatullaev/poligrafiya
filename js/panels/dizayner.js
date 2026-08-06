@@ -185,24 +185,88 @@ function renderAdmin(){
 }
 
 function renderAdminStats(){
-  // Tarixdagi barcha "admin" turdagi yozuvlarni shu user uchun yig'amiz
   if(!currentUser) return;
   const myHistory = (allHistory||[]).filter(h => h.user_id===currentUser.id && h.type==='admin');
-  let tz=0, tdJami=0, tdQoldiq=0, soni=0;
-  myHistory.forEach(h=>{
-    tz += h.total_zakaz||0;
-    const daromad = h.total_daromad||0;
-    tdJami += daromad;
-    // To'langan yoki brak bo'lsa qolgan to'lovdan ayriladi
-    if(!h.is_paid && !h.is_brak) tdQoldiq += daromad;
-    soni += (h.data&&h.data.rows ? h.data.rows.filter(r=>r.nom||(parseInt(r.sum)||0)).length : 0);
-  });
-  const zEl=document.getElementById('adm-zakaz'), dEl=document.getElementById('adm-daromad'),
-        sEl=document.getElementById('adm-soni'), tEl=document.getElementById('adm-total');
-  if(zEl) zEl.textContent=fmt(tz)+" so'm";
-  if(dEl) dEl.textContent=fmt(tdQoldiq)+" so'm";
-  if(sEl) sEl.textContent=soni+' ta';
-  if(tEl) tEl.textContent=fmt(tdQoldiq)+" so'm";
+
+  // Oy chegaralari — Asia/Tashkent (yagona helper). Kartalar FAQAT shu oy.
+  const curRange  = getTashkentMonthRange();
+  const prevRange = prevTashkentMonthRange();
+  const cur  = calculateMonthlyEmployeeStats(myHistory, curRange);
+  const prev = calculateMonthlyEmployeeStats(myHistory, prevRange);
+  const baseEarningsAllTime = myHistory.reduce((s,h)=>s+orderEarning(h), 0);
+
+  const set = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+  // BU OY kartalari (o'tgan oy hech qachon aralashmaydi)
+  set('adm-zakaz',   fmt(cur.total)+" so'm");
+  set('adm-daromad', fmt(cur.earnings)+" so'm");
+  set('adm-soni',    cur.count+' ta');
+
+  // O'tgan oy + motivatsiya
+  const extra = document.getElementById('adm-month-extra');
+  if(extra) extra.innerHTML = buildAdmMonthExtra(cur, prev, monthComparison(cur, prev));
+
+  // Top-right "Qolgan hisob" + "Oldingi davrdan qoldiq" — payout balansi (hisob_kitob, async)
+  getHisobKitob(currentUser.email).then(payouts => {
+    const paidOut = (payouts||[]).reduce((s,p)=>s+(p.summa||0), 0);
+    const view = employeeBalanceView(calculateEmployeeBalance(baseEarningsAllTime, paidOut));
+    const tEl = document.getElementById('adm-total');
+    if(tEl){ tEl.textContent = view.text; tEl.style.color = view.color; }
+    const carry = calculateEmployeeCarryover(baseEarningsAllTime, paidOut, cur.earnings);
+    const cEl = document.getElementById('adm-carryover');
+    if(cEl) cEl.innerHTML = buildAdmCarryover(cur.earnings, carry);
+  }).catch(()=>{});
+}
+
+// O'tgan oy natijasi + motivatsion taqqoslash (foiz null bo'lsa Infinity ko'rsatilmaydi)
+function buildAdmMonthExtra(cur, prev, cmp){
+  const pct = g => g === null ? '' : (g>=0?'+':'')+g+'%';
+  let motiv, color;
+  if(cmp.prevEmpty){ motiv = "O'tgan oyda ma'lumot yo'q — yangi oy, zo'r boshlang! 🚀"; color='var(--blue)'; }
+  else if(cmp.exceeded){ motiv = `O'tgan oydan <b>${cmp.countDiff} ta ko'p</b> zakaz · O'sish <b>${pct(cmp.countGrowth)}</b> 🎉`; color='var(--green)'; }
+  else if(cur.count < prev.count){ motiv = `O'tgan oy natijasiga yetish uchun yana <b>${cmp.reachRemaining} ta</b> zakaz kerak`; color='var(--amber)'; }
+  else { motiv = "O'tgan oy bilan bir xil natija"; color='var(--text3)'; }
+
+  const cmpRow = (label, curV, prevV, growth, unit) => {
+    const diff = curV - prevV;
+    const gp = growth === null ? '—' : (growth>=0?'+':'')+growth+'%';
+    const dc = diff>0?'var(--green)':diff<0?'var(--red)':'var(--text3)';
+    return `<div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0">
+      <span style="color:var(--text3)">${label}</span>
+      <span>Bu oy <b>${fmt(curV)}${unit}</b> · O'tgan <b>${fmt(prevV)}${unit}</b> · <span style="color:${dc}">${diff>=0?'+':''}${fmt(diff)}${unit} (${gp})</span></span>
+    </div>`;
+  };
+
+  return `<div class="card" style="margin-top:12px">
+    <div style="font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">O'tgan oy natijasi</div>
+    <div class="stat-row" style="margin-bottom:8px">
+      <div class="stat"><div class="stat-label">O'tgan oy summasi</div><div class="stat-val" style="font-size:15px">${fmt(prev.total)} so'm</div></div>
+      <div class="stat"><div class="stat-label">O'tgan oy sof daromad</div><div class="stat-val" style="font-size:15px">${fmt(prev.earnings)} so'm</div></div>
+      <div class="stat"><div class="stat-label">O'tgan oy zakaz soni</div><div class="stat-val" style="font-size:15px">${prev.count} ta</div></div>
+    </div>
+    <div style="padding:8px 10px;border-radius:8px;background:var(--gray-light);border:1px solid var(--gray-border);font-size:13px;color:${color};font-weight:600;margin-bottom:8px">${motiv}</div>
+    ${cmpRow("Zakaz soni", cur.count, prev.count, cmp.countGrowth, ' ta')}
+    ${cmpRow("Zakaz summasi", cur.total, prev.total, cmp.totalGrowth, " so'm")}
+    ${cmpRow("Sof daromad", cur.earnings, prev.earnings, cmp.earningsGrowth, " so'm")}
+  </div>`;
+}
+
+// Oldingi davrdan qoldiq — bu oy daromadi bilan aralashtirmasdan alohida.
+function buildAdmCarryover(currentMonthEarnings, carry){
+  if(carry.overpaid > 0){
+    return `<div style="margin-top:12px;padding:8px 10px;border-radius:8px;background:var(--gray-light);border:1px solid var(--gray-border);font-size:12px">
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Bu oy sof daromad</span><b>${fmt(currentMonthEarnings)} so'm</b></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Ortiqcha to'langan</span><b style="color:#6366F1">${fmt(carry.overpaid)} so'm</b></div>
+    </div>`;
+  }
+  if(carry.carryover <= 0){
+    return `<div style="margin-top:12px;padding:8px 10px;border-radius:8px;background:var(--gray-light);border:1px solid var(--gray-border);font-size:12px;display:flex;justify-content:space-between">
+      <span style="color:var(--text3)">Oldingi davrdan qoldiq</span><b style="color:var(--green)">0 so'm (yopiq)</b></div>`;
+  }
+  return `<div style="margin-top:12px;padding:8px 10px;border-radius:8px;background:var(--amber-light);border:1px solid var(--amber-border);font-size:12px">
+    <div style="display:flex;justify-content:space-between;padding:1px 0"><span style="color:var(--text3)">Bu oy sof daromad</span><b>${fmt(currentMonthEarnings)} so'm</b></div>
+    <div style="display:flex;justify-content:space-between;padding:1px 0"><span style="color:var(--text3)">Oldingi davrdan qoldiq</span><b style="color:var(--amber)">${fmt(carry.carryover)} so'm</b></div>
+    <div style="display:flex;justify-content:space-between;padding:3px 0;border-top:1px solid var(--amber-border);margin-top:3px"><span style="font-weight:700">Jami to'lanishi kerak</span><b>${fmt(carry.totalDue)} so'm</b></div>
+  </div>`;
 }
 
 function renderIshlabStats(){
