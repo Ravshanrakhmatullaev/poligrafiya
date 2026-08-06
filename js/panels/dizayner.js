@@ -203,22 +203,23 @@ function renderAdminStats(){
 
   // O'tgan oy + motivatsiya
   const extra = document.getElementById('adm-month-extra');
-  if(extra) extra.innerHTML = buildAdmMonthExtra(cur, prev, monthComparison(cur, prev));
+  if(extra) extra.innerHTML = buildMonthExtra(cur, prev, monthComparison(cur, prev));
 
-  // Top-right "Qolgan hisob" + "Oldingi davrdan qoldiq" — payout balansi (hisob_kitob, async)
+  // Top-right = "Bu oy daromadi" (shu oy sof daromadi, yashil) — payout/qarz EMAS.
+  const tEl = document.getElementById('adm-total');
+  if(tEl){ tEl.textContent = fmt(cur.earnings)+" so'm"; tEl.style.color = 'var(--green)'; }
+
+  // Hisob-kitob (payable) — ALOHIDA bo'lim, "Sof daromad"ga qo'shilmaydi (hisob_kitob, async)
   getHisobKitob(currentUser.email).then(payouts => {
     const paidOut = (payouts||[]).reduce((s,p)=>s+(p.summa||0), 0);
-    const view = employeeBalanceView(calculateEmployeeBalance(baseEarningsAllTime, paidOut));
-    const tEl = document.getElementById('adm-total');
-    if(tEl){ tEl.textContent = view.text; tEl.style.color = view.color; }
     const carry = calculateEmployeeCarryover(baseEarningsAllTime, paidOut, cur.earnings);
     const cEl = document.getElementById('adm-carryover');
-    if(cEl) cEl.innerHTML = buildAdmCarryover(cur.earnings, carry);
+    if(cEl) cEl.innerHTML = buildCarryoverSection(cur.earnings, carry);
   }).catch(()=>{});
 }
 
 // O'tgan oy natijasi + motivatsion taqqoslash (foiz null bo'lsa Infinity ko'rsatilmaydi)
-function buildAdmMonthExtra(cur, prev, cmp){
+function buildMonthExtra(cur, prev, cmp){
   const pct = g => g === null ? '' : (g>=0?'+':'')+g+'%';
   let motiv, color;
   if(cmp.prevEmpty){ motiv = "O'tgan oyda ma'lumot yo'q — yangi oy, zo'r boshlang! 🚀"; color='var(--blue)'; }
@@ -251,7 +252,7 @@ function buildAdmMonthExtra(cur, prev, cmp){
 }
 
 // Oldingi davrdan qoldiq — bu oy daromadi bilan aralashtirmasdan alohida.
-function buildAdmCarryover(currentMonthEarnings, carry){
+function buildCarryoverSection(currentMonthEarnings, carry){
   if(carry.overpaid > 0){
     return `<div style="margin-top:12px;padding:8px 10px;border-radius:8px;background:var(--gray-light);border:1px solid var(--gray-border);font-size:12px">
       <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Bu oy sof daromad</span><b>${fmt(currentMonthEarnings)} so'm</b></div>

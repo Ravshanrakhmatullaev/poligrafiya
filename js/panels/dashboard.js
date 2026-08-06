@@ -40,41 +40,30 @@ function renderDashboard(){
   const curRange  = getTashkentMonthRange();
   const prevRange = prevTashkentMonthRange();
 
-  // Hisoblash
-  let jamiZakaz = 0, baseEarnings = 0, buOy = 0, utganOy = 0, brakSoni = 0;
-
-  myData.forEach(h => {
-    const val = orderEarning(h); // yagona manba — owner report bilan bir xil
-    jamiZakaz += orderZakaz(h);
-    baseEarnings += val; // jami ishlab topilgan (owner report / berHisob bilan bir xil)
-    if(isOrderInMonth(h, curRange))  buOy += val;
-    if(isOrderInMonth(h, prevRange)) utganOy += val;
-    if(h.is_brak) brakSoni++;
-  });
-
-  const osish = utganOy > 0 ? Math.round(((buOy - utganOy) / utganOy) * 100) : (buOy > 0 ? 100 : 0);
+  // Bu oy / o'tgan oy ko'rsatkichlari — yagona helper (Asia/Tashkent). Kartalar
+  // FAQAT shu oy; payout/qarz ARALASHMAYDI (renderAdminStats bilan bir xil).
+  const cur  = calculateMonthlyEmployeeStats(myData, curRange);
+  const prev = calculateMonthlyEmployeeStats(myData, prevRange);
+  const baseEarnings = myData.reduce((s,h)=>s+orderEarning(h), 0);
 
   // Stat kartalar
   const el = id => document.getElementById(id);
-  el('db-jami').textContent = myData.length + ' ta';
-  // QOLGAN DAROMAD = ishlab topilgan − berilgan (hisob_kitob). Owner report bilan
-  // bir xil shared helper (calculateEmployeeBalance). Hisob yopilганда 0 ko'rsatadi.
-  const daromadEl = el('db-daromad');
-  if(daromadEl){
-    daromadEl.textContent = fmt(baseEarnings) + " so'm"; // payoutlar yuklanguncha
-    getHisobKitob(currentUser.email).then(payouts => {
-      const paidOut = (payouts||[]).reduce((s,p) => s + (p.summa||0), 0);
-      const bal = calculateEmployeeBalance(baseEarnings, paidOut);
-      const view = employeeBalanceView(bal);
-      daromadEl.textContent = view.text;
-      daromadEl.style.color = view.color;
-    }).catch(() => {}); // xato bo'lsa jami daromad ko'rinib turadi
-  }
-  el('db-bu-oy').textContent = fmt(buOy) + " so'm";
-  el('db-utgan-oy').textContent = fmt(utganOy) + " so'm";
-  el('db-osish').textContent = (osish >= 0 ? '+' : '') + osish + '%';
-  el('db-osish').style.color = osish >= 0 ? 'var(--green)' : 'var(--red)';
-  el('db-brak').textContent = brakSoni + ' ta';
+  // ASOSIY KARTALAR — bu oy ishlash natijasi
+  el('db-jami').textContent    = fmt(cur.total)+" so'm";     // Bu oy zakaz summasi
+  el('db-daromad').textContent = fmt(cur.earnings)+" so'm";  // Bu oy sof daromad
+  el('db-daromad').style.color = 'var(--green)';             // doim yashil (ijobiy natija, qarz emas)
+  el('db-bu-oy').textContent   = cur.count+' ta';            // Bu oy zakaz soni (zakazlar soni, data.rows emas)
+
+  // O'tgan oy natijasi + motivatsiya (alohida bo'lim)
+  const ext = el('db-month-extra');
+  if(ext) ext.innerHTML = buildMonthExtra(cur, prev, monthComparison(cur, prev));
+
+  // Hisob-kitob (payable) — ALOHIDA bo'lim, "Sof daromad"ga qo'shilmaydi
+  getHisobKitob(currentUser.email).then(payouts => {
+    const paidOut = (payouts||[]).reduce((s,p) => s + (p.summa||0), 0);
+    const acc = el('db-accounting');
+    if(acc) acc.innerHTML = buildCarryoverSection(cur.earnings, calculateEmployeeCarryover(baseEarnings, paidOut, cur.earnings));
+  }).catch(() => {});
 
   // Grafik
   renderDbChart(myData, thisMonth, thisYear);

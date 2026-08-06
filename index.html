@@ -461,7 +461,7 @@
   <div class="panel" id="panel-admin">
     <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 14px">
       <div style="font-size:14px;font-weight:700">Zakazlarim — bu oy</div>
-      <div style="font-size:13px;color:var(--text3)">Qolgan hisob: <strong id="adm-total" style="color:var(--green)">0 so'm</strong></div>
+      <div style="font-size:13px;color:var(--text3)">Bu oy daromadi: <strong id="adm-total" style="color:var(--green)">0 so'm</strong></div>
     </div>
     <div class="stat-row">
       <div class="stat"><div class="stat-label">Bu oy zakaz summasi</div><div class="stat-val" style="color:var(--blue)" id="adm-zakaz">0 so'm</div></div>
@@ -730,15 +730,12 @@
       </div>
     </div>
     <div class="stat-row" id="db-stats-row">
-      <div class="stat"><div class="stat-label">Jami zakaz</div><div class="stat-val" style="color:var(--blue)" id="db-jami">0 so'm</div></div>
-      <div class="stat"><div class="stat-label">Qolgan daromad</div><div class="stat-val" style="color:var(--green)" id="db-daromad">0 so'm</div><div class="stat-label" style="font-weight:400;margin-top:2px;font-size:10px">Ishlab topilgan − berilgan</div></div>
-      <div class="stat"><div class="stat-label">Bu oy</div><div class="stat-val" style="color:var(--blue)" id="db-bu-oy">0 so'm</div></div>
+      <div class="stat"><div class="stat-label">Bu oy zakaz summasi</div><div class="stat-val" style="color:var(--blue)" id="db-jami">0 so'm</div></div>
+      <div class="stat"><div class="stat-label">Bu oy sof daromad</div><div class="stat-val" style="color:var(--green)" id="db-daromad">0 so'm</div></div>
+      <div class="stat"><div class="stat-label">Bu oy zakaz soni</div><div class="stat-val" style="color:var(--blue)" id="db-bu-oy">0 ta</div></div>
     </div>
-    <div class="stat-row">
-      <div class="stat"><div class="stat-label">O'tgan oy</div><div class="stat-val" id="db-utgan-oy">0 so'm</div></div>
-      <div class="stat"><div class="stat-label">O'sish</div><div class="stat-val" id="db-osish">0%</div></div>
-      <div class="stat"><div class="stat-label">Brak</div><div class="stat-val" style="color:var(--red)" id="db-brak">0 so'm</div></div>
-    </div>
+    <div id="db-accounting"></div>
+    <div id="db-month-extra"></div>
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <div class="card-title" style="margin:0">
@@ -2501,11 +2498,11 @@
   <script src="js/panels/foiz.js?v=20260803"></script>
   <script src="js/panels/xabar.js?v=20260803"></script>
   <script src="js/panels/history.js?v=20260803"></script>
-  <script src="js/panels/dashboard.js?v=20260804"></script>
+  <script src="js/panels/dashboard.js?v=20260805"></script>
   <script src="js/panels/sklad.js?v=20260803"></script>
   <script src="js/panels/kalk.js?v=20260803"></script>
   <script src="js/panels/bozorlik.js?v=20260803"></script>
-  <script src="js/panels/dizayner.js?v=20260804"></script>
+  <script src="js/panels/dizayner.js?v=20260805"></script>
   <script src="js/panels/uvdtf.js?v=20260803"></script>
 
   <!-- 7. App controller (oxirida) -->
