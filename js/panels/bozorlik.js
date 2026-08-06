@@ -88,7 +88,9 @@ function bozorlikRasmDrop(event){
   bozorlikRasmPreview({files: [file]});
 }
 
+let _bzSaving = false;
 async function saveBozorlikItem(){
+  if(_bzSaving) return;                                 // takroriy bosishni bloklash
   const nom = document.getElementById('bz-nom').value.trim();
   const miq = parseFloat(document.getElementById('bz-miq').value)||0;
   const birlik = document.getElementById('bz-birlik').value;
@@ -98,6 +100,7 @@ async function saveBozorlikItem(){
 
   if(!nom){ showNotify('Nomi kiriting'); return; }
   if(!miq){ showNotify('Miqdor kiriting'); return; }
+  _bzSaving = true;
 
   // Rasm olish: sklad dan yoki qo'lda yuklangan
   let rasm_url = null;
@@ -111,23 +114,29 @@ async function saveBozorlikItem(){
       const file = fileInput.files[0];
       const ext = file.name.split('.').pop().toLowerCase();
       const fileName = 'bozorlik_' + Date.now() + '.' + ext;
-      const { data: upData, error: upErr } = await sb.storage
-        .from('sklad-rasmlar')
-        .upload(fileName, file, { cacheControl: '3600', upsert: false });
-      if(!upErr){
-        const { data: urlData } = sb.storage.from('sklad-rasmlar').getPublicUrl(fileName);
-        rasm_url = urlData.publicUrl;
-      }
+      try {
+        const { error: upErr } = await sb.storage
+          .from('sklad-rasmlar')
+          .upload(fileName, file, { cacheControl: '3600', upsert: false });
+        if(!upErr){
+          const { data: urlData } = sb.storage.from('sklad-rasmlar').getPublicUrl(fileName);
+          rasm_url = urlData.publicUrl;
+        }
+      } catch(e){ console.warn('[bozorlik rasm upload]', e); } // rasmsiz davom etadi
     }
   }
 
-  const error = await createShoppingItem({
-    sklad_id, nom, birlik, miqdor: miq, izoh, rasm_url,
-    status: 'kutilmoqda',
-    sana: getSanaVaqt()
-  });
+  let error;
+  try {
+    error = await createShoppingItem({
+      sklad_id, nom, birlik, miqdor: miq, izoh, rasm_url,
+      status: 'kutilmoqda',
+      sana: getSanaVaqt()
+    });
+  } catch(e){ error = e; }
 
-  if(error){ showNotify("Xatolik: "+error.message); return; }
+  _bzSaving = false;
+  if(error){ showNotify("❌ Saqlashda xato: " + friendlyErr(error), 'error'); return; }
   showNotify("Ro'yxatga qo'shildi!");
   hideBozorlikForm();
   await loadBozorlik();
@@ -208,47 +217,27 @@ async function sendBozorlikToTelegram(){
   if(!active.length){ showNotify("Ro'yxat bo'sh"); return; }
 
   const sendBtn = document.getElementById('bz-send-btn');
-  if(sendBtn && sendBtn.disabled) return;
-  if(sendBtn){ sendBtn.disabled = true; sendBtn.style.opacity = '0.5'; sendBtn.innerHTML = 'Yuborilmoqda...'; }
+  if(sendBtn && sendBtn.disabled) return;               // takroriy bosishni bloklash
+  if(sendBtn){ sendBtn.disabled = true; sendBtn.style.opacity = '0.5'; sendBtn.dataset.txt = sendBtn.innerHTML; sendBtn.innerHTML = 'Yuborilmoqda…'; }
 
-  // Bot token bu yerda saqlanmaydi — server (CRM Vercel) tomonda. Har bir
-  // so'rov joriy foydalanuvchining o'z Supabase sessiyasi bilan
-  // autentifikatsiya qilinadi (xuddi CRM_WORKFLOW_API_URL kabi).
-  const { data: { session } } = await sb.auth.getSession();
-  if(!session){
-    showNotify("Sessiya topilmadi, qayta kiring");
-    if(sendBtn){ sendBtn.disabled = false; sendBtn.style.opacity = '1'; }
-    return;
-  }
-
-  let sentCount = 0;
+  // DB yozuvlari ALLAQACHON saqlangan (status 'kutilmoqda'). Bu yerda faqat
+  // xabarnoma yuboriladi. notifyTelegram: token yo'q, manzil server tomon,
+  // nazoratli xato. Muvaffaqiyatsiz bo'lsa DB yozuvi O'CHIRILMAYDI (status
+  // 'kutilmoqda' qoladi -> qayta urinish DB ni takrorlamaydi).
+  let sent = 0, failed = 0;
   for(const item of active){
-    try {
-      const res = await fetch(ERP_TELEGRAM_NOTIFY_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
-        body: JSON.stringify({
-          itemId: item.id, nom: item.nom, miqdor: item.miqdor, birlik: item.birlik,
-          izoh: item.izoh || null, rasmUrl: item.rasm_url || null
-        })
-      });
-      const body = await res.json().catch(() => null);
-      if(res.ok && body && body.ok){
-        // Statusni yuborildi deb belgilaymiz
-        await updateShoppingItem(item.id, {status:'yuborildi'});
-        sentCount++;
-      } else {
-        console.error('Telegram notify xato', item.id, body);
-      }
-      await new Promise(r => setTimeout(r, 400));
-    } catch(e){ console.error(e); }
+    const msg = '🛒 BOZORLIK\n' + item.nom + ' — ' + item.miqdor + ' ' + item.birlik + (item.izoh ? '\n📝 ' + item.izoh : '');
+    const r = await notifyTelegram({ type:'bozorlik', record_id:item.id, message:msg,
+      idempotency_key:'bozorlik:' + item.id });   // idempotency: qayta urinish server tomon takror yubormaydi
+    if(r.ok){ await updateShoppingItem(item.id, {status:'yuborildi'}); sent++; }
+    else { failed++; console.warn('[bozorlik notify]', item.id, r.error_code, r.message); }
+    await new Promise(res => setTimeout(res, 300));
   }
 
-  if(sendBtn){
-    sendBtn.innerHTML = '✅ Yuborildi (' + sentCount + ' ta)';
-    sendBtn.style.opacity = '0.5';
-  }
-  showNotify('✅ ' + sentCount + ' ta mahsulot Telegram ga yuborildi!');
+  if(sendBtn){ sendBtn.disabled = false; sendBtn.style.opacity = '1'; sendBtn.innerHTML = sendBtn.dataset.txt || 'Telegramga yuborish'; }
+  if(sent > 0 && failed === 0)      showNotify('✅ Bozorlik yuborildi (' + sent + ' ta)');
+  else if(sent > 0 && failed > 0)   showNotify('Qisman yuborildi: ' + sent + ' ta. ' + failed + ' ta saqlandi, lekin Telegramga yuborilmadi', 'warning');
+  else                              showNotify('Bozorlik saqlandi, lekin Telegramga yuborilmadi', 'warning');
   await loadBozorlik();
 }
 

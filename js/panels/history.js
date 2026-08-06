@@ -284,20 +284,19 @@ function rpFilter(){
   const search = (document.getElementById('rp-search')?.value||'').toLowerCase();
   const statusF = document.getElementById('rp-status-filter')?.value || 'all';
   const dateF = document.getElementById('rp-date-filter')?.value || 'all';
-  const now = new Date();
+
+  // Sana diapazoni — Asia/Tashkent (yagona helper; local-time getMonth/toDateString YO'Q)
+  const dateRange = dateF==='today' ? getTashkentDayRange()
+                  : dateF==='week'  ? getTashkentWeekRange()
+                  : dateF==='month' ? getTashkentMonthRange() : null;
 
   let list = allHistory.filter(h => {
-    // status filter
+    // status filter (is_paid/is_brak; qisman sxemada yo'q)
     if(statusF === 'wait' && (h.is_paid||h.is_brak)) return false;
     if(statusF === 'paid' && !h.is_paid) return false;
     if(statusF === 'brak' && !h.is_brak) return false;
-    // date filter
-    if(dateF !== 'all'){
-      const d = new Date(h.created_at);
-      if(dateF==='today' && d.toDateString()!==now.toDateString()) return false;
-      if(dateF==='week' && (now-d)>7*24*60*60*1000) return false;
-      if(dateF==='month' && (d.getMonth()!==now.getMonth()||d.getFullYear()!==now.getFullYear())) return false;
-    }
+    // date filter — bir zakazlar qatori = bitta buyurtma
+    if(dateRange && !isOrderInRange(h, dateRange)) return false;
     // search
     if(search){
       const name = (h.user_name||'').toLowerCase();
@@ -315,6 +314,15 @@ function rpFilter(){
 
   renderHistoryCards(pageList, search);
   renderRpPagination(totalPages, list.length);
+}
+
+// Barcha filtrlarni (ko'rinadigan + yashirin) tozalaydi.
+function rpResetFilters(){
+  const s = document.getElementById('rp-search'); if(s) s.value = '';
+  const d = document.getElementById('rp-date-filter'); if(d) d.value = 'all';
+  const st = document.getElementById('rp-status-filter'); if(st) st.value = 'all';
+  rpCurrentPage = 1;
+  rpFilter();
 }
 
 function renderRpPagination(totalPages, total){
@@ -362,7 +370,10 @@ function renderHistoryCards(list, searchQuery=''){
 
     // Type badge
     const typeBadge = isAdmin?'<span class="rp-badge admin">👤 Admin</span>':isDiz?'<span class="rp-badge dizayner">🎨 Dizayner</span>':'<span class="rp-badge ishlab">🏭 Ishlab</span>';
-    const statusBadge = isBrak?'<span class="rp-badge brak">⚠️ Brak</span>':isPaid?'<span class="rp-badge paid">✅ Mijoz to\'ladi</span>':'<span class="rp-badge wait">⏳ Mijoz kutilmoqda</span>';
+    // Ichki ofis ERP statuslari (yagona helper) — "Mijoz ..." so'zlari yo'q.
+    const _stKey = orderStatusKey(h);
+    const _stIcon = _stKey==='brak'?'⚠️':_stKey==='paid'?'✅':_stKey==='partial'?'◐':'⏳';
+    const statusBadge = '<span class="rp-badge '+(_stKey==='paid'?'paid':_stKey==='brak'?'brak':'wait')+'">'+_stIcon+' '+orderStatusLabel(h)+'</span>';
     const shiftBadge = '';
 
     // Items
@@ -428,16 +439,17 @@ function renderHistoryCards(list, searchQuery=''){
         }).join('');
     };
 
-    // Owner actions
+    // Holat tahrirlagich — faqat owner/admin (xodim ko'radi, o'zgartira olmaydi).
     let ownerActionsHtml = '';
-    if(currentRole==='owner' && !isAdmin){
-      ownerActionsHtml = '<div class="rp-card-owner-actions">'+
-        '<button class="rp-action-btn'+(isPaid?' primary':'')+'" onclick="togglePaid('+h.id+','+(!isPaid)+')">'+(isPaid?"✅ To'landi":"✅ To'landi")+'</button>'+
-        '<button class="rp-action-btn'+(isBrak?' danger':'')+'" onclick="toggleBrak('+h.id+','+(!isBrak)+')">'+(isBrak?'⚠️ Brak':'⚠️ Brak')+'</button>'+
-      '</div>';
-    } else if(currentRole==='owner' && isAdmin){
-      ownerActionsHtml = '<div class="rp-card-owner-actions">'+
-        '<button class="rp-action-btn'+(isPaid?' primary':'')+'" onclick="togglePaid('+h.id+','+(!isPaid)+')">'+(isPaid?"✅ To'landi":"Mijoz to'ladi deb belgilash")+'</button>'+
+    if(currentRole==='owner' || currentRole==='admin'){
+      const sid = h.id;
+      const opt = (k,label)=>'<option value="'+k+'"'+(_stKey===k?' selected':'')+'>'+label+'</option>';
+      ownerActionsHtml = '<div class="rp-card-owner-actions" style="gap:6px;flex-wrap:wrap;align-items:center">'+
+        '<select id="ostat-'+sid+'" class="rp-select" style="padding:5px 8px;font-size:12px" onchange="onOrderStatusChange('+sid+')">'+
+          opt('wait',"To'lov kutilmoqda")+opt('partial',"Qisman to'landi")+opt('paid',"To'liq to'landi")+opt('brak','Brak')+
+        '</select>'+
+        '<input type="text" inputmode="numeric" id="opaid-'+sid+'" placeholder="Qisman summa" value="'+(_stKey==='partial'&&h.paid_amount?h.paid_amount:'')+'" style="width:110px;padding:5px 8px;font-size:12px;'+(_stKey==='partial'?'':'display:none')+'">'+
+        '<button class="rp-action-btn primary" onclick="saveOrderStatus('+sid+')">Saqlash</button>'+
       '</div>';
     }
 
@@ -501,6 +513,44 @@ async function togglePaid(id, val){
   await loadHistory();
   if(currentRole === 'admin') renderAdminStats();
   if(currentRole === 'ishlab') renderIshlabStats();
+  renderDashboard();
+}
+
+// Qisman tanlanganda summa maydonini ko'rsatadi/yashiradi.
+function onOrderStatusChange(id){
+  const sel = document.getElementById('ostat-'+id);
+  const inp = document.getElementById('opaid-'+id);
+  if(sel && inp) inp.style.display = sel.value==='partial' ? '' : 'none';
+}
+
+// Owner/admin: buyurtma holatini o'rnatadi. Faqat owner/admin ruxsatli.
+// Maydon xaritasi (mijoz/buyurtma to'lovi — xodim payout'idan MUTLAQO alohida):
+//   wait    -> paid_amount=0,     is_paid=false, is_brak=false
+//   partial -> 0<paid_amount<jami, is_paid=false, is_brak=false
+//   paid    -> paid_amount=jami,   is_paid=true,  is_brak=false
+//   brak    -> is_brak=true (avtomatik to'langan deb belgilanmaydi)
+async function saveOrderStatus(id){
+  if(!(currentRole==='owner' || currentRole==='admin')){ showNotify('Ruxsat yo\'q','error'); return; }
+  const sel = document.getElementById('ostat-'+id);
+  const inp = document.getElementById('opaid-'+id);
+  const key = sel ? sel.value : 'wait';
+  if(key === 'all' || key === 'barchasi'){ showNotify("\"Barchasi\" saqlanmaydi",'error'); return; } // filtr, status emas
+  const h = allHistory.find(x => x.id === id);
+  if(!h){ showNotify('Yozuv topilmadi','error'); return; }
+  const total = orderTotalAmount(h);
+  const amt = parseInt(inp && inp.value)||0;
+  const res = orderStatusFields(key, total, amt); // sof, testlanadigan xarita
+  if(!res.ok){
+    if(res.error === 'partial_range') showNotify("Qisman: 0 < summa < jami ("+fmt(total)+") kiriting",'error');
+    else showNotify('Noto\'g\'ri holat','error');
+    return;
+  }
+
+  try { await updateHistoryItem(id, res.fields); }
+  catch(e){ showNotify('❌ Saqlashda xato: '+friendlyErr(e),'error'); return; }
+  showNotify('✅ Holat saqlandi: '+ORDER_STATUS_LABELS[key]);
+  await loadHistory(); // hisobotlar + kartalar yangilanadi
+  if(currentRole === 'admin') renderAdminStats();
   renderDashboard();
 }
 
@@ -913,36 +963,60 @@ function showAvansForm(){
 function hideAvansForm(){
   document.getElementById('avans-modal').classList.add('hidden');
 }
+let _avansSubmitting = false;
 async function submitAvans(){
+  if(_avansSubmitting) return;                       // takroriy bosishni bloklash
   const summa = parseInt(document.getElementById('avans-summa').value) || 0;
   const sabab = document.getElementById('avans-sabab').value.trim();
   if(!summa){ showNotify('Summa kiriting'); return; }
   if(!sabab){ showNotify('Sababini yozing'); return; }
-  
+
+  const btn = document.getElementById('avans-submit-btn');
+  _avansSubmitting = true;
+  if(btn){ btn.disabled = true; btn.dataset.txt = btn.textContent; btn.textContent = 'Yuborilmoqda…'; }
+
   const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
   const now = new Date();
-  
-  const avansReq = {
-    user_email: currentUser.email, user_name: name,
-    summa, sabab, status: 'kutilmoqda',
-    oy: now.getMonth()+1, yil: now.getFullYear(), sana: getSanaVaqt(),
-  };
-  const error = (await createAvans(avansReq)) ? null : new Error('avans insert failed');
-  
-  if(error){ showNotify('❌ Xatolik: '+error.message); return; }
+  const msgText = "💰 AVANS SO'ROVI\n👤 " + name + "\n💵 " + fmt(summa) + " so'm\n📝 " + sabab + "\n📅 " + getSanaVaqt();
 
-  // Xabarlar jadvaliga ham yoz (owner ko'rsin)
-  const ownerEmail = 'ra.ravshan1998@gmail.com';
-  const xatText = `💰 Avans so'rovi\n👤 ${name}\n💵 ${fmt(summa)} so'm\n📝 ${sabab}`;
-  await createMessage({from_id:currentUser.id, from_email:currentUser.email, from_name:name, to_email:ownerEmail, text:xatText, sana:getSanaVaqt(), created_at:new Date().toISOString()});
+  try {
+    // 1) DB — HAQIQAT MANBAI (avval saqlanadi)
+    await createAvans({
+      user_email: currentUser.email, user_name: name,
+      summa, sabab, status: 'kutilmoqda',
+      oy: now.getMonth()+1, yil: now.getFullYear(), sana: getSanaVaqt(),
+    });
+    // Xabarlar jadvaliga ham (owner ko'rsin) — DB, bu ham source of truth qismi
+    const ownerEmail = 'ra.ravshan1998@gmail.com';
+    await createMessage({from_id:currentUser.id, from_email:currentUser.email, from_name:name, to_email:ownerEmail, text:`💰 Avans so'rovi\n👤 ${name}\n💵 ${fmt(summa)} so'm\n📝 ${sabab}`, sana:getSanaVaqt(), created_at:new Date().toISOString()});
+  } catch(e){
+    // DB saqlanmadi -> nazoratli xato (xom "Failed to fetch" emas), qayta urinish mumkin
+    if(btn){ btn.disabled = false; btn.textContent = btn.dataset.txt || 'Yuborish'; }
+    _avansSubmitting = false;
+    showNotify('❌ Saqlashda xato: ' + friendlyErr(e) + '. Qaytadan urinib ko\'ring.', 'error');
+    return;
+  }
 
-  showNotify("✅ Avans so'rovi yuborildi!");
+  // 2) DB saqlandi -> muvaffaqiyat, tozalash, yopish
+  showNotify("✅ Avans so'rovi yuborildi");
   hideAvansForm();
-  await loadMessages();
-  
-  // Telegram orqali ham yuborish
-  const msg = "💰 AVANS SO'ROVI\n👤 " + name + "\n💵 " + fmt(summa) + " so'm\n📝 " + sabab + "\n📅 " + getSanaVaqt();
-  window.open('https://t.me/share/url?url=%20&text='+encodeURIComponent(msg),'_blank');
+  loadMessages().catch(()=>{});
+
+  // 3) Telegram xabarnomasi — DB dan KEYIN, alohida; muvaffaqiyatsiz bo'lsa yozuv O'CHIRILMAYDI
+  const tg = await notifyTelegram({ type:'avans', record_id:(currentUser.id+':'+now.getTime()),
+    message:msgText, idempotency_key:'avans:'+currentUser.id+':'+now.getTime() });
+  if(!tg.ok){
+    showNotify("Avans so'rovi saqlandi, lekin Telegramga yuborilmadi", 'warning');
+  }
+  _avansSubmitting = false;
+  if(btn){ btn.disabled = false; btn.textContent = btn.dataset.txt || 'Yuborish'; }
+}
+
+// Xom tarmoq xatosini ("Failed to fetch") tushunarli matnga o'giradi.
+function friendlyErr(e){
+  const m = (e && e.message) || String(e||'');
+  if(/failed to fetch|networkerror|load failed/i.test(m)) return 'tarmoq xatosi';
+  return m.slice(0, 80);
 }
 
 async function giveAvans(email, name){

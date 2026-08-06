@@ -1062,3 +1062,18 @@ input[type=email]:invalid:not(:placeholder-shown){
 /* Ofset: Oddiy/Katalog rejim tugmasi */
 .of-mode-btn{flex:1;cursor:pointer}
 .of-mode-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── Avans modal — dark-mode ko'rinuvchanlik + klaviatura fokusi (faqat shu modal) ──
+   Muammo: "Bekor" tugmasi va inputlar dark rejimda past kontrast edi. Yechim:
+   CSS o'zgaruvchilari + dark uchun elevatsiyalangan "Bekor". Light mode tegilmaydi. */
+#avans-modal .modal-title{color:var(--text)}
+#avans-modal .form-label{color:var(--text2)}
+#avans-modal input,#avans-modal textarea{color:var(--text);background:var(--white);border:1.5px solid var(--gray-border)}
+#avans-modal input::placeholder,#avans-modal textarea::placeholder{color:var(--text3);opacity:1}
+#avans-modal input:focus,#avans-modal textarea:focus{outline:none;border-color:var(--blue)}
+#avans-modal #avans-cancel-btn{background:var(--gray-light);color:var(--text);border:1px solid var(--gray-border)}
+#avans-modal #avans-cancel-btn:hover{background:var(--gray-border)}
+#avans-modal .savebtn:disabled,#avans-modal #avans-cancel-btn:disabled{opacity:.6;cursor:not-allowed}
+#avans-modal button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+[data-theme="dark"] #avans-modal #avans-cancel-btn{background:#334155;border-color:#475569;color:var(--text2)}
+[data-theme="dark"] #avans-modal #avans-cancel-btn:hover{background:#3b4a61}

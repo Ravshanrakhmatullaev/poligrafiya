@@ -847,10 +847,11 @@
         </select>
         <select class="rp-select" id="rp-status-filter" onchange="rpFilter()">
           <option value="all">Holat: barchasi</option>
-          <option value="wait">Mijoz kutilmoqda</option>
-          <option value="paid">Mijoz to'ladi</option>
+          <option value="wait">To'lov kutilmoqda</option>
+          <option value="paid">To'liq to'landi</option>
           <option value="brak">Brak</option>
         </select>
+        <button class="rp-select" style="cursor:pointer" onclick="rpResetFilters()" title="Filtrlarni tozalash">Tozalash</button>
       </div>
     </div>
 
@@ -2448,8 +2449,8 @@
       <textarea id="avans-sabab" rows="3" style="width:100%;padding:8px 11px;border:1.5px solid var(--gray-border);border-radius:var(--radius-md);font-size:13px;font-family:inherit;resize:vertical" placeholder="Avans sababini yozing..."></textarea>
     </div>
     <div style="display:flex;gap:8px">
-      <button class="savebtn" style="flex:1" onclick="submitAvans()">Yuborish</button>
-      <button style="padding:10px 16px;border-radius:var(--radius-md);border:1px solid var(--gray-border);background:var(--white);cursor:pointer;font-family:inherit;font-size:13px" onclick="hideAvansForm()">Bekor</button>
+      <button class="savebtn" id="avans-submit-btn" style="flex:1" onclick="submitAvans()">Yuborish</button>
+      <button id="avans-cancel-btn" style="padding:10px 16px;border-radius:var(--radius-md);border:1px solid var(--gray-border);background:var(--white);color:var(--text);cursor:pointer;font-family:inherit;font-size:13px" onclick="hideAvansForm()">Bekor</button>
     </div>
   </div>
 </div>
@@ -2485,7 +2486,7 @@
   <script src="js/config.js?v=20260803"></script>
 
   <!-- 3. Utils (fmt, showNotify, hisoblash) -->
-  <script src="js/utils.js?v=20260804"></script>
+  <script src="js/utils.js?v=20260807"></script>
 
   <!-- 4. DB (Supabase client + AppStore) -->
   <script src="js/db.js?v=20260803"></script>
@@ -2497,11 +2498,11 @@
   <script src="js/panels/davomat.js?v=20260803"></script>
   <script src="js/panels/foiz.js?v=20260803"></script>
   <script src="js/panels/xabar.js?v=20260803"></script>
-  <script src="js/panels/history.js?v=20260803"></script>
+  <script src="js/panels/history.js?v=20260807"></script>
   <script src="js/panels/dashboard.js?v=20260805"></script>
   <script src="js/panels/sklad.js?v=20260803"></script>
   <script src="js/panels/kalk.js?v=20260803"></script>
-  <script src="js/panels/bozorlik.js?v=20260803"></script>
+  <script src="js/panels/bozorlik.js?v=20260807"></script>
   <script src="js/panels/dizayner.js?v=20260805"></script>
   <script src="js/panels/uvdtf.js?v=20260803"></script>
 

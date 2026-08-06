@@ -176,6 +176,101 @@ function isOrderInMonth(order, range) {
   const t = orderBusinessTime(order);
   return Number.isFinite(t) && t >= range.start && t < range.end;
 }
+// Umumiy diapazon tekshiruvi (kun/hafta/oy — bir xil [start,end) semantikasi).
+function isOrderInRange(order, range) { return isOrderInMonth(order, range); }
+
+// Kun chegarasi — Asia/Tashkent: bugun 00:00 -> ertaga 00:00 (UTC ms).
+function getTashkentDayRange(date) {
+  const d = date != null ? new Date(date) : new Date();
+  const t = new Date(d.getTime() + TASHKENT_OFFSET_MS);
+  const start = Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate()) - TASHKENT_OFFSET_MS;
+  return { start, end: start + 24 * 60 * 60 * 1000 };
+}
+// "Oxirgi 7 kun" — bugun ichida, o'tgan 7 kalendar kuni (Asia/Tashkent).
+function getTashkentWeekRange(date) {
+  const day = getTashkentDayRange(date);
+  return { start: day.start - 6 * 24 * 60 * 60 * 1000, end: day.end };
+}
+
+// ── BUYURTMA HOLATI (YAGONA MANBA) — ichki ofis ERP ──────────────────────────
+// Kanonik maydonlar: is_brak (brak), is_paid (to'liq to'landi), paid_amount
+// (qisman — HOZIRCHA sxemada YO'Q, shuning uchun qisman SOXTA aniqlanmaydi).
+// "Barchasi" — bu FILTR, hech qachon status sifatida saqlanmaydi.
+const ORDER_STATUS_LABELS = {
+  wait:    "To'lov kutilmoqda",
+  partial: "Qisman to'landi",
+  paid:    "To'liq to'landi",
+  brak:    "Brak",
+};
+function orderTotalAmount(h) { return h && h.type === 'admin' ? (h.total_daromad || 0) : (h && h.total_jami || 0); }
+function orderStatusKey(h) {
+  if (!h) return 'wait';
+  if (h.is_brak) return 'brak';
+  // paid_amount ustuni qo'shilgach qisman aniqlanadi; hozir yo'q -> soxta emas.
+  const paidAmt = Number(h.paid_amount);
+  if (Number.isFinite(paidAmt) && paidAmt > 0 && paidAmt < orderTotalAmount(h)) return 'partial';
+  if (h.is_paid) return 'paid';
+  return 'wait';
+}
+function orderStatusLabel(h) { return ORDER_STATUS_LABELS[orderStatusKey(h)]; }
+
+// Status kaliti -> saqlanadigan DB maydonlari (sof funksiya, test qilinadi).
+// "Barchasi" bu yerga kelmaydi (u filtr). Xodim payout'i bilan aralashmaydi.
+function orderStatusFields(key, total, paidAmount) {
+  const t = Number(total) || 0;
+  if (key === 'wait') return { ok: true, fields: { paid_amount: 0, is_paid: false, is_brak: false } };
+  if (key === 'paid') return { ok: true, fields: { paid_amount: t, is_paid: true, is_brak: false } };
+  if (key === 'brak') return { ok: true, fields: { is_brak: true } }; // is_paid'ga tegilmaydi
+  if (key === 'partial') {
+    const amt = Number(paidAmount) || 0;
+    if (!(amt > 0 && amt < t)) return { ok: false, error: 'partial_range' };
+    return { ok: true, fields: { paid_amount: amt, is_paid: false, is_brak: false } };
+  }
+  return { ok: false, error: 'bad_key' };
+}
+// Eski matnli statusni yangi so'zga xavfsiz o'giradi (tarixiy ma'lumot buzilmaydi).
+function mapLegacyStatus(text) {
+  if (text === 'Mijoz kutilmoqda') return ORDER_STATUS_LABELS.wait;
+  if (text === "Mijoz to'ladi")    return ORDER_STATUS_LABELS.paid;
+  return text;
+}
+
+// ── XAVFSIZ TELEGRAM XABARNOMASI (YAGONA HELPER) ─────────────────────────────
+// Server (CRM Vercel) bot token va CHAT_ID larni tutadi; brauzer HECH QACHON
+// token yubormaydi. Kontrakt: {type:'avans'|'bozorlik', record_id, message,
+// idempotency_key}. Manzilni SERVER `type` bo'yicha tanlaydi (client chat_id
+// bermaydi). Timeout + nazoratli xato: hech qachon xom "Failed to fetch"
+// chiqmaydi. DB yozuvi bu funksiyaga BOG'LIQ EMAS — u alohida saqlanadi.
+async function notifyTelegram(payload) {
+  const type = payload && payload.type;
+  if (type !== 'avans' && type !== 'bozorlik') return { ok: false, error_code: 'bad_type', message: 'noto\'g\'ri type' };
+  let token = '';
+  try { const { data } = await sb.auth.getSession(); token = data && data.session ? data.session.access_token : ''; } catch (e) {}
+  if (!token) return { ok: false, error_code: 'no_session', message: 'Sessiya topilmadi' };
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 12000); // 12s timeout
+  try {
+    const res = await fetch(ERP_TELEGRAM_NOTIFY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({
+        type,
+        record_id: payload.record_id != null ? String(payload.record_id) : null,
+        message: payload.message || '',
+        idempotency_key: payload.idempotency_key || (type + ':' + payload.record_id),
+      }),
+      signal: ctrl.signal,
+    });
+    const body = await res.json().catch(() => null);
+    if (res.ok && body && body.ok) return { ok: true, telegram_message_id: body.telegram_message_id };
+    return { ok: false, error_code: (body && body.error_code) || ('http_' + res.status),
+             message: (body && body.message) || ('HTTP ' + res.status) };
+  } catch (e) {
+    const code = e && e.name === 'AbortError' ? 'timeout' : 'network';
+    return { ok: false, error_code: code, message: code === 'timeout' ? 'Vaqt tugadi' : 'Tarmoq xatosi' };
+  } finally { clearTimeout(timer); }
+}
 
 // Bir oydagi xodim ko'rsatkichlari (summa / sof daromad / soni). Faqat shu oy
 // buyurtmalari. Hech narsa chiqarib tashlanmaydi (is_brak ustuni mavjud emas).
