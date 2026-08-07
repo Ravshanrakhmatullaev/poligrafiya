@@ -979,9 +979,10 @@ async function submitAvans(){
   const now = new Date();
   const msgText = "💰 AVANS SO'ROVI\n👤 " + name + "\n💵 " + fmt(summa) + " so'm\n📝 " + sabab + "\n📅 " + getSanaVaqt();
 
+  let avansId;
   try {
-    // 1) DB — HAQIQAT MANBAI (avval saqlanadi)
-    await createAvans({
+    // 1) DB — HAQIQAT MANBAI (avval saqlanadi). Haqiqiy avanslar.id qaytadi.
+    avansId = await createAvans({
       user_email: currentUser.email, user_name: name,
       summa, sabab, status: 'kutilmoqda',
       oy: now.getMonth()+1, yil: now.getFullYear(), sana: getSanaVaqt(),
@@ -1002,9 +1003,10 @@ async function submitAvans(){
   hideAvansForm();
   loadMessages().catch(()=>{});
 
-  // 3) Telegram xabarnomasi — DB dan KEYIN, alohida; muvaffaqiyatsiz bo'lsa yozuv O'CHIRILMAYDI
-  const tg = await notifyTelegram({ type:'avans', record_id:(currentUser.id+':'+now.getTime()),
-    message:msgText, idempotency_key:'avans:'+currentUser.id+':'+now.getTime() });
+  // 3) Telegram xabarnomasi — DB dan KEYIN, alohida; muvaffaqiyatsiz bo'lsa yozuv O'CHIRILMAYDI.
+  //    record_id = HAQIQIY avanslar.id (sintetik userId:timestamp EMAS).
+  const tg = await notifyTelegram({ type:'avans', record_id:String(avansId),
+    message:msgText, idempotency_key:'avans:'+avansId });
   if(!tg.ok){
     showNotify("Avans so'rovi saqlandi, lekin Telegramga yuborilmadi", 'warning');
   }

@@ -364,9 +364,10 @@ async function getAvans(userEmail) {
 
 async function createAvans(data) {
   try {
-    const { error } = await sb.from('avanslar').insert(data);
+    // INSERT ning o'zi yangi qatorning kanonik id sini qaytaradi (ikkinchi so'rov yo'q).
+    const { data: row, error } = await sb.from('avanslar').insert(data).select('id').single();
     if (error) throw error;
-    return true;
+    return row.id; // haqiqiy avanslar.id (bigint) — Telegram record_id uchun
   } catch (e) { console.error('[createAvans]', e); throw e; }
 }
 
