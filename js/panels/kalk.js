@@ -15,11 +15,14 @@ function setKalkType(type, el){
     const btn = document.querySelector('.kc-tab[data-type="'+type+'"]');
     if(btn) btn.classList.add('active');
   }
-  ['sigim','banner','bekprint','uvdtf','dtf','pechat','ofset'].forEach(t => {
+  // Default tartib: Sig'im · Banner · Orakal · Bek Print · UV DTF · DTF · Ofset.
+  // "pechat" TAB olib tashlandi (calcPechatNarx/PECHAT_NARX ofset katalogida qoladi).
+  ['sigim','banner','orakal','bekprint','uvdtf','dtf','ofset'].forEach(t => {
     const el2 = document.getElementById('kalk-'+t);
     if(el2) el2.classList.toggle('hidden', t !== type);
   });
   if(type === 'ofset') updateOfsetFormats();
+  if(type === 'orakal') calcOrakal();
 }
 
 function clearKalk(){
@@ -30,7 +33,7 @@ function clearKalk(){
     section.querySelectorAll('input[type=checkbox]').forEach(i=>{ if(i.classList.contains('kc-switch-input')) i.checked=false; });
     section.querySelectorAll('[id$="-body"]').forEach(b=>b.style.display='none');
     // Reset results
-    ['kalk-banner-result','kalk-bek-result','kalk-uv-result','kalk-dtf-result','kalk-pech-result','kalk-of-result','sig-result'].forEach(id=>{
+    ['kalk-banner-result','kalk-bek-result','kalk-uv-result','kalk-dtf-result','kalk-orakal-result','kalk-of-result','sig-result'].forEach(id=>{
       const e=document.getElementById(id);
       if(e && section.contains(e)){
         e.style.display='none';
@@ -309,39 +312,135 @@ function calcUvDtf(){
     '<div style="font-size:11px;color:var(--text3);margin-top:4px">Rulo: 30sm, pechat zonasi: 29sm</div>';
 }
 
-function calcDtf(){
-  const eni = parseFloat(document.getElementById('kalk-dtf-eni').value)||0;
-  const boyi = parseFloat(document.getElementById('kalk-dtf-boyi').value)||0;
-  const son = parseInt(document.getElementById('kalk-dtf-son').value)||0;
-  const tur = parseFloat(document.getElementById('kalk-dtf-tur').value)||1;
-  if(!eni||!boyi||!son) return;
-  const kvM = (eni * boyi) / 10000;
-  const birlikNarx = Math.max(8000, Math.round(kvM * 12000 * tur));
-  const jami = birlikNarx * son;
-  const izoh = eni+'×'+boyi+' sm, '+son+' dona'+(tur>1?' (ikki tomonlama)':'');
-  kalkLastResult = 'DTF: '+izoh+'\nNarx: '+fmt(birlikNarx)+" so'm/dona\nJami: "+fmt(jami)+" so'm";
-  const el = document.getElementById('kalk-dtf-result');
-  if(!el) return;
-  el.innerHTML = '<div style="font-size:12px;color:var(--text3);margin-bottom:4px">'+izoh+'</div>'+
-    '<div style="font-size:28px;font-weight:700;color:#EF4444">'+fmt(jami)+" so'm</div>"+
-    '<div style="font-size:11px;color:var(--text3);margin-top:4px">'+fmt(birlikNarx)+" so'm/dona</div>";
+// ── Ishlab chiqarish breakdown UI yordamchisi (Orakal + DTF uchun) ──
+// Ixcham kartochkalar: JOYLAYISH / MATERIAL / NARXLASH / NATIJA. Har biri
+// {label, value} qatorlardan iborat. ERP qorong'i uslubi saqlanadi.
+function kalkBreakdownHTML(color, groups, total, totalNote){
+  const card = g => {
+    if(!g || !g.rows || !g.rows.length) return '';
+    const rows = g.rows.filter(r=>r && r[1]!=null && r[1]!=='').map(r =>
+      '<div style="display:flex;justify-content:space-between;gap:10px;font-size:12px;line-height:1.7">'+
+        '<span style="color:var(--text3)">'+r[0]+'</span>'+
+        '<span style="color:var(--text);font-weight:600;text-align:right">'+r[1]+'</span>'+
+      '</div>').join('');
+    return '<div style="background:var(--bg2,rgba(255,255,255,.03));border:1px solid var(--border,rgba(255,255,255,.07));border-radius:10px;padding:10px 12px">'+
+      '<div style="font-size:10px;letter-spacing:.5px;color:'+color+';font-weight:700;margin-bottom:6px">'+g.title+'</div>'+rows+'</div>';
+  };
+  return '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">'+
+      groups.map(card).join('')+'</div>'+
+    '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border,rgba(255,255,255,.08))">'+
+      '<div style="font-size:11px;color:var(--text3)">Jami narx'+(totalNote?' · '+totalNote:'')+'</div>'+
+      '<div style="font-size:28px;font-weight:800;color:'+color+'">'+fmt(total)+" so'm</div></div>";
 }
 
+// ── ORAKAL ──
+// Sotuv narxi TAYYOR MIJOZ MAYDONI bo'yicha; material sarfi (2 sm overlap,
+// panel/rulon isrofi) ALOHIDA ko'rsatiladi va mijozdan olinmaydi.
+function calcOrakal(){
+  const eni  = parseFloat((document.getElementById('kalk-orakal-eni')||{}).value)||0;
+  const boyi = parseFloat((document.getElementById('kalk-orakal-boyi')||{}).value)||0;
+  const son  = parseInt((document.getElementById('kalk-orakal-son')||{}).value)||1;
+  const tur  = (document.getElementById('kalk-orakal-tur')||{}).value==='setkalik'?'setkalik':'oddiy';
+  const el = document.getElementById('kalk-orakal-result');
+  if(!eni || !boyi){ if(el){ el.style.display='none'; } kalkLastResult=''; return; }
 
-function calcPechat(){
-  const son = parseInt(document.getElementById('kalk-pech-son').value)||0;
-  const olch = document.getElementById('kalk-pech-olch').value;
-  if(!son) return;
-  const narxlar = { 'A4': 500, 'A3': 900, 'A5': 300 };
-  const narx = narxlar[olch] || 500;
-  const jami = narx * son;
-  const izoh = olch + ' format, ' + son + ' dona';
-  kalkLastResult = 'Pechat: '+izoh+'\nNarx: '+fmt(narx)+" so'm/dona\nJami: "+fmt(jami)+" so'm";
-  const el = document.getElementById('kalk-pech-result');
-  if(!el) return;
-  el.innerHTML = '<div style="font-size:12px;color:var(--text3);margin-bottom:4px">'+izoh+'</div>'+
-    '<div style="font-size:28px;font-weight:700;color:#22C55E">'+fmt(jami)+" so'm</div>"+
-    '<div style="font-size:11px;color:var(--text3);margin-top:4px">'+fmt(narx)+" so'm/dona</div>";
+  const r = calculateOrakal({ finishedW:eni, finishedH:boyi, qty:son, type:tur });
+  if(el) el.style.display='block';
+  if(!r.ok){
+    if(el) el.innerHTML = '<div style="color:#EF4444;font-weight:600">Hisoblab bo\'lmadi: '+(r.message||'ma\'lumot yetarli emas')+'</div>';
+    kalkLastResult=''; return;
+  }
+  const turLabel = r.type==='setkalik' ? 'Setkalik' : 'Oddiy';
+  const orient = r.rotated ? 'Aylantirilgan (90°)' : "To'g'ri";
+  const panelInfo = r.panels>1
+    ? r.panels+' panel (jami bosilgan eni '+r.totalPrintedW+' sm)'
+    : '1 panel (bo\'linmasdan)';
+  // 2 sm — panellarni yopishtirish uchun ustma-ust chiqish (montaj uchun).
+  const ustmaUst = r.panels>1 ? r.overlap+' sm (har chok)' : '—';
+
+  if(el) el.innerHTML = kalkBreakdownHTML('#F59E0B', [
+    { title:'JOYLAYISH', rows:[
+      ['Tayyor o\'lcham', eni+'×'+boyi+' sm'],
+      ['Soni', son+' dona'],
+      ['Orakal turi', turLabel],
+      ['Orientatsiya', orient],
+      ['Panel', panelInfo],
+      ['Yopishtirish uchun ustma-ust chiqish', ustmaUst],
+    ]},
+    { title:'MATERIAL', rows:[
+      ['Tanlangan rulon', r.rollPhysical+' sm'],
+      ['Foydali pechat eni', r.rollSafe+' sm'],
+      ['Material uzunligi', r.rollLengthM+' m ('+r.rollLengthCm+' sm)'],
+      ['Real material sarfi', r.materialAreaM2+' m²'],
+    ]},
+    { title:'NARXLASH', rows:[
+      ['Sotuv (tayyor) maydoni', r.billableAreaM2+' m²'],
+      ['Tarif', fmt(r.rate)+" so'm/m²"+(r.type==='setkalik'?' (setkalik +10 000)':'')],
+      ['Hisob asosi', 'tayyor maydon × tarif'],
+    ]},
+  ], r.total, r.rollPhysical+' sm rulon · '+turLabel);
+
+  // Nusxa olish uchun matn (dimensions + narx)
+  kalkLastResult =
+    'Orakal ('+turLabel+')\n'+
+    'Tayyor o\'lcham: '+eni+'×'+boyi+' sm × '+son+' dona\n'+
+    'Sotuv maydoni: '+r.billableAreaM2+' m² (tarif '+fmt(r.rate)+" so'm/m²)\n"+
+    'Tanlangan rulon: '+r.rollPhysical+' sm (foydali '+r.rollSafe+' sm), '+orient+'\n'+
+    'Panel: '+r.panels+' ta'+(r.panels>1?' · yopishtirish uchun ustma-ust chiqish '+r.overlap+' sm (har chok)':'')+'\n'+
+    'Real material sarfi: '+r.materialAreaM2+' m² ('+r.rollLengthM+' m uzunlik)\n'+
+    'Jami: '+fmt(r.total)+" so'm";
+}
+
+// ── DTF (tekstil transfer) — UV DTF EMAS ──
+// 58 sm rulon; qo'shnilar orasida majburiy 0.5 sm oraliq; <=0.5 m -> maydon×150k,
+// >0.5 m -> pogon metr×100k. Sof mantiq calculateDtf() (kalk_engines.js) da.
+function calcDtf(){
+  const eni  = parseFloat((document.getElementById('kalk-dtf-eni')||{}).value)||0;
+  const boyi = parseFloat((document.getElementById('kalk-dtf-boyi')||{}).value)||0;
+  const son  = parseInt((document.getElementById('kalk-dtf-son')||{}).value)||0;
+  const el = document.getElementById('kalk-dtf-result');
+  if(!eni || !boyi || !son){ if(el){ el.style.display='none'; } kalkLastResult=''; return; }
+
+  const r = calculateDtf({ width:eni, height:boyi, qty:son });
+  if(el) el.style.display='block';
+  if(!r.ok){
+    const msg = r.error==='both_exceed_width'
+      ? 'Mahsulot 58 sm rulon eniga sig\'madi (ikkala yo\'nalishda ham).'
+      : (r.message||'Ma\'lumot yetarli emas');
+    if(el) el.innerHTML = '<div style="color:#EF4444;font-weight:600">'+msg+'</div>';
+    kalkLastResult=''; return;
+  }
+  const orient = r.rotated ? 'Aylantirilgan (90°)' : "To'g'ri";
+  const modeLabel = r.mode==='m²' ? 'm² bo\'yicha (kichik ish)' : 'pogon metr bo\'yicha';
+  const rateLabel = r.mode==='m²' ? fmt(r.rate)+" so'm/m²" : fmt(r.rate)+" so'm/pogon metr";
+
+  if(el) el.innerHTML = kalkBreakdownHTML('#EF4444', [
+    { title:'JOYLAYISH', rows:[
+      ['Mahsulot o\'lchami', eni+'×'+boyi+' sm'],
+      ['Soni', son+' dona'],
+      ['Orientatsiya', orient],
+      ['Bir qatorga', r.across+' dona'],
+      ['Qatorlar soni', r.rows+' qator'],
+    ]},
+    { title:'MATERIAL', rows:[
+      ['Material eni', r.rollWidth+' sm'],
+      ['Majburiy oraliq', r.gap+' sm'],
+      ['Rulon uzunligi', r.lengthCm+' sm ('+r.lengthM+' m)'],
+      ['Ishlatilgan maydon', r.usedAreaM2+' m² (eni '+r.usedWidthCm+' sm)'],
+    ]},
+    { title:'NARXLASH', rows:[
+      ['Narx rejimi', modeLabel],
+      ['Tarif', rateLabel],
+    ]},
+  ], r.total, r.across+' dona/qator × '+r.rows+' qator · '+r.lengthCm+' sm');
+
+  kalkLastResult =
+    'DTF (tekstil)\n'+
+    'Mahsulot: '+eni+'×'+boyi+' sm × '+son+' dona ('+orient+')\n'+
+    'Joylashuv: '+r.across+' dona/qator × '+r.rows+' qator, oraliq '+r.gap+' sm\n'+
+    'Material: 58 sm rulon, uzunlik '+r.lengthCm+' sm ('+r.lengthM+' m)\n'+
+    'Narx rejimi: '+modeLabel+' — '+rateLabel+'\n'+
+    'Jami: '+fmt(r.total)+" so'm";
 }
 
 

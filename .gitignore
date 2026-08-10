@@ -1,0 +1,4 @@
+# Node / Playwright artifacts (installed only to run the e2e suite locally)
+node_modules/
+test-results/
+playwright-report/

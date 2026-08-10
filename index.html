@@ -1078,6 +1078,10 @@
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         Banner
       </button>
+      <button class="kc-tab" onclick="setKalkType('orakal',this)" data-type="orakal">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v4H4z"/><path d="M6 8v12M18 8v12"/><path d="M6 14h12"/></svg>
+        Orakal
+      </button>
       <button class="kc-tab" onclick="setKalkType('bekprint',this)" data-type="bekprint">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
         Bek Print
@@ -1089,10 +1093,6 @@
       <button class="kc-tab" onclick="setKalkType('dtf',this)" data-type="dtf">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         DTF
-      </button>
-      <button class="kc-tab" onclick="setKalkType('pechat',this)" data-type="pechat">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        Pechat
       </button>
       <button class="kc-tab" onclick="setKalkType('ofset',this)" data-type="ofset">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
@@ -1408,52 +1408,54 @@
               <span class="kc-unit">dona</span>
             </div>
           </div>
-          <div class="kc-field">
-            <label class="kc-label">Turi</label>
-            <select id="kalk-dtf-tur" class="kc-select" onchange="calcDtf()">
-              <option value="1">Bir tomonlama</option>
-              <option value="1.8">Ikki tomonlama</option>
-            </select>
-          </div>
         </div>
-        <div class="kalk-result" id="kalk-dtf-result" style="margin-top:16px">
-          <div style="font-size:12px;color:var(--text3)">Natija</div>
-          <div style="font-size:24px;font-weight:700;color:#EF4444">—</div>
-        </div>
+        <div class="kc-hint" style="margin-top:8px;font-size:11px;color:var(--text3)">58 sm rulon · qo'shnilar orasida majburiy 0.5 sm oraliq</div>
+        <div class="kalk-result" id="kalk-dtf-result" style="margin-top:16px;display:none"></div>
       </div>
 
-      <!-- Pechat -->
-      <div class="kc-section hidden" id="kalk-pechat">
+      <!-- Orakal -->
+      <div class="kc-section hidden" id="kalk-orakal">
         <div class="kc-section-header">
-          <div class="kc-section-icon" style="background:rgba(34,197,94,.12)">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#22C55E" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          <div class="kc-section-icon" style="background:rgba(245,158,11,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M4 4h16v4H4z"/><path d="M6 8v12M18 8v12"/><path d="M6 14h12"/></svg>
           </div>
           <div>
-            <div class="kc-section-title">Rangli Pechat</div>
-            <div class="kc-section-desc">Format va soni asosida hisoblash</div>
+            <div class="kc-section-title">Orakal</div>
+            <div class="kc-section-desc">Tayyor maydon bo'yicha narx · panelga bo'linish avtomatik</div>
           </div>
         </div>
         <div class="kc-grid-2">
           <div class="kc-field">
+            <label class="kc-label">Eni</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="decimal" id="kalk-orakal-eni" placeholder="200" oninput="calcOrakal()">
+              <span class="kc-unit">sm</span>
+            </div>
+          </div>
+          <div class="kc-field">
+            <label class="kc-label">Bo'yi</label>
+            <div class="kc-input-wrap">
+              <input type="text" inputmode="decimal" id="kalk-orakal-boyi" placeholder="170" oninput="calcOrakal()">
+              <span class="kc-unit">sm</span>
+            </div>
+          </div>
+          <div class="kc-field">
             <label class="kc-label">Soni</label>
             <div class="kc-input-wrap">
-              <input type="text" inputmode="numeric" id="kalk-pech-son" placeholder="100" oninput="calcPechat()">
+              <input type="text" inputmode="numeric" id="kalk-orakal-son" placeholder="1" oninput="calcOrakal()">
               <span class="kc-unit">dona</span>
             </div>
           </div>
           <div class="kc-field">
-            <label class="kc-label">Format</label>
-            <select id="kalk-pech-olch" class="kc-select" onchange="calcPechat()">
-              <option value="A4">A4</option>
-              <option value="A3">A3</option>
-              <option value="A5">A5</option>
+            <label class="kc-label">Turi</label>
+            <select id="kalk-orakal-tur" class="kc-select" onchange="calcOrakal()">
+              <option value="oddiy">Oddiy</option>
+              <option value="setkalik">Setkalik (+10 000/m²)</option>
             </select>
           </div>
         </div>
-        <div class="kalk-result" id="kalk-pech-result" style="margin-top:16px">
-          <div style="font-size:12px;color:var(--text3)">Natija</div>
-          <div style="font-size:24px;font-weight:700;color:#22C55E">—</div>
-        </div>
+        <div class="kc-hint" style="margin-top:8px;font-size:11px;color:var(--text3)">Rulonlar: 107/127/152 sm (foydali 105/125/150) · har chokda yopishtirish uchun ustma-ust chiqish +2 sm</div>
+        <div class="kalk-result" id="kalk-orakal-result" style="margin-top:16px;display:none"></div>
       </div>
 
       <!-- Ofset -->
@@ -2501,12 +2503,15 @@
   <script src="js/panels/history.js?v=20260808"></script>
   <script src="js/panels/dashboard.js?v=20260805"></script>
   <script src="js/panels/sklad.js?v=20260803"></script>
-  <script src="js/panels/kalk.js?v=20260803"></script>
+  <script src="js/panels/kalk_engines.js?v=20260811"></script>
+  <script src="js/panels/kalk.js?v=20260811"></script>
   <script src="js/panels/bozorlik.js?v=20260807"></script>
   <script src="js/panels/dizayner.js?v=20260805"></script>
   <script src="js/panels/uvdtf.js?v=20260803"></script>
 
   <!-- 7. App controller (oxirida) -->
   <script src="js/app.js?v=20260803"></script>
+  <!-- 8. Per-user nav/calc ordering (app.js dan keyin: currentUser, sb kerak) -->
+  <script src="js/nav_prefs.js?v=20260811"></script>
 </body>
 </html>
