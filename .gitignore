@@ -1,0 +1,4 @@
+debug.log
+playwright-report/
+playwright-results.json
+test-results/

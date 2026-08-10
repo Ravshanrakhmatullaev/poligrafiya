@@ -10,6 +10,7 @@
     "test:nav": "playwright test tests/navigation.spec.js",
     "test:admin": "playwright test tests/admin-orders.spec.js",
     "test:console": "playwright test tests/console-errors.spec.js",
+    "test:price": "playwright test tests/price-module.spec.js --config=playwright.price.config.js",
     "test:report": "playwright show-report"
   },
   "devDependencies": {

@@ -66,7 +66,7 @@ async function onLogin(){
 
   // Hammani ko'rsat
   ['nb-owner','nb-admin','nb-ishlab','nb-dizayner','nb-dashboard','nb-davomat','nb-tarix',
-   'nb-xabarlar','nb-sklad','nb-kalk','nb-bozorlik','nb-stopwatch','nb-foiz','nb-uvdtf'].forEach(id => {
+   'nb-xabarlar','nb-sklad','nb-kalk','nb-price','nb-bozorlik','nb-stopwatch','nb-foiz','nb-uvdtf'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.classList.remove('hidden');
   });
@@ -105,7 +105,7 @@ async function onLogin(){
   } else if(currentRole === 'uvdtf'){
     // UV DTF: faqat uvdtf ko'rsatiladi (davomat bundan mustasno — UV DTF ham xodim)
     ['nb-owner','nb-admin','nb-ishlab','nb-dizayner','nb-dashboard','nb-tarix',
-     'nb-xabarlar','nb-sklad','nb-kalk','nb-bozorlik','nb-stopwatch','nb-foiz'].forEach(id => {
+     'nb-xabarlar','nb-sklad','nb-kalk','nb-price','nb-bozorlik','nb-stopwatch','nb-foiz'].forEach(id => {
       const el = document.getElementById(id); if(el) el.classList.add('hidden');
     });
     showScreen('app');
