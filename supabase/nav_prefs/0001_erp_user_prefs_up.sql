@@ -17,6 +17,12 @@ create table if not exists public.erp_user_prefs (
 
 alter table public.erp_user_prefs enable row level security;
 
+-- Do not depend on project-level default privileges. Anonymous clients have no
+-- table access; authenticated clients still pass through the self-scoped RLS
+-- policy below for every read/write operation.
+revoke all on table public.erp_user_prefs from anon, authenticated;
+grant select, insert, update, delete on table public.erp_user_prefs to authenticated;
+
 -- Single self-scoped policy for all operations (select/insert/update/delete).
 -- Required for upsert-with-RLS: on-conflict update needs select+update on own row.
 drop policy if exists erp_user_prefs_self on public.erp_user_prefs;

@@ -12,6 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poligrafiya — Boshqaruv tizimi</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="price.css?v=20260811">
 </head>
 <body>
 
@@ -337,6 +338,10 @@
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/></svg>
         Kalkulyator
       </div>
+      <div class="qa-item" onclick="showPanel('price');toggleQuickAction()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 1 1 2.45-3c.55 1.5 2.05 3 2.05 3z"/><path d="M12 7h4.5a2.5 2.5 0 1 0-2.45-3C13.5 5.5 12 7 12 7z"/></svg>
+        PRICE katalog
+      </div>
       <div class="qa-item" onclick="showPanel('sklad');toggleQuickAction()">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
         Sklad
@@ -387,6 +392,11 @@
     <button class="nav-btn" onclick="showPanel('kalk')" id="nb-kalk">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/></svg>
       Kalkulyator
+    </button>
+    <button class="nav-btn price-nav-btn" onclick="showPanel('price')" id="nb-price">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 1 1 2.45-3c.55 1.5 2.05 3 2.05 3z"/><path d="M12 7h4.5a2.5 2.5 0 1 0-2.45-3C13.5 5.5 12 7 12 7z"/></svg>
+      PRICE
+      <span class="price-nav-dot" aria-hidden="true"></span>
     </button>
     <button class="nav-btn hidden" onclick="showPanel('bozorlik')" id="nb-bozorlik">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
@@ -2056,6 +2066,102 @@
     <div style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px">Har bir zakaz qatorida ham alohida mini-taymer mavjud</div>
   </div>
 
+  <!-- PRICE — ichki mahsulot va narxlar katalogi -->
+  <div class="panel" id="panel-price">
+    <section class="price-hero">
+      <div>
+        <div class="price-eyebrow">YAGONA NARX MANBASI</div>
+        <h1>PRICE katalog</h1>
+        <p>Mahsulotni toping, miqdorni kiriting va mijozga yuboriladigan tayyor narxni oling.</p>
+      </div>
+      <div class="price-hero-actions">
+        <button type="button" class="price-btn price-btn-secondary" onclick="loadPriceCatalog(true)">Yangilash</button>
+        <button type="button" class="price-btn price-btn-primary hidden" id="price-add-btn" onclick="openPriceEditor()">+ Mahsulot</button>
+      </div>
+    </section>
+
+    <div class="price-stats" aria-label="PRICE statistikasi">
+      <div><span id="price-stat-active">—</span><small>Faol mahsulot</small></div>
+      <div><span id="price-stat-categories">—</span><small>Kategoriya</small></div>
+      <div><span id="price-stat-updated">—</span><small>Oxirgi yangilanish</small></div>
+    </div>
+
+    <section class="price-toolbar" aria-label="Katalog filtrlari">
+      <label class="price-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="price-search" type="search" placeholder="Mahsulot, SKU, kategoriya yoki teg..." autocomplete="off" oninput="priceApplyFilters()">
+      </label>
+      <select id="price-status-filter" onchange="priceApplyFilters()" aria-label="Holat">
+        <option value="active">Faol</option>
+        <option value="favorites">Sevimlilar</option>
+        <option value="archived">Arxiv</option>
+        <option value="draft">Qoralama</option>
+        <option value="all">Hammasi</option>
+      </select>
+      <select id="price-sort" onchange="priceApplyFilters()" aria-label="Saralash">
+        <option value="updated">Yaqinda yangilangan</option>
+        <option value="name">Nomi bo'yicha</option>
+        <option value="price">Narxi bo'yicha</option>
+      </select>
+    </section>
+
+    <div class="price-category-strip" id="price-category-strip" aria-label="Kategoriyalar"></div>
+    <div class="price-catalog-state" id="price-catalog-state" role="status">Katalog yuklanmoqda...</div>
+    <div class="price-grid hidden" id="price-grid"></div>
+  </div>
+
+  <!-- PRICE detail -->
+  <div class="modal-overlay hidden price-modal-overlay" id="price-detail-modal" onclick="if(event.target===this)closePriceDetail()">
+    <div class="price-modal price-detail-modal" role="dialog" aria-modal="true" aria-labelledby="price-detail-title">
+      <button class="price-modal-close" type="button" onclick="closePriceDetail()" aria-label="Yopish">×</button>
+      <div id="price-detail-content"></div>
+    </div>
+  </div>
+
+  <!-- PRICE owner/admin editor -->
+  <div class="modal-overlay hidden price-modal-overlay" id="price-editor-modal" onclick="if(event.target===this)closePriceEditor()">
+    <form class="price-modal price-editor-modal" id="price-editor-form" onsubmit="savePriceProduct(event)" role="dialog" aria-modal="true" aria-labelledby="price-editor-title">
+      <button class="price-modal-close" type="button" onclick="closePriceEditor()" aria-label="Yopish">×</button>
+      <div class="price-editor-head">
+        <div>
+          <div class="price-eyebrow">OWNER / ADMIN</div>
+          <h2 id="price-editor-title">Mahsulot qo'shish</h2>
+        </div>
+        <span class="price-source-badge">Kanonik PRICE</span>
+      </div>
+      <input type="hidden" id="price-edit-id">
+      <div class="price-form-grid">
+        <label class="price-field price-span-2"><span>Mahsulot nomi *</span><input id="price-edit-name" maxlength="160" required></label>
+        <label class="price-field"><span>Kategoriya *</span><input id="price-edit-category" list="price-category-options" maxlength="80" required></label>
+        <datalist id="price-category-options"></datalist>
+        <label class="price-field"><span>SKU</span><input id="price-edit-sku" maxlength="60"></label>
+        <label class="price-field"><span>Birlik</span><select id="price-edit-unit"><option value="dona">dona</option><option value="m2">m²</option><option value="pogon_metr">pogon metr</option><option value="varaq">varaq</option><option value="komplekt">komplekt</option><option value="xizmat">xizmat</option></select></label>
+        <label class="price-field"><span>Narxlash rejimi</span><select id="price-edit-mode" onchange="priceEditorModeChanged()"><option value="fixed">Bitta narx</option><option value="quantity_tier">Miqdor tarifi</option><option value="area">m² bo'yicha</option><option value="linear_meter">Pogon metr</option><option value="calculator">Kalkulyator manbasi</option><option value="manual">Individual narx</option></select></label>
+        <label class="price-field"><span>Bazaviy narx</span><input id="price-edit-base-price" type="number" min="0" step="0.01" value="0"></label>
+        <label class="price-field"><span>Minimum miqdor</span><input id="price-edit-min" type="number" min="0.001" step="0.001" value="1" required></label>
+        <label class="price-field"><span>Tayyorlash muddati</span><input id="price-edit-production" placeholder="Masalan: 3–4 ish kuni"></label>
+        <label class="price-field"><span>Holat</span><select id="price-edit-status"><option value="active">Faol</option><option value="draft">Qoralama</option><option value="archived">Arxiv</option></select></label>
+        <label class="price-field price-span-2"><span>Teglar (vergul bilan)</span><input id="price-edit-tags" placeholder="krujka, sovg'a, sublimatsiya"></label>
+        <label class="price-field price-span-2"><span>Alias / sinonimlar (vergul bilan)</span><input id="price-edit-aliases" placeholder="bakal, chashka, mug"></label>
+        <label class="price-field price-span-2"><span>Rasm URL</span><input id="price-edit-image" type="url" placeholder="https://..."></label>
+        <label class="price-field price-span-2"><span>Tavsif</span><textarea id="price-edit-description" rows="3"></textarea></label>
+        <label class="price-field price-span-2"><span>Mijozga yuboriladigan izoh</span><textarea id="price-edit-customer-note" rows="2" placeholder="Narxga nimalar kirishi, yetkazib berish va boshqa shartlar"></textarea></label>
+        <label class="price-field price-span-2 hidden" id="price-source-key-field"><span>Kalkulyator source key *</span><input id="price-edit-source-key" placeholder="Masalan: calculator:product-key"></label>
+      </div>
+
+      <section class="price-tier-editor" id="price-tier-editor">
+        <div class="price-tier-editor-head"><div><h3>Miqdor tariflari</h3><p>Bir miqdor faqat bitta tarifga mos kelishi kerak. Oxirgi maksimumni bo'sh qoldirish mumkin.</p></div><button type="button" class="price-btn price-btn-secondary" onclick="addPriceTierRow()">+ Tarif</button></div>
+        <div id="price-tier-rows"></div>
+      </section>
+
+      <div class="price-form-error hidden" id="price-form-error"></div>
+      <div class="price-editor-actions">
+        <button type="button" class="price-btn price-btn-secondary" onclick="closePriceEditor()">Bekor</button>
+        <button type="submit" class="price-btn price-btn-primary" id="price-save-btn">Saqlash</button>
+      </div>
+    </form>
+  </div>
+
   <!-- SKLAD -->
   <div class="panel" id="panel-sklad">
     <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 14px;flex-wrap:wrap;gap:8px">
@@ -2505,6 +2611,7 @@
   <script src="js/panels/sklad.js?v=20260803"></script>
   <script src="js/panels/kalk_engines.js?v=20260811"></script>
   <script src="js/panels/kalk.js?v=20260811"></script>
+  <script src="js/panels/price.js?v=20260811"></script>
   <script src="js/panels/bozorlik.js?v=20260807"></script>
   <script src="js/panels/dizayner.js?v=20260805"></script>
   <script src="js/panels/uvdtf.js?v=20260803"></script>

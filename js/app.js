@@ -91,6 +91,7 @@ const GS_PAGES = [
   {label:'Dashboard', desc:'Shaxsiy hisobot', icon:'📊', panel:'dashboard'},
   {label:'Sklad', desc:'Mahsulotlar omborxonasi', icon:'🏠', panel:'sklad'},
   {label:'Kalkulyator', desc:'Narx hisoblash', icon:'🧮', panel:'kalk'},
+  {label:'PRICE', desc:'Mahsulot va narxlar katalogi', icon:'🏷️', panel:'price'},
   {label:'Hisobotlar', desc:'Zakaz tarixi', icon:'📋', panel:'tarix'},
   {label:'Xabarlar', desc:'Ichki xabarlar', icon:'✉️', panel:'xabarlar'},
   {label:'Bozorlik', desc:'Bozor ro\'yxati', icon:'🛒', panel:'bozorlik'},
@@ -229,6 +230,7 @@ function showPanel(id) {
     'bozorlik':  () => safeInitPanel('Bozorlik',      async () => { await loadBozorlik(); if (!skladData.length) await loadSklad(); }),
     'uvdtf':     () => safeInitPanel('UV DTF',        async () => { await loadUvdtfHisobot(); document.getElementById('nb-uvdtf')?.classList.add('active'); }),
     'kalk':      () => safeInitPanel('Kalkulyator',   () => { setKalkType('sigim', document.querySelector('.kc-tab[data-type="sigim"]')); }),
+    'price':     () => safeInitPanel('PRICE',          initPricePanel),
   };
 
   if (actions[id]) actions[id]();
