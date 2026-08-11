@@ -1,3 +1,4 @@
+# Node / Playwright artifacts (installed only to run the e2e suite locally)
 debug.log
 node_modules/
 playwright-report/
