@@ -199,7 +199,11 @@ test('migration grants, RLS, SECURITY DEFINER va rollback hardening', () => {
   const sql = fs.readFileSync(path.join(ROOT, 'supabase', 'migrations', '20260811090000_price_module.sql'), 'utf8');
   const rollback = fs.readFileSync(path.join(ROOT, 'supabase', 'price_module', '20260811090000_price_module_rollback.sql'), 'utf8');
   expect((sql.match(/security definer/g) || []).length).toBe(4);
-  expect((sql.match(/security definer\nset search_path = pg_catalog, public/g) || []).length).toBe(4);
+  expect((sql.match(/security definer\r?\nset search_path = pg_catalog, public/g) || []).length).toBe(4);
+  expect(sql).toContain('revoke all on table public.pricing_products from authenticated');
+  expect(sql).toContain('revoke all on table public.pricing_price_tiers from authenticated');
+  expect(sql).toContain('revoke all on table public.pricing_price_history from authenticated');
+  expect(sql).toContain('revoke all on function public.pricing_write_history() from anon, authenticated');
   expect(sql).toContain('grant select, insert, delete on public.pricing_favorites to authenticated');
   expect(sql).not.toMatch(/grant\s+(?:[^;]*\b)?(?:insert|update|delete)[^;]*pricing_products/i);
   expect(sql).not.toMatch(/grant\s+(?:[^;]*\b)?(?:insert|update|delete)[^;]*pricing_price_tiers/i);

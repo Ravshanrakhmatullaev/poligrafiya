@@ -528,17 +528,35 @@ revoke all on table public.pricing_products from anon;
 revoke all on table public.pricing_price_tiers from anon;
 revoke all on table public.pricing_favorites from anon;
 revoke all on table public.pricing_price_history from anon;
+-- Supabase projects may grant broad public-schema table privileges to the
+-- authenticated role by default. PRICE business writes must go through the
+-- server-authorized RPCs below, so reset those defaults before granting the
+-- intentionally narrow read/favorite permissions.
+revoke all on table public.pricing_products from authenticated;
+revoke all on table public.pricing_price_tiers from authenticated;
+revoke all on table public.pricing_favorites from authenticated;
+revoke all on table public.pricing_price_history from authenticated;
 revoke all on function public.pricing_save_product(jsonb, jsonb) from public;
 revoke all on function public.pricing_set_archived(bigint, boolean) from public;
 revoke all on function public.pricing_quote(bigint, numeric, numeric, numeric) from public;
 revoke all on function public.pricing_touch_updated_at() from public;
 revoke all on function public.pricing_reject_tier_range_collision() from public;
 revoke all on function public.pricing_write_history() from public;
+-- Supabase may also materialize default EXECUTE grants directly on its API
+-- roles. Clear those explicitly; the public RPCs are granted back below.
+revoke all on function public.pricing_is_admin() from anon, authenticated;
+revoke all on function public.pricing_save_product(jsonb, jsonb) from anon, authenticated;
+revoke all on function public.pricing_set_archived(bigint, boolean) from anon, authenticated;
+revoke all on function public.pricing_quote(bigint, numeric, numeric, numeric) from anon, authenticated;
+revoke all on function public.pricing_touch_updated_at() from anon, authenticated;
+revoke all on function public.pricing_reject_tier_range_collision() from anon, authenticated;
+revoke all on function public.pricing_write_history() from anon, authenticated;
 
 grant select on public.pricing_products to authenticated;
 grant select on public.pricing_price_tiers to authenticated;
 grant select, insert, delete on public.pricing_favorites to authenticated;
 grant select on public.pricing_price_history to authenticated;
+grant execute on function public.pricing_is_admin() to authenticated;
 grant execute on function public.pricing_save_product(jsonb, jsonb) to authenticated;
 grant execute on function public.pricing_set_archived(bigint, boolean) to authenticated;
 grant execute on function public.pricing_quote(bigint, numeric, numeric, numeric) to authenticated;
