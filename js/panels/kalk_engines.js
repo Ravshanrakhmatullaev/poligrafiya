@@ -4,6 +4,56 @@
 // MUHIM: bu DTF — UV DTF EMAS. UV DTF mantig'iga tegilmaydi.
 
 // ============================================================================
+// SIG'IM
+// ============================================================================
+function sigimNumber(value) {
+  if (typeof value === 'string') value = value.trim().replace(',', '.');
+  const number = Number(value);
+  return Number.isFinite(number) ? number : NaN;
+}
+
+function sigimDirection(materialWidth, materialHeight, pieceWidth, pieceHeight, gap) {
+  const columns = gap === 0
+    ? Math.floor(materialWidth / pieceWidth)
+    : Math.floor((materialWidth + gap) / (pieceWidth + gap));
+  const rows = gap === 0
+    ? Math.floor(materialHeight / pieceHeight)
+    : Math.floor((materialHeight + gap) / (pieceHeight + gap));
+  return {
+    columns,
+    rows,
+    total: columns * rows,
+    usedWidth: columns > 0 ? columns * pieceWidth + (columns - 1) * gap : 0,
+    usedHeight: rows > 0 ? rows * pieceHeight + (rows - 1) * gap : 0,
+  };
+}
+
+// piece = material ichiga joylanadigan bitta tayyor mahsulot;
+// material = mavjud list/rulonning umumiy tashqi o'lchami.
+function calculateSigim(input) {
+  input = input || {};
+  const pieceWidth = sigimNumber(input.pieceWidth);
+  const pieceHeight = sigimNumber(input.pieceHeight);
+  const materialWidth = sigimNumber(input.materialWidth);
+  const materialHeight = sigimNumber(input.materialHeight);
+  const gap = input.withGap ? 0.5 : 0;
+  const values = [pieceWidth, pieceHeight, materialWidth, materialHeight];
+
+  if (values.some(Number.isNaN)) return { ok: false, error: 'invalid' };
+  if (values.some(value => value <= 0)) return { ok: false, error: 'non_positive' };
+
+  const normal = sigimDirection(materialWidth, materialHeight, pieceWidth, pieceHeight, gap);
+  const rotated = sigimDirection(materialWidth, materialHeight, pieceHeight, pieceWidth, gap);
+  const bestOrientation = normal.total >= rotated.total ? 'normal' : 'rotated';
+  const best = bestOrientation === 'normal' ? normal : rotated;
+  return {
+    ok: true, pieceWidth, pieceHeight, materialWidth, materialHeight, gap,
+    normal, rotated, best, bestTotal: best.total, bestOrientation,
+    noFit: best.total === 0,
+  };
+}
+
+// ============================================================================
 // ORAKAL
 // ============================================================================
 // Rulonlar: fizik eni / xavfsiz (pechat qilinadigan) eni. 2 sm — chekka zaxira.
@@ -153,5 +203,5 @@ function calculateDtf(inp) {
 
 // Node/test uchun eksport (brauzerda global funksiyalar sifatida qoladi).
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { calculateOrakal, calculateDtf, orakalTierRate, orakalPanels, dtfPack, ORAKAL_ROLLS };
+  module.exports = { calculateSigim, calculateOrakal, calculateDtf, orakalTierRate, orakalPanels, dtfPack, ORAKAL_ROLLS };
 }

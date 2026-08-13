@@ -42,7 +42,10 @@ function clearKalk(){
     });
     const sigEmpty = document.getElementById('sig-empty');
     if(sigEmpty && section.contains(sigEmpty)) sigEmpty.style.display='block';
+    const sigMessage = document.getElementById('sig-message');
+    if(sigMessage && section.contains(sigMessage)) sigMessage.style.display='none';
   }
+  kalkLastResult = '';
   showNotify('Tozalandi');
 }
 
@@ -57,63 +60,65 @@ function showKalkResult(elId, kvM, narxKv, jami, izoh){
 }
 
 function calcSigim(){
-  const mahEni  = parseFloat(document.getElementById('sig-mah-eni').value)||0;
-  const mahBoyi = parseFloat(document.getElementById('sig-mah-boyi').value)||0;
-  const matEni  = parseFloat(document.getElementById('sig-mat-eni').value)||0;
-  const matBoyi = parseFloat(document.getElementById('sig-mat-boyi').value)||0;
+  const mahEni  = document.getElementById('sig-mah-eni').value;
+  const mahBoyi = document.getElementById('sig-mah-boyi').value;
+  const matEni  = document.getElementById('sig-mat-eni').value;
+  const matBoyi = document.getElementById('sig-mat-boyi').value;
   const kesish  = document.getElementById('sig-kesish').checked;
-  const oraliq  = kesish ? 0.5 : 0;
-
   const resEl   = document.getElementById('sig-result');
   const emptyEl = document.getElementById('sig-empty');
-  const infoEl  = document.getElementById('sig-kesish-info');
-  if(infoEl) infoEl.style.display = kesish ? 'block' : 'none';
+  const messageEl = document.getElementById('sig-message');
 
-  if(!mahEni || !mahBoyi || !matEni || !matBoyi){
+  if(![mahEni, mahBoyi, matEni, matBoyi].every(v => String(v).trim() !== '')){
     if(resEl) resEl.style.display = 'none';
     if(emptyEl) emptyEl.style.display = 'block';
+    if(messageEl) messageEl.style.display = 'none';
+    kalkLastResult = '';
     return;
   }
 
-  function sigDir(matO, mahO){
-    if(oraliq === 0) return Math.floor(matO / mahO);
-    return Math.floor((matO + oraliq) / (mahO + oraliq));
+  const r = calculateSigim({
+    pieceWidth: mahEni, pieceHeight: mahBoyi,
+    materialWidth: matEni, materialHeight: matBoyi,
+    withGap: kesish,
+  });
+  if(!r.ok){
+    if(resEl) resEl.style.display = 'none';
+    if(emptyEl) emptyEl.style.display = 'none';
+    if(messageEl){
+      messageEl.style.display = 'block';
+      messageEl.textContent = r.error === 'non_positive'
+        ? "O'lchamlar 0 dan katta bo'lishi kerak."
+        : "Faqat raqam kiriting (masalan: 9.5 yoki 9,5).";
+    }
+    kalkLastResult = '';
+    return;
   }
 
-  const normEni  = sigDir(matEni, mahEni);
-  const normBoyi = sigDir(matBoyi, mahBoyi);
-  const normSon  = normEni * normBoyi;
-  const normEniFiz  = normEni  > 0 ? normEni  * mahEni  + (normEni -1)*oraliq : 0;
-  const normBoyiFiz = normBoyi > 0 ? normBoyi * mahBoyi + (normBoyi-1)*oraliq : 0;
-
-  const rotEni  = sigDir(matEni, mahBoyi);
-  const rotBoyi = sigDir(matBoyi, mahEni);
-  const rotSon  = rotEni * rotBoyi;
-  const rotEniFiz  = rotEni  > 0 ? rotEni  * mahBoyi + (rotEni -1)*oraliq : 0;
-  const rotBoyiFiz = rotBoyi > 0 ? rotBoyi * mahEni  + (rotBoyi-1)*oraliq : 0;
-
-  const best    = Math.max(normSon, rotSon);
-  const bestWay = normSon >= rotSon ? "(to'g'ri)" : "(aylantirib)";
-
+  const bestWay = r.bestOrientation === 'normal' ? "(to'g'ri)" : "(aylantirib)";
   if(resEl) resEl.style.display = 'block';
   if(emptyEl) emptyEl.style.display = 'none';
+  if(messageEl){
+    messageEl.style.display = r.noFit ? 'block' : 'none';
+    messageEl.textContent = r.noFit
+      ? "Mahsulot materialdan katta: bu o'lchamlarda birorta ham sig'maydi. Mahsulot — bitta dona, material — tashqi list/rulon o'lchami."
+      : '';
+  }
 
-  // kalkLastResult yangilash
   kalkLastResult = 'Sig\'im hisoblash\n'+
-    'Mahsulot: '+mahEni+'×'+mahBoyi+' sm\n'+
-    'Material: '+matEni+'×'+matBoyi+' sm\n'+
+    'Mahsulot (1 dona): '+r.pieceWidth+'×'+r.pieceHeight+' sm\n'+
+    'Material (list/rulon): '+r.materialWidth+'×'+r.materialHeight+' sm\n'+
     (kesish?'Kesish oralig\': +0.5 sm\n':'')+
-    'To\'g\'ri joylashganda: '+normSon+' ta ('+normEni+'×'+normBoyi+')\n'+
-    'Aylantirib: '+rotSon+' ta ('+rotEni+'×'+rotBoyi+')\n'+
-    'Eng ko\'p: '+best+' ta '+bestWay;
+    'To\'g\'ri joylashganda: '+r.normal.total+' ta ('+r.normal.columns+'×'+r.normal.rows+')\n'+
+    'Aylantirib: '+r.rotated.total+' ta ('+r.rotated.columns+'×'+r.rotated.rows+')\n'+
+    'Eng ko\'p: '+r.bestTotal+' ta '+bestWay;
 
   const set = (id, val) => { const e=document.getElementById(id); if(e) e.textContent=val; };
-
-  set('sig-normal',   normSon + ' ta');
-  set('sig-normal-info', normEni+'×'+normBoyi + (kesish?' ('+normEniFiz.toFixed(1)+'×'+normBoyiFiz.toFixed(1)+' sm)':''));
-  set('sig-rotated',  rotSon + ' ta');
-  set('sig-rotated-info', rotEni+'×'+rotBoyi + (kesish?' ('+rotEniFiz.toFixed(1)+'×'+rotBoyiFiz.toFixed(1)+' sm)':''));
-  set('sig-best',     best + ' ta');
+  set('sig-normal', r.normal.total + ' ta');
+  set('sig-normal-info', r.normal.columns+'×'+r.normal.rows + (kesish?' ('+r.normal.usedWidth.toFixed(1)+'×'+r.normal.usedHeight.toFixed(1)+' sm)':''));
+  set('sig-rotated', r.rotated.total + ' ta');
+  set('sig-rotated-info', r.rotated.columns+'×'+r.rotated.rows + (kesish?' ('+r.rotated.usedWidth.toFixed(1)+'×'+r.rotated.usedHeight.toFixed(1)+' sm)':''));
+  set('sig-best', r.bestTotal + ' ta');
   set('sig-best-way', ' ' + bestWay);
 }
 
