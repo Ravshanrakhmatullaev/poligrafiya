@@ -7,6 +7,7 @@ let currentUser = null;
 let currentRole = null;
 let isSaving    = false;
 let loginSetupPromise = null;
+let initializedUserId = null;
 
 
 // ── LOGIN ──
@@ -69,10 +70,13 @@ async function onLogin(){
   // session. Both paths used to run the role/profile query concurrently; a
   // late timeout from the second copy could throw the user back to Login even
   // after the first copy had already opened the ERP.
+  if(currentUser && initializedUserId === currentUser.id && currentRole) return;
   if(loginSetupPromise) return loginSetupPromise;
   loginSetupPromise = performLoginSetup();
   try {
-    return await loginSetupPromise;
+    const result = await loginSetupPromise;
+    if(currentUser && currentRole) initializedUserId = currentUser.id;
+    return result;
   } finally {
     loginSetupPromise = null;
   }

@@ -284,6 +284,9 @@ test.describe('Login error classification', () => {
       };
       window.loadHistory = async () => [];
       await Promise.all([onLogin(), onLogin()]);
+      // A later duplicate SIGNED_IN event must also be ignored after the
+      // first setup completed successfully.
+      await onLogin();
       return {
         roleCalls,
         appVisible: !document.getElementById('app-screen').classList.contains('hidden'),
