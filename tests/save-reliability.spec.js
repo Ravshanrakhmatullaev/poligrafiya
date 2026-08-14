@@ -271,4 +271,26 @@ test.describe('Login error classification', () => {
     expect(messages.network).not.toBe(messages.credentials);
     expect(messages.buttonRestored).toBe(true);
   });
+
+  test('init va SIGNED_IN bir vaqtda kelsa profile faqat bir marta yuklanadi', async ({ page }) => {
+    const result = await page.evaluate(async () => {
+      let roleCalls = 0;
+      currentUser = { id: '00000000-0000-4000-8000-000000000002', email: 'race@example.com' };
+      sessionStorage.setItem('admin_yoriq_' + currentUser.id, '1');
+      window.resolveCurrentRole = async () => {
+        roleCalls++;
+        await new Promise(resolve => setTimeout(resolve, 80));
+        return 'admin';
+      };
+      window.loadHistory = async () => [];
+      await Promise.all([onLogin(), onLogin()]);
+      return {
+        roleCalls,
+        appVisible: !document.getElementById('app-screen').classList.contains('hidden'),
+        loginHidden: document.getElementById('login-screen').classList.contains('hidden'),
+      };
+    });
+
+    expect(result).toEqual({ roleCalls: 1, appVisible: true, loginHidden: true });
+  });
 });

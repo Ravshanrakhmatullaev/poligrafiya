@@ -6,6 +6,7 @@
 let currentUser = null;
 let currentRole = null;
 let isSaving    = false;
+let loginSetupPromise = null;
 
 
 // ── LOGIN ──
@@ -64,6 +65,20 @@ async function resolveCurrentRole(){
 }
 
 async function onLogin(){
+  // Page restore can emit SIGNED_IN while init() is also restoring the same
+  // session. Both paths used to run the role/profile query concurrently; a
+  // late timeout from the second copy could throw the user back to Login even
+  // after the first copy had already opened the ERP.
+  if(loginSetupPromise) return loginSetupPromise;
+  loginSetupPromise = performLoginSetup();
+  try {
+    return await loginSetupPromise;
+  } finally {
+    loginSetupPromise = null;
+  }
+}
+
+async function performLoginSetup(){
   try {
     currentRole = await resolveCurrentRole();
   } catch (error) {
