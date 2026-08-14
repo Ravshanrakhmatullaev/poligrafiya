@@ -16,9 +16,22 @@ async function doLogin(){
   const err   = document.getElementById('login-error');
   err.classList.add('hidden');
   btn.disabled = true; btn.textContent = 'Kirilmoqda...';
-  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
-  if(error){
+  try {
+    if(!email || !pass){
+      err.textContent = 'Email va parolni kiriting';
+      err.classList.remove('hidden');
+      return;
+    }
+    await runSupabaseRequest('login', 'sign_in', () => sb.auth.signInWithPassword({ email, password: pass }), { timeoutMs: 12_000 });
+  } catch(error){
+    const kind = classifyRequestError(error);
+    err.textContent = kind === 'credentials' ? 'Email yoki parol noto\'g\'ri'
+      : kind === 'timeout' ? 'Server javobi kechikdi. Internetni tekshirib qayta urining.'
+      : kind === 'network' ? 'Internet yoki DNS bilan aloqa yo\'q. Ulanishni tekshiring.'
+      : kind === 'rate_limit' ? 'Juda ko\'p urinish. Biroz kutib qayta urining.'
+      : 'Kirish xizmatida vaqtinchalik xato. Qayta urinib ko\'ring.';
     err.classList.remove('hidden');
+  } finally {
     btn.disabled = false; btn.textContent = 'Kirish';
   }
 }
@@ -35,16 +48,37 @@ async function doLogout(){
 // berilmaydi (onLogin quyida chiqarib yuboradi).
 async function resolveCurrentRole(){
   try {
-    const { data, error } = await sb.from('crm_profiles').select('role').eq('id', currentUser.id).maybeSingle();
-    if(!error && data && CRM_ROLE_TO_ERP_ROLE[data.role]){
+    const result = await runSupabaseRequest('login', 'role_lookup', () => sb.from('crm_profiles')
+      .select('role').eq('id', currentUser.id).maybeSingle(), { timeoutMs: 8_000 });
+    const data = result.data;
+    if(data && CRM_ROLE_TO_ERP_ROLE[data.role]){
       return CRM_ROLE_TO_ERP_ROLE[data.role];
     }
-  } catch(e){ console.error('[resolveCurrentRole]', e); }
+  } catch(e){
+    console.error('[resolveCurrentRole]', {
+      kind: classifyRequestError(e), code: e.code || null, elapsedMs: e.erpElapsedMs || null,
+    });
+    throw e;
+  }
   return LEGACY_ROLE_FALLBACK[currentUser.email] || null;
 }
 
 async function onLogin(){
-  currentRole = await resolveCurrentRole();
+  try {
+    currentRole = await resolveCurrentRole();
+  } catch (error) {
+    // A temporary network/profile lookup failure is not "wrong password" and
+    // must not destroy an otherwise valid Supabase session.
+    showScreen('login');
+    const err = document.getElementById('login-error');
+    if(err){
+      err.textContent = classifyRequestError(error) === 'timeout'
+        ? 'Profilni yuklash kechikdi. Qayta urinib ko\'ring.'
+        : 'Profilni yuklab bo\'lmadi. Internetni tekshirib qayta kiring.';
+      err.classList.remove('hidden');
+    }
+    return;
+  }
   if(!currentRole){
     showNotify("Ruxsat yo'q — administratorga murojaat qiling");
     await doLogout();

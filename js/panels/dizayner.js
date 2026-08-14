@@ -80,11 +80,19 @@ function renderDizayner(){
 
 
 async function saveDizayner(){
-  if(isSaving){ showNotify('Saqlanmoqda, kuting...'); return; }
+  const button = document.getElementById('dizayner-save-btn');
+  const saveCtx = ErpSaveFlow.begin('history_create_dizayner', button);
+  if(!saveCtx){ showNotify('Saqlanmoqda, kuting...'); return; }
+  let outcome = 'error';
+  let caughtError = null;
   const rows = dizD.filter(r=>r.nom||(parseInt(r.summa)||0));
-  if(!rows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+  if(!rows.length){
+    caughtError = Object.assign(new Error('Hech narsa kiritilmagan'), { erpKind: 'validation' });
+    showNotify('Hech narsa kiritilmagan');
+    ErpSaveFlow.finish(saveCtx, outcome, caughtError);
+    return;
+  }
 
-  isSaving = true;
   try {
     const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
     // summa har doim son sifatida saqlanadi — dizD dan kelayotgan xom
@@ -105,21 +113,27 @@ async function saveDizayner(){
       sana: sanaVaqt,
     };
 
-    const saved = await createHistoryItem(row);
+    ErpSaveFlow.prepare(saveCtx, { type: row.type, data: row.data, total_jami: row.total_jami });
+    ErpSaveFlow.saving(saveCtx);
+    const saved = await createHistoryItem(row, {
+      operationId: saveCtx.operationId,
+      reconcileFirst: saveCtx.reconcileFirst,
+    });
     if(!saved) throw new Error('insert failed');
 
     showNotify('✅ Saqlandi! — '+sanaVaqt);
 
-    // Avval tarixni yangilab, keyin formani tozalaymiz
-    await loadHistory();
     dizD = [{nom:'', summa:'', tolovchi:'offis', tolov:null, kontakt:''}];
     dizTimers = {};
     renderDizayner();
+    outcome = 'success';
+    setTimeout(() => loadHistory().catch(() => {}), 0);
   } catch (e) {
+    caughtError = e;
     console.error('[saveDizayner]', e);
-    showNotify('❌ Xatolik: ' + (e.message || "noma'lum xato"));
+    showNotify('❌ ' + saveErrorMessage(e), 'error');
   } finally {
-    isSaving = false;
+    ErpSaveFlow.finish(saveCtx, outcome, caughtError);
   }
 }
 

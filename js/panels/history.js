@@ -510,7 +510,6 @@ function rpToggleMore(elOrId){
 async function togglePaid(id, val){
   await updateHistoryItem(id, { is_paid: val });
   showNotify(val ? "✅ To'landi deb belgilandi" : "Belgisi olib tashlandi");
-  await loadHistory();
   if(currentRole === 'admin') renderAdminStats();
   if(currentRole === 'ishlab') renderIshlabStats();
   renderDashboard();
@@ -549,7 +548,6 @@ async function saveOrderStatus(id){
   try { await updateHistoryItem(id, res.fields); }
   catch(e){ showNotify('❌ Saqlashda xato: '+friendlyErr(e),'error'); return; }
   showNotify('✅ Holat saqlandi: '+ORDER_STATUS_LABELS[key]);
-  await loadHistory(); // hisobotlar + kartalar yangilanadi
   if(currentRole === 'admin') renderAdminStats();
   renderDashboard();
 }
@@ -615,6 +613,13 @@ function editHistoryItem(id){
 
 async function saveEditedHistory(){
   if(!editingHistoryId){ return; }
+  const button = document.getElementById('history-edit-save-btn');
+  const saveCtx = ErpSaveFlow.begin('history_update_' + editingHistoryId, button);
+  if(!saveCtx){ showNotify('Saqlanmoqda, kuting...'); return; }
+  let outcome = 'error';
+  let caughtError = null;
+
+  try {
 
   // Qayta hisoblaymiz
   let total_zakaz=0, total_daromad=0, total_jami=0;
@@ -636,13 +641,21 @@ async function saveEditedHistory(){
   if(h.type === 'admin'){ updateData.total_zakaz=total_zakaz; updateData.total_daromad=total_daromad; }
   else { updateData.total_jami=total_jami; }
 
-  const error = (await updateHistoryItem(editingHistoryId, updateData)) ? null : new Error('update failed');
-  if(error){ showNotify('❌ Xatolik: '+error.message); return; }
+  ErpSaveFlow.saving(saveCtx);
+  const updated = await updateHistoryItem(editingHistoryId, updateData);
+  if(!updated) throw new Error('update failed');
 
   showNotify('✅ Yozuv yangilandi!');
   document.getElementById('edit-history-modal').classList.add('hidden');
   editingHistoryId = null;
-  await loadHistory();
+  outcome = 'success';
+  setTimeout(() => loadHistory().catch(() => {}), 0);
+  } catch(error) {
+    caughtError = error;
+    showNotify('❌ ' + saveErrorMessage(error), 'error');
+  } finally {
+    ErpSaveFlow.finish(saveCtx, outcome, caughtError);
+  }
 }
 
 
@@ -700,7 +713,6 @@ function deleteHistoryItemCountdown(id, btnEl){
 async function toggleBrak(id, val){
   await updateHistoryItem(id, { is_brak: val });
   showNotify(val ? '⚠️ Brak deb belgilandi' : 'Brak belgisi olib tashlandi');
-  await loadHistory();
 }
 
 function renderOwnerPanel(){
@@ -778,7 +790,7 @@ function renderOwnerPanel(){
         <div class="give-avans-row" style="margin-top:8px">
           <input type="text" inputmode="numeric" placeholder="Hisob summasi" id="hisob_sum_${safeId}">
           <input type="text" placeholder="Izoh (ixtiyoriy)" id="hisob_izoh_${safeId}" style="flex:1">
-          <button class="hisob-btn green" onclick="event.stopPropagation();berHisob('${email}','${u.name}','${safeId}')">✅ Hisob berish</button>
+          <button class="hisob-btn green" id="hisob-save-${safeId}" onclick="event.stopPropagation();berHisob('${email}','${u.name}','${safeId}')">✅ Hisob berish</button>
         </div>
         <div id="avans-list-${safeId}" style="margin-top:8px"></div>
         <div id="hisob-list-${safeId}" style="margin-top:4px"></div>
@@ -849,11 +861,23 @@ async function deleteAvans(id, safeId){
 
 // ── HISOB BERISH ──
 async function berHisob(email, name, safeId){
+  const button = document.getElementById('hisob-save-' + safeId);
+  const saveCtx = ErpSaveFlow.begin('payroll_create_' + safeId, button);
+  if(!saveCtx){ showNotify('Saqlanmoqda, kuting...'); return; }
+  let outcome = 'error';
+  let caughtError = null;
   const summaEl = document.getElementById('hisob_sum_'+safeId);
   const izohEl  = document.getElementById('hisob_izoh_'+safeId);
   const summa   = parseInt(summaEl.value)||0;
   const izoh    = izohEl.value.trim();
-  if(!summa){ showNotify('Summa kiriting'); return; }
+  if(!summa){
+    caughtError = Object.assign(new Error('Summa kiriting'), { erpKind: 'validation' });
+    showNotify('Summa kiriting');
+    ErpSaveFlow.finish(saveCtx, outcome, caughtError);
+    return;
+  }
+
+  try {
 
   // Hodimning umumiy daromadi (allHistory dan)
   const userData = allHistory.filter(h => h.user_email === email);
@@ -868,7 +892,8 @@ async function berHisob(email, name, safeId){
   // Bu to'lovdan keyin qolgan qarz (manfiy = owner plusda)
   const qolganQarz = joriyHisob - summa;
 
-  const error = (await createHisobKitob({
+  ErpSaveFlow.prepare(saveCtx, { email, summa, izoh });
+  const payrollRow = {
     admin_email: email,
     admin_name:  name,
     summa,
@@ -876,10 +901,13 @@ async function berHisob(email, name, safeId){
     qarz:        qolganQarz,
     izoh:        izoh || 'Oylik hisob-kitob',
     sana:        getSanaVaqt(),
-    created_at:  new Date().toISOString(),
-  })) ? null : new Error('hisob insert failed');
-
-  if(error){ showNotify('❌ Xatolik: '+error.message); return; }
+    created_at:  saveCtx.operationCreatedAt,
+  };
+  ErpSaveFlow.saving(saveCtx);
+  const saved = await createHisobKitob(payrollRow, {
+    reconcileFirst: saveCtx.reconcileFirst,
+  });
+  if(!saved) throw new Error('hisob insert failed');
 
   const msg = qolganQarz > 0
     ? `✅ Berildi! Qolgan qarz: ${fmt(qolganQarz)} so'm`
@@ -890,10 +918,17 @@ async function berHisob(email, name, safeId){
   showNotify(msg);
   summaEl.value = '';
   izohEl.value = '';
-  await loadHisobTarix(email, safeId);
-
-  // Owner panelini ham yangilash
-  if(currentRole === 'owner') renderOwnerPanel();
+  outcome = 'success';
+  setTimeout(() => {
+    loadHisobTarix(email, safeId).catch(() => {});
+    if(currentRole === 'owner') renderOwnerPanel();
+  }, 0);
+  } catch (error) {
+    caughtError = error;
+    showNotify('❌ ' + saveErrorMessage(error), 'error');
+  } finally {
+    ErpSaveFlow.finish(saveCtx, outcome, caughtError);
+  }
 }
 
 async function loadHisobTarix(email, safeId){
@@ -1063,25 +1098,29 @@ async function approveAvans(id){
 // ── HISOBLAR ──
 
 async function setTolov(email, oy, yil, field, val){
-  const existing = await getTolovlar({user_email:email, oy, yil}).then(d=>d);
-  if(existing && existing.length){
-    await updateTolov(existing[0]?.id, changes);
-  } else {
-    await createTolov({user_email:email, oy, yil, ...fields});
+  try {
+    const existing = await getTolovlar({user_email:email, oy, yil});
+    const changes = { [field]: val };
+    if(existing && existing.length) await updateTolov(existing[0].id, changes);
+    else await createTolov({user_email:email, oy, yil, ...changes});
+    showNotify(val ? '✅ Belgilandi!' : 'Bekor qilindi');
+    renderOwnerPanel();
+  } catch(error) {
+    showNotify('❌ ' + saveErrorMessage(error), 'error');
   }
-  showNotify(val ? '✅ Belgilandi!' : 'Bekor qilindi');
-  renderOwnerPanel();
 }
 
 async function saveIzoh(email, oy, yil, izoh){
-  const existing = await getTolovlar({user_email:email, oy, yil}).then(d=>d);
-  if(existing && existing.length){
-    await updateTolov(existing[0]?.id, changes);
-  } else {
-    await createTolov({user_email:email, oy, yil, ...fields});
+  try {
+    const existing = await getTolovlar({user_email:email, oy, yil});
+    const changes = { izoh };
+    if(existing && existing.length) await updateTolov(existing[0].id, changes);
+    else await createTolov({user_email:email, oy, yil, ...changes});
+    showNotify('💬 Izoh saqlandi!');
+    renderOwnerPanel();
+  } catch(error) {
+    showNotify('❌ ' + saveErrorMessage(error), 'error');
   }
-  showNotify('💬 Izoh saqlandi!');
-  renderOwnerPanel();
 }
 
 // ── NUSXA VA YUBORISH ──
@@ -1198,8 +1237,11 @@ async function copyWeeklyDizayner(){
 
 
 async function saveOnly(type){
-  if(isSaving){ showNotify('Saqlanmoqda, kuting...'); return; }
-  isSaving = true;
+  const button = document.getElementById(type === 'admin' ? 'admin-save-btn' : 'ishlab-save-btn');
+  const saveCtx = ErpSaveFlow.begin('history_create_' + type, button);
+  if(!saveCtx){ showNotify('Saqlanmoqda, kuting...'); return; }
+  let outcome = 'error';
+  let caughtError = null;
 
   try {
     const name = currentUser.email.split('+')[1] ? currentUser.email.split('+')[1].split('@')[0] : currentUser.email.split('@')[0];
@@ -1207,7 +1249,11 @@ async function saveOnly(type){
 
     if(type==='admin'){
       const rows = adD.filter(r=>r.nom||(parseInt(r.sum)||0));
-      if(!rows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+      if(!rows.length){
+        caughtError = Object.assign(new Error('Hech narsa kiritilmagan'), { erpKind: 'validation' });
+        showNotify('Hech narsa kiritilmagan');
+        return;
+      }
       const _isAbror = canUseBonus50(currentUser && currentUser.email);
       rows.forEach(r=>{ const s=parseInt(r.sum)||0; const f=getFoiz(s); totalZakaz+=s; const base=Math.round(s*f); totalDaromad+=((_isAbror&&r.bonus_50)?Math.round(base*1.5):base); });
       data = { rows };
@@ -1215,7 +1261,11 @@ async function saveOnly(type){
       const prodRows = prD.filter(r=>parseInt(r.miq)>0);
       const uvRows   = uvD.filter(r=>parseInt(r.sig)>0&&parseInt(r.don)>0);
       const ekoRows  = ekoD.filter(r=>parseFloat(r.kv)>0);
-      if(!prodRows.length&&!uvRows.length&&!ekoRows.length){ showNotify('Hech narsa kiritilmagan'); return; }
+      if(!prodRows.length&&!uvRows.length&&!ekoRows.length){
+        caughtError = Object.assign(new Error('Hech narsa kiritilmagan'), { erpKind: 'validation' });
+        showNotify('Hech narsa kiritilmagan');
+        return;
+      }
       prodRows.forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m)+(r.ex&&PR[r.key]&&PR[r.key].extra?200:0); totalJami+=m*np; });
       uvRows.forEach(r=>{ const {jami}=calcUv(parseInt(r.sig),parseInt(r.don)); totalJami+=jami; });
       ekoRows.forEach(r=>{ const {jami}=calcEko(parseFloat(r.kv)); totalJami+=jami; });
@@ -1237,15 +1287,18 @@ async function saveOnly(type){
       shift: getCurrentShift(),
     };
 
-    const _r = await createHistoryItem(row);
+    ErpSaveFlow.prepare(saveCtx, { type, data, totalZakaz, totalDaromad, totalJami });
+    ErpSaveFlow.saving(saveCtx);
+    const _r = await createHistoryItem(row, {
+      operationId: saveCtx.operationId,
+      reconcileFirst: saveCtx.reconcileFirst,
+    });
     if(!_r) throw new Error('insert failed');
 
     showNotify('✅ Saqlandi! — '+sanaVaqt+'. Tarixda ko\'rishingiz mumkin.');
 
-    // Avval tarixni yangilab, keyin formani tozalaymiz
-    await loadHistory();
-
-    // Formani tozalash
+    // Formani DB javobi kelishi bilan tozalaymiz. Tarixni qayta yuklash
+    // alohida fon vazifasi; u saqlangan yozuv natijasini o'zgartirmaydi.
     if(type==='admin'){
       adD = [{nom:'',sum:'',bonus_50:false},{nom:'',sum:'',bonus_50:false},{nom:'',sum:'',bonus_50:false}];
       renderAdmin();
@@ -1258,11 +1311,14 @@ async function saveOnly(type){
       ekoD = [{nom:'',kv:''}];
       renderIshlab();
     }
+    outcome = 'success';
+    setTimeout(() => loadHistory().catch(() => {}), 0);
   } catch (e) {
+    caughtError = e;
     console.error('[saveOnly]', e);
-    showNotify('❌ Xatolik: ' + (e.message || "noma'lum xato"));
+    showNotify('❌ ' + saveErrorMessage(e), 'error');
   } finally {
-    isSaving = false;
+    ErpSaveFlow.finish(saveCtx, outcome, caughtError);
   }
 }
 

@@ -6,6 +6,185 @@
 // Bitta Supabase client — butun app uchun
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Network requests must never leave a save button waiting forever.  A write
+// timeout is treated as "ambiguous": the server may have committed the row
+// even when the browser did not receive the response.  Callers can reconcile
+// such writes through the client operation id before allowing another insert.
+const ERP_REQUEST_TIMEOUT_MS = 12_000;
+const ERP_RECONCILE_TIMEOUT_MS = 4_000;
+
+function makeClientOperationId() {
+  if (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function') {
+    return globalThis.crypto.randomUUID();
+  }
+  return 'erp-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+}
+
+function classifyRequestError(error) {
+  const message = String((error && error.message) || error || '');
+  const code = String((error && error.code) || '');
+  const status = Number((error && error.status) || 0);
+  if (error && error.erpKind) return error.erpKind;
+  if (/invalid login credentials|invalid credentials/i.test(message)) return 'credentials';
+  if (/abort|timeout|timed out/i.test(message)) return 'timeout';
+  if (/failed to fetch|networkerror|load failed|fetch/i.test(message)) return 'network';
+  if (code === '42501' || /row.level security|permission denied/i.test(message)) return 'rls';
+  if (status === 401 || status === 403 || /jwt|session|unauthorized/i.test(message)) return 'auth';
+  if (status === 429 || /rate limit/i.test(message)) return 'rate_limit';
+  if (status >= 500) return 'server';
+  return 'database';
+}
+
+function trackedRequestError(error, operation, stage, elapsedMs, ambiguous) {
+  const wrapped = error instanceof Error ? error : new Error((error && error.message) || String(error || 'So\'rov xatosi'));
+  wrapped.code = (error && error.code) || wrapped.code || null;
+  wrapped.status = (error && error.status) || wrapped.status || null;
+  wrapped.erpKind = classifyRequestError(error);
+  wrapped.erpOperation = operation;
+  wrapped.erpStage = stage;
+  wrapped.erpElapsedMs = elapsedMs;
+  wrapped.erpAmbiguous = !!ambiguous;
+  return wrapped;
+}
+
+async function runSupabaseRequest(operation, stage, buildQuery, options = {}) {
+  const timeoutMs = options.timeoutMs || ERP_REQUEST_TIMEOUT_MS;
+  const startedAt = performance.now();
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  let query = buildQuery();
+  if (controller && query && typeof query.abortSignal === 'function') query = query.abortSignal(controller.signal);
+
+  let timer;
+  try {
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        if (controller) controller.abort();
+        const e = new Error('So\'rov vaqti tugadi');
+        e.erpKind = 'timeout';
+        reject(e);
+      }, timeoutMs);
+    });
+    const result = await Promise.race([Promise.resolve(query), timeout]);
+    if (result && result.error) throw result.error;
+    const elapsedMs = Math.round(performance.now() - startedAt);
+    console.info('[ERP request]', { operation, stage, outcome: 'success', elapsedMs });
+    return result;
+  } catch (error) {
+    const elapsedMs = Math.round(performance.now() - startedAt);
+    const wrapped = trackedRequestError(error, operation, stage, elapsedMs, options.write === true);
+    console.error('[ERP request]', {
+      operation,
+      stage,
+      outcome: 'error',
+      kind: wrapped.erpKind,
+      code: wrapped.code || null,
+      status: wrapped.status || null,
+      elapsedMs,
+    });
+    throw wrapped;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function ensureWritableSession(operation) {
+  const result = await runSupabaseRequest(operation, 'session', () => sb.auth.getSession(), { timeoutMs: 5_000 });
+  const session = result && result.data && result.data.session;
+  if (!session) {
+    const error = new Error('Sessiya tugagan. Qayta kiring.');
+    error.erpKind = 'auth';
+    throw error;
+  }
+  // Supabase normally refreshes automatically.  Explicitly refresh only when
+  // expiry is close, preventing a write from racing an expiring JWT.
+  if (session.expires_at && session.expires_at * 1000 - Date.now() < 30_000) {
+    const refreshed = await runSupabaseRequest(operation, 'session_refresh', () => sb.auth.refreshSession(), { timeoutMs: 8_000 });
+    if (!refreshed || !refreshed.data || !refreshed.data.session) {
+      const error = new Error('Sessiyani yangilab bo\'lmadi. Qayta kiring.');
+      error.erpKind = 'auth';
+      throw error;
+    }
+  }
+}
+
+// Shared save state machine used by Admin, Ishlab chiqarish and Dizayner.
+// The operation id is retained only after an ambiguous network/timeout result,
+// so the next click reconciles the same logical write instead of duplicating it.
+const ErpSaveFlow = {
+  states: new Map(),
+
+  begin(scope, button) {
+    const previous = this.states.get(scope);
+    if (previous && previous.active) return null;
+    const ctx = {
+      scope,
+      stage: 'validating',
+      active: true,
+      operationId: previous && previous.ambiguous ? previous.operationId : makeClientOperationId(),
+      operationCreatedAt: previous && previous.ambiguous ? previous.operationCreatedAt : new Date().toISOString(),
+      reconcileFirst: !!(previous && previous.ambiguous),
+      previousFingerprint: previous && previous.ambiguous ? previous.fingerprint : null,
+      fingerprint: null,
+      button,
+      buttonHtml: button ? button.innerHTML : '',
+      startedAt: performance.now(),
+    };
+    this.states.set(scope, ctx);
+    if (button) {
+      button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
+      button.textContent = 'Saqlanmoqda...';
+    }
+    return ctx;
+  },
+
+  saving(ctx) {
+    if (ctx) ctx.stage = 'saving';
+  },
+
+  prepare(ctx, payload) {
+    if (!ctx) return;
+    const fingerprint = JSON.stringify(payload);
+    if (ctx.reconcileFirst && ctx.previousFingerprint !== fingerprint) {
+      ctx.operationId = makeClientOperationId();
+      ctx.operationCreatedAt = new Date().toISOString();
+      ctx.reconcileFirst = false;
+    }
+    ctx.fingerprint = fingerprint;
+  },
+
+  finish(ctx, outcome, error) {
+    if (!ctx) return;
+    ctx.stage = outcome;
+    ctx.active = false;
+    ctx.ambiguous = outcome === 'error' && !!(error && error.erpAmbiguous) && ['network', 'timeout'].includes(error.erpKind);
+    if (ctx.button) {
+      ctx.button.disabled = false;
+      ctx.button.removeAttribute('aria-busy');
+      ctx.button.innerHTML = ctx.buttonHtml;
+    }
+    console.info('[ERP save]', {
+      operation: ctx.scope,
+      stage: outcome,
+      kind: error ? classifyRequestError(error) : null,
+      code: error && error.code ? error.code : null,
+      elapsedMs: Math.round(performance.now() - ctx.startedAt),
+    });
+    if (!ctx.ambiguous) this.states.delete(ctx.scope);
+  },
+};
+
+function saveErrorMessage(error) {
+  const kind = classifyRequestError(error);
+  if (kind === 'timeout') return 'Server javobi kechikdi. Yozuv holati tekshirildi; yana bir marta bosing.';
+  if (kind === 'network') return 'Internet bilan aloqa uzildi. Ulanishni tekshirib, yana bosing.';
+  if (kind === 'auth') return 'Sessiya tugagan. Qayta kirib ko\'ring.';
+  if (kind === 'rls') return 'Bu amal uchun ruxsat yo\'q.';
+  if (kind === 'rate_limit') return 'So\'rovlar ko\'payib ketdi. Bir ozdan keyin urinib ko\'ring.';
+  if (kind === 'server') return 'Server vaqtincha javob bermadi. Qayta urinib ko\'ring.';
+  return 'Saqlashda xato: ' + String((error && error.message) || 'noma\'lum xato').slice(0, 100);
+}
+
 // ── YAGONA DATA STORE ──
 // allHistory faqat shu yerda o'zgartiriladi
 // Boshqa fayllar faqat o'qiydi, AppStore orqali subscribe bo'ladi
@@ -107,10 +286,10 @@ async function dbLoadMessages() {
 // Zakaz saqlash — va barcha bo'limlarni yangilash
 async function saveZakaz(rowData) {
   try {
-    const { data, error } = await sb.from('zakazlar').insert(rowData).select().single();
-    if (error) throw error;
-    await dbLoadHistory();  // AppStore yangilanadi → barcha subscriber'lar yangilanadi
-    return data;
+    await ensureWritableSession('zakaz_save');
+    const result = await runSupabaseRequest('zakaz_save', 'insert', () => sb.from('zakazlar').insert(rowData).select().single(), { write: true });
+    if(result.data) AppStore.setHistory([result.data, ...AppStore.history.filter(item => item.id !== result.data.id)]);
+    return result.data;
   } catch (e) {
     console.error('[saveZakaz]', e);
     showNotify('Zakazni saqlashda xato: ' + e.message, 'error');
@@ -120,9 +299,9 @@ async function saveZakaz(rowData) {
 
 async function updateZakaz(id, changes) {
   try {
-    const { error } = await sb.from('zakazlar').update(changes).eq('id', id);
-    if (error) throw error;
-    await dbLoadHistory();
+    await ensureWritableSession('zakaz_update');
+    await runSupabaseRequest('zakaz_update', 'update', () => sb.from('zakazlar').update(changes).eq('id', id), { write: true });
+    AppStore.setHistory(AppStore.history.map(item => item.id === id ? { ...item, ...changes } : item));
     return true;
   } catch (e) {
     console.error('[updateZakaz]', e);
@@ -133,9 +312,9 @@ async function updateZakaz(id, changes) {
 
 async function deleteZakaz(id) {
   try {
-    const { error } = await sb.from('zakazlar').delete().eq('id', id);
-    if (error) throw error;
-    await dbLoadHistory();
+    await ensureWritableSession('zakaz_delete');
+    await runSupabaseRequest('zakaz_delete', 'delete', () => sb.from('zakazlar').delete().eq('id', id), { write: true });
+    AppStore.setHistory(AppStore.history.filter(item => item.id !== id));
     return true;
   } catch (e) {
     console.error('[deleteZakaz]', e);
@@ -159,36 +338,77 @@ async function deleteZakaz(id) {
 async function getHistory(filter = {}) {
   let q = sb.from('zakazlar').select('*').order('created_at', { ascending: false });
   if (filter.user_id) q = q.eq('user_id', filter.user_id);
-  const { data, error } = await q;
-  if (error) { console.error('[getHistory]', error); throw error; }
-  return data || [];
+  const result = await runSupabaseRequest('history_load', 'select', () => q, { timeoutMs: ERP_REQUEST_TIMEOUT_MS });
+  return result.data || [];
 }
 
-async function createHistoryItem(data) {
+async function findHistoryByOperationId(operationId) {
+  if (!operationId || !currentUser) return null;
+  const result = await runSupabaseRequest('history_save', 'reconcile', () => sb.from('zakazlar')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .contains('data', { _save_meta: { operation_id: operationId } })
+    .limit(1)
+    .maybeSingle(), { timeoutMs: ERP_RECONCILE_TIMEOUT_MS });
+  return result.data || null;
+}
+
+async function createHistoryItem(data, options = {}) {
+  const operationId = options.operationId || makeClientOperationId();
+  const payload = {
+    ...data,
+    data: {
+      ...(data.data || {}),
+      _save_meta: { operation_id: operationId, client_created_at: new Date().toISOString() },
+    },
+  };
+
+  await ensureWritableSession('history_save');
+
+  // A retry after an ambiguous response first looks up the original request.
+  // This stops a user retry from blindly creating another row.
+  if (options.reconcileFirst) {
+    const existing = await findHistoryByOperationId(operationId);
+    if (existing) return existing;
+  }
+
   try {
-    const { data: res, error } = await sb.from('zakazlar').insert(data).select().single();
-    if (error) throw error;
-    await loadHistory();
-    return res;
-  } catch (e) { console.error('[createHistoryItem]', e); throw e; }
+    const result = await runSupabaseRequest('history_save', 'insert', () => sb.from('zakazlar')
+      .insert(payload).select().single(), { write: true });
+    const saved = result.data;
+    if (saved) AppStore.setHistory([saved, ...AppStore.history.filter(item => item.id !== saved.id)]);
+    return saved;
+  } catch (error) {
+    if (!error.erpAmbiguous || !['timeout', 'network'].includes(error.erpKind)) throw error;
+
+    // The response was lost: briefly reconcile rather than automatically
+    // issuing a second INSERT.  This is intentionally bounded.
+    for (const delay of [0, 700, 1_500]) {
+      if (delay) await new Promise(resolve => setTimeout(resolve, delay));
+      try {
+        const existing = await findHistoryByOperationId(operationId);
+        if (existing) {
+          AppStore.setHistory([existing, ...AppStore.history.filter(item => item.id !== existing.id)]);
+          return existing;
+        }
+      } catch (_) { /* original classified error remains the useful result */ }
+    }
+    throw error;
+  }
 }
 
 async function updateHistoryItem(id, changes) {
-  try {
-    const { error } = await sb.from('zakazlar').update(changes).eq('id', id);
-    if (error) throw error;
-    await loadHistory();
-    return true;
-  } catch (e) { console.error('[updateHistoryItem]', e); throw e; }
+  await ensureWritableSession('history_update');
+  await runSupabaseRequest('history_update', 'update', () => sb.from('zakazlar').update(changes).eq('id', id), { write: true });
+  AppStore.setHistory(AppStore.history.map(item => item.id === id ? { ...item, ...changes } : item));
+  return true;
 }
 
 async function deleteHistoryItem(id) {
-  try {
-    const { error } = await sb.from('zakazlar').delete().eq('id', id);
-    if (error) throw error;
-    await loadHistory();
-    return true;
-  } catch (e) { console.error('[deleteHistoryItem]', e); throw e; }
+  await ensureWritableSession('history_delete');
+  await runSupabaseRequest('history_delete', 'delete', () => sb.from('zakazlar').delete().eq('id', id), { write: true });
+  AppStore.setHistory(AppStore.history.filter(item => item.id !== id));
+  return true;
 }
 
 // ── SKLAD ──
@@ -382,20 +602,36 @@ async function deleteAvansById(id) {
 // ── HISOB-KITOB ──
 async function getHisobKitob(adminEmail) {
   try {
-    const { data, error } = await sb.from('hisob_kitob')
-      .select('*').eq('admin_email', adminEmail)
-      .order('created_at', { ascending: false }).limit(10);
-    if (error) throw error;
-    return data || [];
+    let query = sb.from('hisob_kitob').select('*').order('created_at', { ascending: false }).limit(10);
+    if (adminEmail) query = query.eq('admin_email', adminEmail);
+    const result = await runSupabaseRequest('payroll_load', 'select', () => query);
+    return result.data || [];
   } catch (e) { console.error('[getHisobKitob]', e); return []; }
 }
 
-async function createHisobKitob(data) {
+async function createHisobKitob(data, options = {}) {
+  await ensureWritableSession('payroll_save');
+
+  const findExisting = async () => {
+    if (!data.admin_email || !data.created_at) return null;
+    const result = await runSupabaseRequest('payroll_save', 'reconcile', () => sb.from('hisob_kitob')
+      .select('id').eq('admin_email', data.admin_email).eq('created_at', data.created_at)
+      .limit(1).maybeSingle(), { timeoutMs: ERP_RECONCILE_TIMEOUT_MS });
+    return result.data || null;
+  };
+
+  if (options.reconcileFirst && await findExisting()) return true;
   try {
-    const { error } = await sb.from('hisob_kitob').insert(data);
-    if (error) throw error;
+    await runSupabaseRequest('payroll_save', 'insert', () => sb.from('hisob_kitob').insert(data), { write: true });
     return true;
-  } catch (e) { console.error('[createHisobKitob]', e); throw e; }
+  } catch (error) {
+    if (!error.erpAmbiguous || !['timeout', 'network'].includes(error.erpKind)) throw error;
+    for (const delay of [0, 700, 1_500]) {
+      if (delay) await new Promise(resolve => setTimeout(resolve, delay));
+      try { if (await findExisting()) return true; } catch (_) {}
+    }
+    throw error;
+  }
 }
 
 async function deleteHisobKitobById(id) {
@@ -419,26 +655,24 @@ async function getTolovlar(filter = {}) {
   try {
     let q = sb.from('tolovlar').select('*').order('created_at', { ascending: false });
     if (filter.user_id) q = q.eq('user_id', filter.user_id);
-    const { data, error } = await q;
-    if (error) throw error;
-    return data || [];
+    if (filter.user_email) q = q.eq('user_email', filter.user_email);
+    if (filter.oy !== undefined) q = q.eq('oy', filter.oy);
+    if (filter.yil !== undefined) q = q.eq('yil', filter.yil);
+    const result = await runSupabaseRequest('payment_load', 'select', () => q);
+    return result.data || [];
   } catch (e) { console.error('[getTolovlar]', e); return []; }
 }
 
 async function createTolov(data) {
-  try {
-    const { error } = await sb.from('tolovlar').insert(data);
-    if (error) throw error;
-    return true;
-  } catch (e) { console.error('[createTolov]', e); throw e; }
+  await ensureWritableSession('payment_save');
+  await runSupabaseRequest('payment_save', 'insert', () => sb.from('tolovlar').insert(data), { write: true });
+  return true;
 }
 
 async function updateTolov(id, changes) {
-  try {
-    const { error } = await sb.from('tolovlar').update(changes).eq('id', id);
-    if (error) throw error;
-    return true;
-  } catch (e) { console.error('[updateTolov]', e); throw e; }
+  await ensureWritableSession('payment_update');
+  await runSupabaseRequest('payment_update', 'update', () => sb.from('tolovlar').update(changes).eq('id', id), { write: true });
+  return true;
 }
 
 async function deleteTolov(id) {

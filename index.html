@@ -483,7 +483,7 @@
       </button>
       <div class="tbar green" style="margin-top:12px"><span class="tl green">Sof daromad</span><span class="tv green" id="admin-grand">0 so'm</span></div>
     </div>
-    <button class="savebtn" onclick="saveOnly('admin')">
+    <button class="savebtn" id="admin-save-btn" onclick="saveOnly('admin')">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
       Saqlash
     </button>
@@ -653,7 +653,7 @@
         <div style="font-size:28px;font-weight:700;color:var(--text);letter-spacing:-0.5px" id="ishlab-grand">0 so'm</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="ish-primary-btn" onclick="saveOnly('ishlab')">
+        <button class="ish-primary-btn" id="ishlab-save-btn" onclick="saveOnly('ishlab')">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           Saqlash
         </button>
@@ -939,7 +939,7 @@
       </button>
       <div class="tbar green" style="margin-top:12px"><span class="tl green">Jami summa</span><span class="tv green" id="diz-grand">0 so'm</span></div>
     </div>
-    <button class="savebtn" onclick="saveDizayner()">
+    <button class="savebtn" id="dizayner-save-btn" onclick="saveDizayner()">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
       Saqlash
     </button>
@@ -2422,7 +2422,7 @@
     <div class="modal-title">Yozuvni tahrirlash</div>
     <div id="edit-modal-content"></div>
     <div style="display:flex;gap:8px;margin-top:14px">
-      <button class="savebtn" style="flex:1" onclick="saveEditedHistory()">Saqlash</button>
+      <button class="savebtn" id="history-edit-save-btn" style="flex:1" onclick="saveEditedHistory()">Saqlash</button>
       <button style="padding:10px 16px;border-radius:var(--radius-md);border:1px solid var(--gray-border);background:var(--white);cursor:pointer;font-family:inherit;font-size:13px" onclick="document.getElementById('edit-history-modal').classList.add('hidden')">Bekor</button>
     </div>
   </div>
@@ -2493,22 +2493,22 @@
   <script src="js/utils.js?v=20260807"></script>
 
   <!-- 4. DB (Supabase client + AppStore) -->
-  <script src="js/db.js?v=20260808"></script>
+  <script src="js/db.js?v=20260814"></script>
 
   <!-- 5. Auth (login/logout) -->
-  <script src="js/auth.js?v=20260803"></script>
+  <script src="js/auth.js?v=20260814"></script>
 
   <!-- 6. Panel modules (mustaqil, bir-biriga bog'liq emas) -->
   <script src="js/panels/davomat.js?v=20260803"></script>
   <script src="js/panels/foiz.js?v=20260803"></script>
   <script src="js/panels/xabar.js?v=20260803"></script>
-  <script src="js/panels/history.js?v=20260808"></script>
+  <script src="js/panels/history.js?v=20260814"></script>
   <script src="js/panels/dashboard.js?v=20260805"></script>
   <script src="js/panels/sklad.js?v=20260803"></script>
   <script src="js/panels/kalk_engines.js?v=20260813"></script>
   <script src="js/panels/kalk.js?v=20260813"></script>
   <script src="js/panels/bozorlik.js?v=20260807"></script>
-  <script src="js/panels/dizayner.js?v=20260805"></script>
+  <script src="js/panels/dizayner.js?v=20260814"></script>
   <script src="js/panels/uvdtf.js?v=20260803"></script>
 
   <!-- 7. App controller (oxirida) -->
