@@ -508,7 +508,7 @@ function dvShowTab(tab) {
     loadMyDavomatTab();
   } else {
     stopDavomatScanner();
-    dvSetToday(false);
+    dvSelectPeriod('today', false);
     loadDavomatList();
   }
 }
@@ -579,12 +579,52 @@ async function loadMyDavomatTab() {
   const pc = document.getElementById('dv-mine-percent'); if (pc) pc.textContent = percent + '%';
 }
 
-function dvSetToday(reload = true) {
-  const sanaInput = document.getElementById('dv-list-sana');
-  if (sanaInput && !sanaInput.value) {
-    sanaInput.value = dvTodayStr();
+let dvPeriodMode = 'today';
+
+function dvSelectPeriod(preset, reload = true) {
+  dvPeriodMode = preset;
+  const custom = document.getElementById('dv-period-custom');
+  if (custom) custom.classList.toggle('hidden', preset !== 'custom');
+  document.querySelectorAll('[data-dv-period]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.dvPeriod === preset);
+  });
+  if (preset !== 'custom') {
+    const period = AttendancePeriod.range(preset, dvTodayStr());
+    const from = document.getElementById('dv-list-from');
+    const to = document.getElementById('dv-list-to');
+    if (from) from.value = period.from;
+    if (to) to.value = period.to;
   }
+  dvUpdatePeriodCaption();
   if (reload) loadDavomatList();
+}
+
+function dvCurrentPeriod() {
+  return AttendancePeriod.normalize(
+    document.getElementById('dv-list-from')?.value,
+    document.getElementById('dv-list-to')?.value,
+  );
+}
+
+function dvApplyCustomPeriod() {
+  if (!dvCurrentPeriod()) {
+    showNotify?.('Sanadan va sanagacha maydonlarini to‘ldiring', 'error');
+    return;
+  }
+  dvUpdatePeriodCaption();
+  loadDavomatList();
+}
+
+function dvUpdatePeriodCaption() {
+  const caption = document.getElementById('dv-period-caption');
+  const period = dvCurrentPeriod();
+  if (!caption || !period) return;
+  const format = value => new Intl.DateTimeFormat('uz-UZ', {
+    timeZone: 'Asia/Tashkent', day: '2-digit', month: '2-digit', year: 'numeric',
+  }).format(new Date(value + 'T12:00:00Z'));
+  caption.textContent = period.from === period.to
+    ? `Tanlangan sana: ${format(period.from)}`
+    : `Tanlangan davr: ${format(period.from)} — ${format(period.to)}`;
 }
 
 let dvListRowsCache = {}; // id -> row, Amallar tugmalari (tuzatish/o'chirish) uchun
@@ -592,7 +632,7 @@ let dvListRowsCache = {}; // id -> row, Amallar tugmalari (tuzatish/o'chirish) u
 async function loadDavomatList() {
   const tbody = document.getElementById('dv-list-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text3)">Yuklanmoqda...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text3)">Yuklanmoqda...</td></tr>';
 
   let rows;
   try {
@@ -602,13 +642,15 @@ async function loadDavomatList() {
       branches.forEach(b => { dvBranchCache[b.id] = b; });
     }
 
-    const sanaInput = document.getElementById('dv-list-sana');
     const branchSelect = document.getElementById('dv-list-branch');
-    const sana = sanaInput ? sanaInput.value : '';
+    const period = dvCurrentPeriod();
     const branchCode = branchSelect ? branchSelect.value : '';
 
     const filters = {};
-    if (sana) filters.sana = sana;
+    if (period) {
+      filters.from = period.from;
+      filters.to = period.to;
+    }
     if (branchCode) {
       const match = Object.values(dvBranchCache).find(b => b.code === branchCode);
       if (match) filters.branch_id = match.id;
@@ -616,7 +658,7 @@ async function loadDavomatList() {
 
     rows = await getDavomatList(filters);
   } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--danger, #e03131)">Xatolik — ro\'yxatni yuklab bo\'lmadi</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--danger, #e03131)">Xatolik — ro\'yxatni yuklab bo\'lmadi</td></tr>';
     showNotify?.('❌ Davomat ro\'yxatini yuklashda xatolik: ' + (e.message || "noma'lum xato"));
     return;
   }
@@ -624,7 +666,7 @@ async function loadDavomatList() {
   rows.forEach(r => { dvListRowsCache[r.id] = r; });
 
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text3)">Ma\'lumot topilmadi</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text3)">Ma\'lumot topilmadi</td></tr>';
     return;
   }
 
@@ -645,6 +687,7 @@ async function loadDavomatList() {
       '<button class="btn btn-secondary btn-sm" onclick="dvOpenEdit(\'' + r.id + '\')">Tuzatish</button> ' +
       '<button class="btn btn-danger btn-sm" onclick="dvOpenAction(\'' + r.id + '\',\'delete\')">O\'chirish</button>';
     return '<tr>' +
+      '<td style="' + td + '">' + (r.sana || '—') + '</td>' +
       '<td style="' + td + '">' + name + '</td>' +
       '<td style="' + td + '">' + branchName + '</td>' +
       '<td style="' + td + '">' + fmtTime(r.check_in) + '</td>' +

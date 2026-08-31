@@ -750,6 +750,8 @@ async function getBranches() {
 async function getDavomatList(filters = {}) {
   let q = sb.from('davomat').select('*').order('check_in', { ascending: false });
   if (filters.sana) q = q.eq('sana', filters.sana);
+  if (filters.from) q = q.gte('sana', filters.from);
+  if (filters.to) q = q.lte('sana', filters.to);
   if (filters.branch_id) q = q.eq('branch_id', filters.branch_id);
   const { data, error } = await q;
   if (error) { console.error('[getDavomatList]', error); throw error; }

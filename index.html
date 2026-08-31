@@ -12,6 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poligrafiya — Boshqaruv tizimi</title>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="attendance-period.css?v=20260831">
 </head>
 <body>
 
@@ -2309,19 +2310,31 @@
   </div>
 
   <div id="dv-tab-list" class="hidden">
-    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
-      <input type="date" id="dv-list-sana" class="form-input" style="width:auto" onchange="loadDavomatList()">
-      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('dv-list-sana').value='';dvSetToday()">Bugun</button>
+    <div class="dv-period-toolbar">
+      <button class="filter-btn active" data-dv-period="today" onclick="dvSelectPeriod('today')">Bugun</button>
+      <button class="filter-btn" data-dv-period="week" onclick="dvSelectPeriod('week')">Shu hafta</button>
+      <button class="filter-btn" data-dv-period="previous_week" onclick="dvSelectPeriod('previous_week')">O‘tgan hafta</button>
+      <button class="filter-btn" data-dv-period="month" onclick="dvSelectPeriod('month')">Shu oy</button>
+      <button class="filter-btn" data-dv-period="previous_month" onclick="dvSelectPeriod('previous_month')">O‘tgan oy</button>
+      <button class="filter-btn" data-dv-period="custom" onclick="dvSelectPeriod('custom',false)">Sana oralig‘i</button>
+      <div id="dv-period-custom" class="hidden dv-period-custom">
+        <label><span>Sanadan</span><input type="date" id="dv-list-from" class="form-input"></label>
+        <span>→</span>
+        <label><span>Sanagacha</span><input type="date" id="dv-list-to" class="form-input"></label>
+        <button class="btn btn-primary btn-sm" onclick="dvApplyCustomPeriod()">Ko‘rsatish</button>
+      </div>
       <select id="dv-list-branch" class="form-input" style="width:auto" onchange="loadDavomatList()">
         <option value="">Barchasi</option>
         <option value="sales">Sotuv</option>
         <option value="production">Ishlab chiqarish</option>
       </select>
     </div>
+    <div class="dv-period-caption" id="dv-period-caption"></div>
     <div class="card" style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;font-size:13px">
         <thead>
           <tr style="text-align:left;color:var(--text3);border-bottom:1px solid var(--gray-border)">
+            <th style="padding:8px">Sana</th>
             <th style="padding:8px">Xodim</th>
             <th style="padding:8px">Filial</th>
             <th style="padding:8px">Kelgan</th>
@@ -2499,7 +2512,8 @@
   <script src="js/auth.js?v=20260814b"></script>
 
   <!-- 6. Panel modules (mustaqil, bir-biriga bog'liq emas) -->
-  <script src="js/panels/davomat.js?v=20260803"></script>
+  <script src="js/attendance_period.js?v=20260831"></script>
+  <script src="js/panels/davomat.js?v=20260831"></script>
   <script src="js/panels/foiz.js?v=20260803"></script>
   <script src="js/panels/xabar.js?v=20260803"></script>
   <script src="js/panels/history.js?v=20260814"></script>
