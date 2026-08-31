@@ -615,94 +615,308 @@ function dvApplyCustomPeriod() {
   loadDavomatList();
 }
 
+let dvListRowsCache = {}; // id -> row, Amallar tugmalari (tuzatish/o'chirish) uchun
+let dvListAllRows = [];
+let dvListView = 'days';
+
+function dvEsc(value) {
+  return String(value ?? '').replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[ch]));
+}
+
+function dvRowName(row) {
+  const email = USER_ID_TO_EMAIL[row.user_id];
+  return email ? (typeof getName === 'function' ? getName(email) : email) : (row.user_id ? row.user_id.slice(0, 8) : 'Noma’lum');
+}
+
+function dvFmtTime(iso) {
+  return iso ? new Date(iso).toLocaleTimeString('uz-UZ', { timeZone: 'Asia/Tashkent', hour: '2-digit', minute: '2-digit' }) : '—';
+}
+
+function dvFmtWorked(minutes) {
+  if (minutes == null || Number(minutes) <= 0) return '—';
+  const total = Math.round(Number(minutes));
+  const hours = Math.floor(total / 60);
+  const mins = total % 60;
+  return hours ? `${hours} soat${mins ? ` ${mins} daq` : ''}` : `${mins} daq`;
+}
+
+function dvDateMeta(value) {
+  if (!value) return { short: '—', day: '', group: 'Sana yo‘q' };
+  const date = new Date(value + 'T12:00:00Z');
+  const months = ['yan', 'fev', 'mar', 'apr', 'may', 'iyun', 'iyul', 'avg', 'sen', 'okt', 'noy', 'dek'];
+  const weekdays = ['Yakshanba', 'Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba'];
+  const day = weekdays[date.getUTCDay()];
+  const short = `${date.getUTCDate()} ${months[date.getUTCMonth()]}`;
+  return {
+    short,
+    day,
+    group: `${short} · ${day}`,
+  };
+}
+
+function dvPeriodWorkDays(period) {
+  if (!period) return 0;
+  let count = 0;
+  const cursor = new Date(period.from + 'T12:00:00Z');
+  const end = new Date(period.to + 'T12:00:00Z');
+  while (cursor <= end) {
+    const day = cursor.getUTCDay();
+    if (day >= 1 && day <= 6) count++;
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+  return count;
+}
+
 function dvUpdatePeriodCaption() {
   const caption = document.getElementById('dv-period-caption');
   const period = dvCurrentPeriod();
   if (!caption || !period) return;
-  const format = value => new Intl.DateTimeFormat('uz-UZ', {
-    timeZone: 'Asia/Tashkent', day: '2-digit', month: '2-digit', year: 'numeric',
-  }).format(new Date(value + 'T12:00:00Z'));
-  caption.textContent = period.from === period.to
-    ? `Tanlangan sana: ${format(period.from)}`
-    : `Tanlangan davr: ${format(period.from)} — ${format(period.to)}`;
+  const full = value => {
+    const date = new Date(value + 'T12:00:00Z');
+    const months = ['yan', 'fev', 'mar', 'apr', 'may', 'iyun', 'iyul', 'avg', 'sen', 'okt', 'noy', 'dek'];
+    return `${date.getUTCDate()} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+  };
+  const range = period.from === period.to ? full(period.from) : `${full(period.from)} — ${full(period.to)}`;
+  caption.innerHTML = `<b>📅 ${dvEsc(range)}</b><span>${dvPeriodWorkDays(period)} ish kuni</span>`;
 }
 
-let dvListRowsCache = {}; // id -> row, Amallar tugmalari (tuzatish/o'chirish) uchun
+function dvStatusMeta(row) {
+  const status = row.status || 'pending_approval';
+  const map = {
+    on_time: 'ontime', late: 'late', checked_out: 'checkedout', approved: 'approved', rejected: 'rejected',
+    absent: 'absent', missing_check_in: 'absent', missing_check_out: 'warning', pending_approval: 'pending', day_off: 'dayoff',
+  };
+  return { label: DV_STATUS_LABELS[status] || status, kind: map[status] || 'pending', pending: DV_WARN_STATUSES.includes(status) || status === 'pending_approval' };
+}
+
+function dvActionsHtml(row, prefix) {
+  const meta = dvStatusMeta(row);
+  const id = dvEsc(row.id);
+  const menuId = `dv-menu-${prefix}-${id}`;
+  return `${meta.pending ? `<button class="dv-approve-btn" onclick="dvOpenAction('${id}','approve')">✓ Tasdiqlash</button>` : ''}
+    <button class="dv-more-btn" aria-label="${dvEsc(dvRowName(row))} amallari" aria-expanded="false" onclick="dvToggleActionMenu('${menuId}',this)">⋯</button>
+    <div class="dv-action-menu hidden" id="${menuId}">
+      ${meta.pending ? `<button onclick="dvOpenAction('${id}','approve')">✓ Tasdiqlash</button><button onclick="dvOpenAction('${id}','reject')">Rad etish</button>` : ''}
+      <button onclick="dvOpenEdit('${id}')">Tuzatish</button>
+      <button class="danger" onclick="dvOpenAction('${id}','delete')">O‘chirish</button>
+    </div>`;
+}
+
+function dvToggleActionMenu(menuId, trigger) {
+  const menu = document.getElementById(menuId);
+  if (!menu) return;
+  const willOpen = menu.classList.contains('hidden');
+  dvCloseActionMenus();
+  menu.classList.toggle('hidden', !willOpen);
+  trigger?.setAttribute('aria-expanded', String(willOpen));
+  if (willOpen && trigger) {
+    const rect = trigger.getBoundingClientRect();
+    menu.style.position = 'fixed';
+    menu.style.right = `${Math.max(8, window.innerWidth - rect.right)}px`;
+    if (rect.bottom + 158 < window.innerHeight) {
+      menu.style.top = `${rect.bottom + 4}px`;
+      menu.style.bottom = 'auto';
+    } else {
+      menu.style.top = 'auto';
+      menu.style.bottom = `${Math.max(8, window.innerHeight - rect.top + 4)}px`;
+    }
+  }
+}
+
+function dvCloseActionMenus() {
+  document.querySelectorAll('.dv-action-menu:not(.hidden)').forEach(menu => menu.classList.add('hidden'));
+  document.querySelectorAll('.dv-more-btn[aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+}
+
+document.addEventListener('click', event => {
+  if (!(event.target instanceof Element) || !event.target.closest('.dv-actions-cell, .dv-mobile-actions')) dvCloseActionMenus();
+});
+
+function dvPopulateEmployeeFilter(rows) {
+  const select = document.getElementById('dv-list-employee');
+  if (!select) return;
+  const selected = select.value;
+  const people = new Map();
+  rows.forEach(row => people.set(row.user_id, dvRowName(row)));
+  select.innerHTML = '<option value="">Barchasi</option>' + [...people.entries()]
+    .sort((a, b) => a[1].localeCompare(b[1], 'uz'))
+    .map(([id, name]) => `<option value="${dvEsc(id)}">${dvEsc(name)}</option>`).join('');
+  if (people.has(selected)) select.value = selected;
+}
+
+function dvFilteredRows() {
+  const employee = document.getElementById('dv-list-employee')?.value;
+  return employee ? dvListAllRows.filter(row => row.user_id === employee) : dvListAllRows.slice();
+}
+
+function dvSummary(rows) {
+  return rows.reduce((acc, row) => {
+    const late = Number(row.late_minutes || 0) > 0 || row.status === 'late';
+    if (row.check_in) acc.arrived++;
+    if (row.check_in && !late && !['missing_check_in', 'pending_approval', 'rejected'].includes(row.status)) acc.ontime++;
+    if (late) acc.late++;
+    if (row.status === 'absent' || row.status === 'missing_check_in') acc.absent++;
+    acc.worked += Number(row.worked_minutes || 0);
+    return acc;
+  }, { arrived: 0, ontime: 0, late: 0, absent: 0, worked: 0 });
+}
+
+function dvUpdateSummary(rows) {
+  const sum = dvSummary(rows);
+  const values = { arrived: sum.arrived, ontime: sum.ontime, late: sum.late, absent: sum.absent, worked: dvFmtWorked(sum.worked) === '—' ? '0 soat' : dvFmtWorked(sum.worked) };
+  Object.entries(values).forEach(([key, value]) => { const el = document.getElementById(`dv-summary-${key}`); if (el) el.textContent = value; });
+  const count = document.getElementById('dv-result-count');
+  if (count) count.textContent = `${rows.length} ta yozuv`;
+}
+
+function dvStateHtml(type) {
+  if (type === 'error') return '<div class="dv-state"><div class="dv-state-icon">!</div><b>Davomat ma’lumotlarini yuklab bo‘lmadi</b><p>Internetni tekshirib, qayta urinib ko‘ring.</p><button class="btn btn-secondary btn-sm" onclick="loadDavomatList()">Qayta urinish</button></div>';
+  return '<div class="dv-state"><div class="dv-state-icon">📅</div><b>Tanlangan davr uchun davomat topilmadi</b><p>Filterlarni tekshiring yoki boshqa davrni tanlang.</p></div>';
+}
+
+function dvRenderLoading() {
+  const tbody = document.getElementById('dv-list-tbody');
+  const mobile = document.getElementById('dv-mobile-list');
+  const employeeTbody = document.getElementById('dv-employees-tbody');
+  const employeeMobile = document.getElementById('dv-employees-mobile');
+  if (tbody) tbody.innerHTML = Array.from({ length: 6 }, () => '<tr class="dv-skeleton-row">' + Array.from({ length: 8 }, (_, i) => `<td><div class="dv-skeleton ${i < 2 ? 'wide' : i > 5 ? 'short' : 'medium'}"></div></td>`).join('') + '</tr>').join('');
+  if (mobile) mobile.innerHTML = Array.from({ length: 3 }, () => '<div class="dv-mobile-card"><div class="dv-skeleton wide"></div><div class="dv-skeleton medium"></div><div class="dv-skeleton wide"></div></div>').join('');
+  if (employeeTbody) employeeTbody.innerHTML = Array.from({ length: 4 }, () => '<tr class="dv-skeleton-row">' + Array.from({ length: 6 }, () => '<td><div class="dv-skeleton medium"></div></td>').join('') + '</tr>').join('');
+  if (employeeMobile) employeeMobile.innerHTML = Array.from({ length: 3 }, () => '<div class="dv-mobile-card"><div class="dv-skeleton wide"></div><div class="dv-skeleton medium"></div></div>').join('');
+}
+
+function dvRenderDays(rows) {
+  const tbody = document.getElementById('dv-list-tbody');
+  const mobile = document.getElementById('dv-mobile-list');
+  if (!tbody || !mobile) return;
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="8">${dvStateHtml('empty')}</td></tr>`;
+    mobile.innerHTML = dvStateHtml('empty');
+    return;
+  }
+  let previousDate = '';
+  tbody.innerHTML = rows.map(row => {
+    const date = dvDateMeta(row.sana);
+    const status = dvStatusMeta(row);
+    const name = dvRowName(row);
+    const branch = dvBranchCache[row.branch_id]?.name || '—';
+    const divider = previousDate && previousDate !== row.sana ? ' class="dv-date-divider"' : '';
+    previousDate = row.sana;
+    const late = Number(row.late_minutes || 0) > 0 ? `<small class="dv-late-detail">+${Number(row.late_minutes)} daq</small>` : '';
+    return `<tr${divider}><td><div class="dv-date-main">${dvEsc(date.short)}</div><div class="dv-date-day">${dvEsc(date.day)}</div></td>
+      <td><div class="dv-person"><span class="dv-avatar">${dvEsc(name.charAt(0).toUpperCase())}</span><span class="dv-person-name">${dvEsc(name)}</span></div></td>
+      <td><span class="dv-branch-pill">${dvEsc(branch)}</span></td><td class="dv-time">${dvEsc(dvFmtTime(row.check_in))}</td><td class="dv-time ${row.check_out ? '' : 'dv-muted'}">${dvEsc(dvFmtTime(row.check_out))}</td>
+      <td><span class="dv-status-badge dv-status-${status.kind}">${dvEsc(status.label)}</span>${late}</td><td class="dv-worked">${dvEsc(dvFmtWorked(row.worked_minutes))}</td>
+      <td class="dv-actions-cell">${dvActionsHtml(row, 'table')}</td></tr>`;
+  }).join('');
+
+  previousDate = '';
+  mobile.innerHTML = rows.map(row => {
+    const date = dvDateMeta(row.sana);
+    const status = dvStatusMeta(row);
+    const name = dvRowName(row);
+    const branch = dvBranchCache[row.branch_id]?.name || '—';
+    const group = previousDate !== row.sana ? `<div class="dv-mobile-date-group">${dvEsc(date.group)}</div>` : '';
+    previousDate = row.sana;
+    const lateText = Number(row.late_minutes || 0) > 0 ? ` +${Number(row.late_minutes)} daq` : '';
+    return `${group}<article class="dv-mobile-card"><div class="dv-mobile-card-head"><div class="dv-person"><span class="dv-avatar">${dvEsc(name.charAt(0).toUpperCase())}</span><span class="dv-person-name">${dvEsc(name)}</span></div><div class="dv-mobile-date">${dvEsc(date.short)}<br>${dvEsc(branch)}</div></div>
+      <div class="dv-mobile-meta"><div><span>Kelgan</span><b>${dvEsc(dvFmtTime(row.check_in))}</b></div><div><span>Ketgan</span><b>${dvEsc(dvFmtTime(row.check_out))}</b></div><div><span>Status</span><b>${dvEsc(status.label + lateText)}</b></div><div><span>Ishlagan</span><b>${dvEsc(dvFmtWorked(row.worked_minutes))}</b></div></div>
+      <div class="dv-mobile-actions">${dvActionsHtml(row, 'mobile')}</div></article>`;
+  }).join('');
+}
+
+function dvEmployeeSummaries(rows) {
+  const map = new Map();
+  rows.forEach(row => {
+    const item = map.get(row.user_id) || { user_id: row.user_id, name: dvRowName(row), arrived: 0, late: 0, absent: 0, worked: 0, lateMinutes: 0 };
+    if (row.check_in) item.arrived++;
+    if (Number(row.late_minutes || 0) > 0 || row.status === 'late') item.late++;
+    if (row.status === 'absent' || row.status === 'missing_check_in') item.absent++;
+    item.worked += Number(row.worked_minutes || 0);
+    item.lateMinutes += Number(row.late_minutes || 0);
+    map.set(row.user_id, item);
+  });
+  return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, 'uz'));
+}
+
+function dvRenderEmployeeSummary(rows) {
+  const tbody = document.getElementById('dv-employees-tbody');
+  const mobile = document.getElementById('dv-employees-mobile');
+  if (!tbody || !mobile) return;
+  const items = dvEmployeeSummaries(rows);
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="6">${dvStateHtml('empty')}</td></tr>`;
+    mobile.innerHTML = dvStateHtml('empty');
+    return;
+  }
+  const person = item => `<div class="dv-employee-stat-name"><span class="dv-avatar">${dvEsc(item.name.charAt(0).toUpperCase())}</span><b>${dvEsc(item.name)}</b></div>`;
+  tbody.innerHTML = items.map(item => `<tr><td>${person(item)}</td><td class="dv-stat-number">${item.arrived}</td><td class="dv-stat-number dv-stat-late">${item.late}</td><td class="dv-stat-number dv-stat-absent">${item.absent}</td><td>${dvEsc(dvFmtWorked(item.worked))}</td><td>${item.lateMinutes} daq</td></tr>`).join('');
+  mobile.innerHTML = items.map(item => `<article class="dv-mobile-card">${person(item)}<div class="dv-mobile-employee-stats"><div><span>Kelgan</span><b>${item.arrived}</b></div><div><span>Kech</span><b>${item.late}</b></div><div><span>Yo‘q</span><b>${item.absent}</b></div><div><span>Ishlagan</span><b>${dvEsc(dvFmtWorked(item.worked))}</b></div><div><span>Kechikish</span><b>${item.lateMinutes} daq</b></div></div></article>`).join('');
+}
+
+function dvRenderList() {
+  const rows = dvFilteredRows();
+  dvUpdateSummary(rows);
+  dvRenderDays(rows);
+  dvRenderEmployeeSummary(rows);
+}
+
+function dvApplyEmployeeFilter() {
+  dvCloseActionMenus();
+  dvRenderList();
+}
+
+function dvSetListView(view) {
+  dvListView = view === 'employees' ? 'employees' : 'days';
+  document.getElementById('dv-days-view')?.classList.toggle('hidden', dvListView !== 'days');
+  document.getElementById('dv-employees-view')?.classList.toggle('hidden', dvListView !== 'employees');
+  document.querySelectorAll('[data-dv-view]').forEach(btn => btn.classList.toggle('active', btn.dataset.dvView === dvListView));
+  dvCloseActionMenus();
+}
 
 async function loadDavomatList() {
-  const tbody = document.getElementById('dv-list-tbody');
-  if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text3)">Yuklanmoqda...</td></tr>';
-
-  let rows;
+  if (!document.getElementById('dv-list-tbody')) return;
+  dvRenderLoading();
   try {
     if (!dvBranchCache) {
       const branches = await getBranches();
       dvBranchCache = {};
-      branches.forEach(b => { dvBranchCache[b.id] = b; });
+      branches.forEach(branch => { dvBranchCache[branch.id] = branch; });
     }
-
-    const branchSelect = document.getElementById('dv-list-branch');
+    const branchCode = document.getElementById('dv-list-branch')?.value || '';
     const period = dvCurrentPeriod();
-    const branchCode = branchSelect ? branchSelect.value : '';
-
     const filters = {};
-    if (period) {
-      filters.from = period.from;
-      filters.to = period.to;
-    }
+    if (period) { filters.from = period.from; filters.to = period.to; }
     if (branchCode) {
-      const match = Object.values(dvBranchCache).find(b => b.code === branchCode);
+      const match = Object.values(dvBranchCache).find(branch => branch.code === branchCode);
       if (match) filters.branch_id = match.id;
     }
-
-    rows = await getDavomatList(filters);
-  } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--danger, #e03131)">Xatolik — ro\'yxatni yuklab bo\'lmadi</td></tr>';
-    showNotify?.('❌ Davomat ro\'yxatini yuklashda xatolik: ' + (e.message || "noma'lum xato"));
-    return;
+    dvListAllRows = await getDavomatList(filters);
+    dvListAllRows.sort((a, b) => String(b.sana || '').localeCompare(String(a.sana || '')) || String(b.check_in || '').localeCompare(String(a.check_in || '')));
+    dvListRowsCache = {};
+    dvListAllRows.forEach(row => { dvListRowsCache[row.id] = row; });
+    dvPopulateEmployeeFilter(dvListAllRows);
+    dvRenderList();
+  } catch (error) {
+    const state = dvStateHtml('error');
+    const tbody = document.getElementById('dv-list-tbody');
+    const mobile = document.getElementById('dv-mobile-list');
+    const employeeTbody = document.getElementById('dv-employees-tbody');
+    const employeeMobile = document.getElementById('dv-employees-mobile');
+    if (tbody) tbody.innerHTML = `<tr><td colspan="8">${state}</td></tr>`;
+    if (mobile) mobile.innerHTML = state;
+    if (employeeTbody) employeeTbody.innerHTML = `<tr><td colspan="6">${state}</td></tr>`;
+    if (employeeMobile) employeeMobile.innerHTML = state;
+    dvUpdateSummary([]);
+    console.error('[davomat] ro‘yxat yuklash xatosi', error);
   }
-  dvListRowsCache = {};
-  rows.forEach(r => { dvListRowsCache[r.id] = r; });
-
-  if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text3)">Ma\'lumot topilmadi</td></tr>';
-    return;
-  }
-
-  const fmtTime = (iso) => iso ? new Date(iso).toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' }) : '—';
-
-  tbody.innerHTML = rows.map(r => {
-    const email = USER_ID_TO_EMAIL[r.user_id];
-    const name = email ? (typeof getName === 'function' ? getName(email) : email) : (r.user_id ? r.user_id.slice(0, 8) : '—');
-    const branch = dvBranchCache[r.branch_id];
-    const branchName = branch ? branch.name : '—';
-    const worked = r.worked_minutes != null ? (Math.round(r.worked_minutes / 6) / 10) + ' soat' : '—';
-    const isWarn = DV_WARN_STATUSES.includes(r.status);
-    const statusLabel = (isWarn ? '⚠️ ' : '') + (DV_STATUS_LABELS[r.status] || r.status);
-    const td = 'padding:8px;border-bottom:1px solid var(--gray-border)';
-    const actions =
-      '<button class="btn btn-secondary btn-sm" onclick="dvOpenAction(\'' + r.id + '\',\'approve\')">Tasdiqlash</button> ' +
-      '<button class="btn btn-secondary btn-sm" onclick="dvOpenAction(\'' + r.id + '\',\'reject\')">Rad etish</button> ' +
-      '<button class="btn btn-secondary btn-sm" onclick="dvOpenEdit(\'' + r.id + '\')">Tuzatish</button> ' +
-      '<button class="btn btn-danger btn-sm" onclick="dvOpenAction(\'' + r.id + '\',\'delete\')">O\'chirish</button>';
-    return '<tr>' +
-      '<td style="' + td + '">' + (r.sana || '—') + '</td>' +
-      '<td style="' + td + '">' + name + '</td>' +
-      '<td style="' + td + '">' + branchName + '</td>' +
-      '<td style="' + td + '">' + fmtTime(r.check_in) + '</td>' +
-      '<td style="' + td + '">' + fmtTime(r.check_out) + '</td>' +
-      '<td style="' + td + '">' + statusLabel + '</td>' +
-      '<td style="' + td + '">' + worked + '</td>' +
-      '<td style="' + td + ';white-space:nowrap">' + actions + '</td>' +
-      '</tr>';
-  }).join('');
 }
 
 // ── MANAGER AMALLARI: tasdiqlash / rad etish / o'chirish (sabab so'raladi) ──
 let dvActionTarget = null; // {id, action}
 
 function dvOpenAction(davomatId, action) {
+  dvCloseActionMenus();
   dvActionTarget = { id: davomatId, action: action };
   const titles = { approve: 'Tasdiqlash', reject: 'Rad etish', delete: "O'chirish" };
   const titleEl = document.getElementById('dv-action-title');
@@ -776,6 +990,7 @@ function dvToLocalInputValue(iso) {
 }
 
 function dvOpenEdit(davomatId) {
+  dvCloseActionMenus();
   const row = dvListRowsCache[davomatId];
   dvEditTarget = davomatId;
   const checkinEl = document.getElementById('dv-edit-checkin');
