@@ -12,7 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poligrafiya — Boshqaruv tizimi</title>
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="attendance-period.css?v=20260831b">
+<link rel="stylesheet" href="attendance-period.css?v=20260831c">
 </head>
 <body>
 
@@ -2310,43 +2310,66 @@
   </div>
 
   <div id="dv-tab-list" class="hidden">
-    <div class="dv-period-toolbar">
-      <button class="filter-btn active" data-dv-period="today" onclick="dvSelectPeriod('today')">Bugun</button>
-      <button class="filter-btn" data-dv-period="week" onclick="dvSelectPeriod('week')">Shu hafta</button>
-      <button class="filter-btn" data-dv-period="previous_week" onclick="dvSelectPeriod('previous_week')">O‘tgan hafta</button>
-      <button class="filter-btn" data-dv-period="month" onclick="dvSelectPeriod('month')">Shu oy</button>
-      <button class="filter-btn" data-dv-period="previous_month" onclick="dvSelectPeriod('previous_month')">O‘tgan oy</button>
-      <button class="filter-btn" data-dv-period="custom" onclick="dvSelectPeriod('custom',false)">Sana oralig‘i</button>
+    <section class="dv-list-shell" aria-label="Davomat ro‘yxati boshqaruvi">
+      <div class="dv-period-toolbar">
+        <div class="dv-period-presets" aria-label="Davr filtrlari">
+          <button class="filter-btn active" data-dv-period="today" onclick="dvSelectPeriod('today')">Bugun</button>
+          <button class="filter-btn" data-dv-period="week" onclick="dvSelectPeriod('week')">Shu hafta</button>
+          <button class="filter-btn" data-dv-period="previous_week" onclick="dvSelectPeriod('previous_week')">O‘tgan hafta</button>
+          <button class="filter-btn" data-dv-period="month" onclick="dvSelectPeriod('month')">Shu oy</button>
+          <button class="filter-btn" data-dv-period="previous_month" onclick="dvSelectPeriod('previous_month')">O‘tgan oy</button>
+          <button class="filter-btn" data-dv-period="custom" onclick="dvSelectPeriod('custom',false)">Sana oralig‘i</button>
+        </div>
+        <div class="dv-list-filters">
+          <label class="dv-filter-field"><span>Filial</span><select id="dv-list-branch" class="form-input" onchange="loadDavomatList()">
+            <option value="">Barchasi</option><option value="sales">Sotuv</option><option value="production">Ishlab chiqarish</option>
+          </select></label>
+          <label class="dv-filter-field"><span>Xodim</span><select id="dv-list-employee" class="form-input" onchange="dvApplyEmployeeFilter()">
+            <option value="">Barchasi</option>
+          </select></label>
+        </div>
+      </div>
       <div id="dv-period-custom" class="hidden dv-period-custom">
-        <label><span>Sanadan</span><input type="date" id="dv-list-from" class="form-input"></label>
-        <span>→</span>
+        <label><span>Sanadan</span><input type="date" id="dv-list-from" class="form-input"></label><span class="dv-range-arrow">→</span>
         <label><span>Sanagacha</span><input type="date" id="dv-list-to" class="form-input"></label>
         <button class="btn btn-primary btn-sm" onclick="dvApplyCustomPeriod()">Ko‘rsatish</button>
       </div>
-      <select id="dv-list-branch" class="form-input" style="width:auto" onchange="loadDavomatList()">
-        <option value="">Barchasi</option>
-        <option value="sales">Sotuv</option>
-        <option value="production">Ishlab chiqarish</option>
-      </select>
-    </div>
-    <div class="dv-period-caption" id="dv-period-caption"></div>
-    <div class="card" style="overflow-x:auto">
-      <table style="width:100%;border-collapse:collapse;font-size:13px">
-        <thead>
-          <tr style="text-align:left;color:var(--text3);border-bottom:1px solid var(--gray-border)">
-            <th style="padding:8px">Sana</th>
-            <th style="padding:8px">Xodim</th>
-            <th style="padding:8px">Filial</th>
-            <th style="padding:8px">Kelgan</th>
-            <th style="padding:8px">Ketgan</th>
-            <th style="padding:8px">Status</th>
-            <th style="padding:8px">Ishlagan</th>
-            <th style="padding:8px">Amallar</th>
-          </tr>
-        </thead>
-        <tbody id="dv-list-tbody"></tbody>
-      </table>
-    </div>
+      <div class="dv-period-info" id="dv-period-caption" aria-live="polite"></div>
+
+      <div class="dv-summary-grid" id="dv-list-summary" aria-label="Davomat qisqa hisoboti">
+        <div class="dv-summary-card dv-summary-arrived"><span>Jami kelgan</span><b id="dv-summary-arrived">0</b></div>
+        <div class="dv-summary-card dv-summary-ontime"><span>O‘z vaqtida</span><b id="dv-summary-ontime">0</b></div>
+        <div class="dv-summary-card dv-summary-late"><span>Kech qolgan</span><b id="dv-summary-late">0</b></div>
+        <div class="dv-summary-card dv-summary-absent"><span>Kelmagan</span><b id="dv-summary-absent">0</b></div>
+        <div class="dv-summary-card dv-summary-worked"><span>Jami ishlagan</span><b id="dv-summary-worked">0 soat</b></div>
+      </div>
+
+      <div class="dv-list-viewbar">
+        <div class="dv-view-switch" aria-label="Ko‘rinish turi">
+          <button class="active" data-dv-view="days" onclick="dvSetListView('days')">Kunlar bo‘yicha</button>
+          <button data-dv-view="employees" onclick="dvSetListView('employees')">Xodimlar bo‘yicha</button>
+        </div>
+        <span id="dv-result-count" class="dv-result-count"></span>
+      </div>
+
+      <div class="dv-table-card" id="dv-days-view">
+        <div class="dv-table-scroll">
+          <table class="dv-attendance-table">
+            <thead><tr><th>Sana</th><th>Xodim</th><th>Filial</th><th>Kelgan</th><th>Ketgan</th><th>Status</th><th>Ishlagan</th><th class="dv-actions-head">Amallar</th></tr></thead>
+            <tbody id="dv-list-tbody"></tbody>
+          </table>
+        </div>
+        <div class="dv-mobile-list" id="dv-mobile-list"></div>
+      </div>
+
+      <div class="dv-table-card hidden" id="dv-employees-view">
+        <div class="dv-table-scroll"><table class="dv-attendance-table dv-employee-summary-table">
+          <thead><tr><th>Xodim</th><th>Kelgan</th><th>Kech</th><th>Yo‘q</th><th>Ishlagan</th><th>Kechikish</th></tr></thead>
+          <tbody id="dv-employees-tbody"></tbody>
+        </table></div>
+        <div class="dv-mobile-list" id="dv-employees-mobile"></div>
+      </div>
+    </section>
 
     <!-- Tasdiqlash / Rad etish / O'chirish — sabab so'rovi -->
     <div class="modal-overlay hidden" id="dv-action-modal">
@@ -2513,7 +2536,7 @@
 
   <!-- 6. Panel modules (mustaqil, bir-biriga bog'liq emas) -->
   <script src="js/attendance_period.js?v=20260831b"></script>
-  <script src="js/panels/davomat.js?v=20260831b"></script>
+  <script src="js/panels/davomat.js?v=20260831c"></script>
   <script src="js/panels/foiz.js?v=20260803"></script>
   <script src="js/panels/xabar.js?v=20260803"></script>
   <script src="js/panels/history.js?v=20260814"></script>

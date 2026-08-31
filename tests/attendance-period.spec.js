@@ -38,17 +38,17 @@ test('signed-in period toolbar works on desktop and 390px', async ({ page }) => 
   await page.locator('[data-dv-period="previous_week"]').click();
   await expect(page.locator('#dv-list-from')).toHaveValue('2026-08-24');
   await expect(page.locator('#dv-list-to')).toHaveValue('2026-08-29');
-  await expect(page.locator('#dv-list-tbody')).toContainText('2026-08-24');
+  await expect(page.locator('#dv-list-tbody')).toContainText('24 avg');
 
   await page.locator('[data-dv-period="custom"]').click();
   await expect(page.locator('#dv-period-custom')).toBeVisible();
   await page.locator('#dv-list-from').fill('2026-08-01');
   await page.locator('#dv-list-to').fill('2026-08-20');
   await page.getByRole('button', { name: 'Ko‘rsatish' }).click();
-  await expect(page.locator('#dv-period-caption')).toContainText('Tanlangan davr');
+  await expect(page.locator('#dv-period-caption')).toContainText('1 avg 2026 — 20 avg 2026');
 
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.locator('[data-dv-period="previous_week"]')).toBeVisible();
   await expect(page.locator('#dv-period-custom')).toBeVisible();
-  expect(await page.locator('.dv-period-toolbar').evaluate(el => getComputedStyle(el).overflowX)).toBe('auto');
+  expect(await page.locator('.dv-period-presets').evaluate(el => getComputedStyle(el).overflowX)).toBe('auto');
 });
