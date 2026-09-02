@@ -142,20 +142,20 @@ const KPI_BONUS = {
     { min: 60000000, max: Infinity,  bonus: 1500000, label: "A'lo darajadagi natija" },
   ],
   tajriba: [
-    { min: 0,        max: 24999999,  bonus: 0,       label: 'Minimal natija' },
-    { min: 25000000, max: 39999999,  bonus: 400000,  label: "Rag'bat darajasi" },
-    { min: 40000000, max: 49999999,  bonus: 800000,  label: 'Barqaror natija' },
-    { min: 50000000, max: 69999999,  bonus: 1200000, label: 'Reja bajarilgan' },
-    { min: 70000000, max: 89999999,  bonus: 1800000, label: 'Yuqori daraja' },
-    { min: 90000000, max: Infinity,  bonus: 2500000, label: 'Professionalga tayyor' },
-  ],
-  professional: [
     { min: 0,        max: 29999999,  bonus: 0,       label: 'Minimal natija' },
     { min: 30000000, max: 44999999,  bonus: 200000,  label: '40+ bitimga yaqinlashish' },
     { min: 45000000, max: 59999999,  bonus: 400000,  label: 'Qayta buyurtma ulushi 60%' },
     { min: 60000000, max: 79999999,  bonus: 700000,  label: 'Reja bajarilgan' },
     { min: 80000000, max: 99999999,  bonus: 1000000, label: 'Kross/apsell 20%' },
     { min: 100000000, max: Infinity, bonus: 1500000, label: 'Elita daraja' },
+  ],
+  professional: [
+    { min: 0,        max: 24999999,  bonus: 0,       label: 'Minimal natija' },
+    { min: 25000000, max: 39999999,  bonus: 400000,  label: "Rag'bat darajasi" },
+    { min: 40000000, max: 49999999,  bonus: 800000,  label: 'Barqaror natija' },
+    { min: 50000000, max: 69999999,  bonus: 1200000, label: 'Reja bajarilgan' },
+    { min: 70000000, max: 89999999,  bonus: 1800000, label: 'Yuqori daraja' },
+    { min: 90000000, max: Infinity,  bonus: 2500000, label: 'Professionalga tayyor' },
   ],
 };
 
