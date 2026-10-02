@@ -18,11 +18,11 @@ const TABLES = {
   ],
   professional: [
     [0, 24999999, 0],
-    [25000000, 39999999, 400000],
-    [40000000, 49999999, 800000],
-    [50000000, 69999999, 1200000],
-    [70000000, 89999999, 1800000],
-    [90000000, Infinity, 2500000],
+    [25000000, 39999999, 1200000],
+    [40000000, 49999999, 1500000],
+    [50000000, 69999999, 1800000],
+    [70000000, 89999999, 2400000],
+    [90000000, Infinity, 3000000],
   ],
 };
 
@@ -80,8 +80,40 @@ test.describe('KPI bonus daraja mappingi', () => {
 
     expect(result).toEqual({
       tajriba: { daraja: 'tajriba', maqsad: 45000000, fiks: 1800000, bonus: 700000, total: 2500000 },
-      professional: { daraja: 'professional', maqsad: 60000000, fiks: 1000000, bonus: 1800000, total: 2800000 },
+      professional: { daraja: 'professional', maqsad: 60000000, fiks: 1000000, bonus: 2400000, total: 3400000 },
     });
+  });
+
+  // Biznes inварianti: professional faqat lavozim uchun ortiqcha olmaydi (<25mln da
+  // tajribadan kam), lekin >=25mln sotuvda AYNI sotuv summasida tajriba darajasidagi
+  // xodimdan DOIM ko'proq topadi (fiksa + joriy bonus jami bo'yicha).
+  test('invariant: >=25mln da professional jami > tajriba jami; <25mln da kam', async ({ page }) => {
+    const rows = await page.evaluate(({ proEmail, tajEmail, points }) => points.map((amount) => {
+      const pk = getKpi(proEmail), tk = getKpi(tajEmail);
+      const pro = pk.fiks + getCurrentBonus(proEmail, amount).bonus;
+      const taj = tk.fiks + getCurrentBonus(tajEmail, amount).bonus;
+      return { amount, pro, taj };
+    }), {
+      proEmail: USERS.professional, tajEmail: USERS.tajriba,
+      // tajriba (30/45/60/80/100M) va professional (25/40/50/70/90M) chegaralari
+      // kesishgan barcha sub-intervallarni qamrab oluvchi nuqtalar:
+      points: [0, 10000000, 24999999, 25000000, 30000000, 39999999, 40000000, 44999999,
+               45000000, 49999999, 50000000, 59999999, 60000000, 69999999, 70000000,
+               79999999, 80000000, 89999999, 90000000, 99999999, 100000000, 150000000],
+    });
+    for (const r of rows) {
+      if (r.amount < 25000000) expect(r.pro, `@${r.amount}`).toBeLessThan(r.taj);
+      else expect(r.pro, `@${r.amount}`).toBeGreaterThan(r.taj);
+    }
+  });
+
+  test("professional oxirgi tier labeli 'Elita natija' (tajriba 'Elita daraja' tegilmagan)", async ({ page }) => {
+    const labels = await page.evaluate(() => ({
+      pro: KPI_BONUS.professional[KPI_BONUS.professional.length - 1].label,
+      taj: KPI_BONUS.tajriba[KPI_BONUS.tajriba.length - 1].label,
+    }));
+    expect(labels.pro).toBe('Elita natija');
+    expect(labels.taj).toBe('Elita daraja');
   });
 
   test("boshlang'ich tier regressiya olmadi", async ({ page }) => {
