@@ -1,57 +1,66 @@
 # Auth self-service — Owner runbook & activation checklist
 
 This PR ships the employee self-service **account** page (`Profil va xavfsizlik`).
-**Password change is active** (needs no external config). **Email change and
-password recovery are feature-gated OFF** (`SELF_SERVICE.email/recovery=false` in
-`js/panels/account.js`) because they require Supabase Auth Dashboard configuration
-+ SMTP. Nothing half-enabled or insecure is shipped.
+**Password change is active** (no external config). **Email change and password
+recovery are feature-gated OFF** (`SELF_SERVICE.email/recovery=false` in
+`js/panels/account.js`) until Supabase Auth Dashboard config + SMTP exist. Nothing
+half-enabled is shipped.
 
-Automated tooling here has **no privileged Supabase access** (publishable key only;
-no service-role, no CLI, no staging project), so the DB migrations and Dashboard
-settings below are **owner-executed**. Do them in order.
+Automation here has **no privileged Supabase access** (publishable key only; no
+service-role, no CLI, no staging). So the steps below are owner-executed, and the
+corrected migrations **must pass temporary-project runtime validation before any
+production apply** (`supabase/auth_self_service/validate_auth_self_service.sh`).
 
-## 0. CRITICAL — apply the security fix first (independent of self-service)
-A pre-existing live vulnerability lets any employee self-promote their role:
-`crm_profiles_update` policy had `using (auth.uid()=id)` with no `with check`/column guard.
-**Apply now**, regardless of the rest:
-- `supabase/auth_self_service/0001_crm_profiles_role_guard_up.sql` (trigger blocks role/id change by non-directors; policy gains `with check`).
-- Verify (as a non-director test user): `update crm_profiles set role='director' where id=auth.uid();` must FAIL (42501); `update ... set full_name='X' ...` must SUCCEED.
-- Rollback: `0001_..._down.sql`.
+## 0. CRITICAL — security fix (apply after temp validation)
+Pre-existing live vuln: `crm_profiles_update` used `using(auth.uid()=id)` with no
+`with check`/column guard → an employee could `set role='director'` on their own row.
+Corrected fix = **least-privilege column grants** (no trigger):
+`0001_crm_profiles_role_guard_up.sql` revokes table-wide UPDATE from `authenticated`,
+grants UPDATE only on `full_name, telegram_id, phone`, and tightens the policy with
+`with check`. `role`/`id` are not grantable to employees → self-escalation denied at
+the column level, while `service_role`/`postgres` (SQL Editor) keep full privileges
+so **owner/admin role maintenance still works** (no `auth.uid()` dependency).
+Rollback: `0001_..._down.sql`.
 
-## 1. Identity-independence migration (before activating email change)
-- Apply `0002_erp_employee_profile_up.sql` (UUID-keyed display/KPI/bonus + contact-email mirror; director-only writes; backfill seed included).
-- Run the backfill-validation queries at the bottom of that file (count=16, no null display_name, bonus_50 eligible=2, no duplicate contact_email). **Do not activate until these pass.**
-- Rollback: `0002_..._down.sql`.
+## 1. Identity-independence migration
+`0002_erp_employee_profile_up.sql` — additive, **email-free** UUID-keyed table
+(display name, KPI tier/target/fiks, bonus eligibility; **no login email**), explicit
+grants (revoke public/anon; director-only writes via RLS), FK `on delete restrict`
+(deleting an Auth user cannot destroy historical business config), and an UPSERT
+backfill (re-run reconciles config; never silently stale). Also creates
+`get_employee_directory()` (SECURITY DEFINER, fixed search_path, authenticated-only)
+returning **only `user_id` + `display_name`** for selectors — no emails.
+Validation queries at the file bottom (count 16, bonus_50=2, no nulls/dups).
+Rollback: `0002_..._down.sql`.
 
-## 2. Supabase Auth Dashboard settings (production project `jxxmbgmbaqausqunfyna`)
-Required before flipping email/recovery ON (do **not** print secrets):
-- **Site URL:** `https://ravshanrakhmatullaev.github.io/poligrafiya/`
-- **Redirect allow-list (exact):**
-  - `https://ravshanrakhmatullaev.github.io/poligrafiya/`
-  - local tests: `http://localhost:4173/` and `http://127.0.0.1:4173/`
-- **Secure email change (double confirmation): ON** (confirm on both old + new addresses).
-- **Email confirmations: ON.**
-- **Password recovery redirect:** the Site URL above.
-- **SMTP:** configure a real sender and verify delivery (default Supabase SMTP is rate-limited and not for production).
-- **Rate limits:** keep sane defaults for email/OTP.
-- **Password policy:** ≥ 8 chars (matches the client `PASSWORD_MIN`).
-- **Public signups: DISABLED** (no self-registration).
+## 2. Temporary-project runtime validation (REQUIRED before production)
+Run `supabase/auth_self_service/validate_auth_self_service.sh` against a **temporary**
+Supabase/Postgres project (it refuses the production project and requires
+`AUTH_SS_TEMP=1` + a non-production `DATABASE_URL`). It applies 0001+0002, creates
+temp director/production/designer/unauthorized users, and asserts: employee role/id
+change denied; safe-field change allowed; cross-user update denied; anon denied;
+service/admin role provisioning allowed; directory exposes names but no email;
+rollback clean; unrelated tables survive. Do not apply to production without this
+evidence.
 
-> Note: current `+alias` logins route to the Owner's Gmail. The first email change
-> therefore needs Owner confirmation on the old alias + the employee's confirmation
-> on their new real address. The UI explains this.
+## 3. Supabase Auth Dashboard (before activating email/recovery)
+Site URL `https://ravshanrakhmatullaev.github.io/poligrafiya/`; redirect allow-list =
+that URL + `http://localhost:4173/` + `http://127.0.0.1:4173/`; secure email change ON;
+email confirmations ON; recovery redirect = Site URL; **SMTP** configured + verified;
+**public signup DISABLED**; password policy ≥ 8. (First email change needs Owner
+confirmation on the old `+alias` + employee confirmation on the new address — UI explains this.)
 
-## 3. Activation (small follow-up change, after 1 + 2 are green)
-- Flip `SELF_SERVICE.email = true` and `SELF_SERVICE.recovery = true` in `js/panels/account.js` (+ cache-bump) and redeploy.
-- **Frontend identity cutover (deferred, do with activation):** switch `getKpi`/`canUseBonus50`/display + employee selectors to read `erp_employee_profile` by `auth.uid()` instead of the email-keyed `config.js` constants, and stop shipping `USER_ID_TO_EMAIL`/`XODIMLAR` as a browsable org directory. This is what makes an employee email change require **no frontend redeploy** and removes the public email directory. (Not done in this PR because it must land atomically with 0002 being live + validated; business results — KPI/bonus/payroll — must stay identical.)
+## 4. Activation (after 0–3 green)
+Flip `SELF_SERVICE.email/recovery=true` in `js/panels/account.js` (+ cache-bump) and
+do the **identity cutover**: switch `getKpi`/`canUseBonus50`/display + selectors to read
+`erp_employee_profile` / `get_employee_directory()` instead of the email-keyed
+`config.js` constants, then stop shipping `USER_ID_TO_EMAIL`/`XODIMLAR`. This removes
+the public email directory and makes email changes require no redeploy. Deferred so it
+lands atomically with 0002 live + validated; KPI/bonus/payroll results stay identical.
 
-## Rollout safety
-- Do **not** mass-change employee emails. Old alias logins keep working until each
-  employee voluntarily completes a verified change. Changing one employee never
-  affects another (UUID identity; role untouched).
-- Do not send test recovery/change emails to real employees without approval.
-
-## Rollback
-- Code: revert the PR merge commit (`git revert -m 1 <merge_sha>`), Pages redeploys prior commit.
-- DB: `0002_..._down.sql`, then (only if the guard misbehaves) `0001_..._down.sql` — but re-fix 0001 promptly, it closes a real vulnerability.
-- Employee lost email access: Owner resets via Supabase Auth admin (set email/password for that UUID); UUID/role/history unchanged.
+## Rollout safety & rollback
+- Do not mass-change emails; old `+alias` logins keep working until each employee
+  voluntarily completes a verified change; one employee's change never affects others.
+- Code rollback: `git revert -m 1 <merge_sha>`. DB: `0002_down` then `0001_down`
+  (re-fix 0001 promptly — it closes a real vuln). Lost email access: Owner resets
+  email/password for that UUID via Auth admin; UUID/role/history unchanged.

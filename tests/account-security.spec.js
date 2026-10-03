@@ -3,8 +3,30 @@
 // role read-only), and the password-change flow (stubbed sb.auth — validates
 // client logic, NOT real Supabase Auth). No service-role key in the bundle.
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
 
 test.describe('Account self-service security', () => {
+  test('no new feature file ships an employee email directory', () => {
+    // Scan THIS PR's new feature files (not pre-existing config.js / git history).
+    const root = path.join(__dirname, '..');
+    const files = [
+      'supabase/auth_self_service/0001_crm_profiles_role_guard_up.sql',
+      'supabase/auth_self_service/0001_crm_profiles_role_guard_down.sql',
+      'supabase/auth_self_service/0002_erp_employee_profile_up.sql',
+      'supabase/auth_self_service/0002_erp_employee_profile_down.sql',
+      'supabase/auth_self_service/validate_auth_self_service.sh',
+      'docs/auth-self-service-runbook.md',
+      'js/panels/account.js',
+    ];
+    const emailRe = /ra\.ravshan1998\+[a-z]+@gmail\.com|adsuzuvdtf@gmail\.com/gi;
+    for (const rel of files) {
+      const src = fs.readFileSync(path.join(root, rel), 'utf8');
+      const distinct = new Set((src.match(emailRe) || []).map(e => e.toLowerCase()));
+      expect(distinct.size, `${rel} must not embed an employee email directory`).toBeLessThan(3);
+    }
+  });
+
   test.beforeEach(async ({ page }) => { await page.goto('/'); await page.waitForLoadState('domcontentloaded'); });
 
   test('publishable key only — no service-role secret in bundle', async ({ page }) => {
