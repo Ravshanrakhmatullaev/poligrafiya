@@ -41,6 +41,7 @@
     </div>
     <div class="form-error hidden" id="login-error">Email yoki parol noto'g'ri</div>
     <button class="btn btn-primary" id="login-btn" onclick="doLogin()" style="margin-top:8px">Kirish</button>
+    <button type="button" id="forgot-pw-link" onclick="accForgotPassword()" style="margin-top:10px;background:none;border:none;color:var(--text3);font-size:12px;text-decoration:underline;cursor:pointer;align-self:center">Parolni unutdingizmi?</button>
   </div>
 </div>
 
@@ -409,6 +410,61 @@
       <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
       Foiz jadvali
     </button>
+    <button class="nav-btn" onclick="showPanel('account')" id="nb-account">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profil va xavfsizlik
+    </button>
+  </div>
+
+  <!-- PROFIL VA XAVFSIZLIK (self-service account) -->
+  <div class="panel" id="panel-account">
+    <div class="card" style="max-width:560px">
+      <div class="card-title">👤 Profil va xavfsizlik</div>
+      <div style="display:grid;gap:10px;margin-bottom:18px">
+        <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px"><span style="color:var(--text3)">Ism</span><span id="acc-name" style="font-weight:600">—</span></div>
+        <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px"><span style="color:var(--text3)">Joriy login email</span><span id="acc-email" style="font-weight:600;word-break:break-all">—</span></div>
+        <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px"><span style="color:var(--text3)">ERP roli (faqat o'qish)</span><span id="acc-role" style="font-weight:600" aria-readonly="true">—</span></div>
+      </div>
+
+      <!-- Password change (active) -->
+      <div style="border-top:1px solid var(--gray-border);padding-top:14px">
+        <div style="font-weight:700;font-size:13px;margin-bottom:4px">Parolni o'zgartirish</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Yangi parol kamida 8 belgi. Joriy parol tasdiqlash uchun so'raladi.</div>
+        <label class="form-label" for="acc-cur-pw" style="font-size:12px;color:var(--text3)">Joriy parol</label>
+        <input class="form-input" type="password" id="acc-cur-pw" autocomplete="current-password" style="margin-bottom:8px">
+        <label class="form-label" for="acc-new-pw" style="font-size:12px;color:var(--text3)">Yangi parol</label>
+        <input class="form-input" type="password" id="acc-new-pw" autocomplete="new-password" style="margin-bottom:8px">
+        <label class="form-label" for="acc-new-pw2" style="font-size:12px;color:var(--text3)">Yangi parolni takrorlang</label>
+        <input class="form-input" type="password" id="acc-new-pw2" autocomplete="new-password" style="margin-bottom:10px">
+        <button class="btn btn-primary" id="acc-pw-btn" onclick="accChangePassword()">Parolni yangilash</button>
+        <div id="acc-pw-msg" style="display:none;margin-top:8px;font-size:12px"></div>
+      </div>
+
+      <!-- Email change (gated until Auth Dashboard config) -->
+      <div id="acc-email-section" style="border-top:1px solid var(--gray-border);padding-top:14px;margin-top:14px">
+        <div style="font-weight:700;font-size:13px;margin-bottom:10px">Login emailni o'zgartirish</div>
+        <div data-gated-note style="font-size:12px;color:var(--amber);background:var(--amber-light);border:1px solid var(--amber-border);border-radius:var(--radius-md);padding:10px 12px">
+          ⏳ Email o'zgartirish administrator Supabase sozlamalaridan keyin yoqiladi (xavfsiz ikki tomonlama tasdiqlash + email yetkazib berish). UUID, rol va tarix hech qachon o'zgarmaydi.
+        </div>
+        <div data-gated-body style="display:none">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Yangi email va joriy parolni kiriting. Tasdiqlash xati eski va yangi manzilga yuboriladi; faqat ikkalasi ham tasdiqlangach yangi email faollashadi.</div>
+          <label class="form-label" for="acc-new-email" style="font-size:12px;color:var(--text3)">Yangi email</label>
+          <input class="form-input" type="email" id="acc-new-email" autocomplete="email" style="margin-bottom:8px">
+          <label class="form-label" for="acc-email-pw" style="font-size:12px;color:var(--text3)">Joriy parol</label>
+          <input class="form-input" type="password" id="acc-email-pw" autocomplete="current-password" style="margin-bottom:10px">
+          <button class="btn btn-secondary" onclick="accRequestEmailChange()">Email o'zgartirishni so'rash</button>
+          <div id="acc-email-msg" style="display:none;margin-top:8px;font-size:12px"></div>
+        </div>
+      </div>
+
+      <!-- Other sessions (gated) + logout -->
+      <div id="acc-sessions-section" style="border-top:1px solid var(--gray-border);padding-top:14px;margin-top:14px">
+        <div data-gated-body style="display:none;margin-bottom:10px">
+          <button class="btn btn-secondary" onclick="accSignOutOthers()">Boshqa qurilmalardan chiqish</button>
+        </div>
+        <button class="btn btn-secondary" onclick="doLogout()">Bu qurilmadan chiqish</button>
+      </div>
+    </div>
   </div>
 
   <!-- OWNER -->
@@ -2602,7 +2658,7 @@
   <script src="js/db.js?v=20260814"></script>
 
   <!-- 5. Auth (login/logout) -->
-  <script src="js/auth.js?v=20260814b"></script>
+  <script src="js/auth.js?v=20261004"></script>
 
   <!-- 6. Panel modules (mustaqil, bir-biriga bog'liq emas) -->
   <script src="js/attendance_period.js?v=20260831b"></script>
@@ -2617,9 +2673,10 @@
   <script src="js/panels/bozorlik.js?v=20260807"></script>
   <script src="js/panels/dizayner.js?v=20261003"></script>
   <script src="js/panels/uvdtf.js?v=20260803"></script>
+  <script src="js/panels/account.js?v=20261004"></script>
 
   <!-- 7. App controller (oxirida) -->
-  <script src="js/app.js?v=20260803"></script>
+  <script src="js/app.js?v=20261004"></script>
   <!-- 8. Per-user nav/calc ordering (app.js dan keyin: currentUser, sb kerak) -->
   <script src="js/nav_prefs.js?v=20260811"></script>
 </body>

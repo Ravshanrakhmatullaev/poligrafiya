@@ -119,7 +119,7 @@ async function performLoginSetup(){
 
   // Hammani ko'rsat
   ['nb-owner','nb-admin','nb-ishlab','nb-dizayner','nb-dashboard','nb-davomat','nb-tarix',
-   'nb-xabarlar','nb-sklad','nb-kalk','nb-bozorlik','nb-stopwatch','nb-foiz','nb-uvdtf'].forEach(id => {
+   'nb-xabarlar','nb-sklad','nb-kalk','nb-bozorlik','nb-stopwatch','nb-foiz','nb-uvdtf','nb-account'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.classList.remove('hidden');
   });
