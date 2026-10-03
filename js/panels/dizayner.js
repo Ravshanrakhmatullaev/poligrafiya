@@ -7,7 +7,7 @@
 let dizTimers      = {};
 let swRowIntervals = {};
 let hiddenSections = {};
-let dizD = null, prD = null, adD = null, uvD = null, ekoD = null;
+let dizD = null, prD = null, adD = null, uvD = null, ekoD = null, plkD = null, kpkD = null;
 let swMain = { running: false, elapsed: 0, startTime: null };
 let swMainInterval = null;
 
@@ -438,10 +438,50 @@ function renderIshlab(){
   });
   document.getElementById('eko-grand').textContent=fmt(et)+" so'm";
 
-  const grand=pt+ut+et;
+  // Plotter kesish + Konturniy pechat+kesish — maydon (kv.m) bo'yicha ishchi to'lovi.
+  const plt = renderAreaWork('plotter-rows', plkD, calcPlotterKesish, '#06B6D4', 'plkD', 'delPlk');
+  const pgEl = document.getElementById('plotter-grand'); if(pgEl) pgEl.textContent = fmt(plt)+" so'm";
+  const kpt = renderAreaWork('kontur-rows', kpkD, calcKonturPechatKesish, '#EC4899', 'kpkD', 'delKpk');
+  const kgEl = document.getElementById('kontur-grand'); if(kgEl) kgEl.textContent = fmt(kpt)+" so'm";
+
+  const grand=pt+ut+et+plt+kpt;
   document.getElementById('ishlab-grand').textContent=fmt(grand)+" so'm";
   document.getElementById('ishlab-sum').textContent=fmt(grand)+" so'm";
   document.getElementById('ishlab-total-show').textContent=fmt(grand)+" so'm";
+}
+
+// Maydon-tarifli ishchi to'lovi qatorlari (plotter/kontur uchun UMUMIY render).
+// calcFn(kv) -> {ok, area, rate, payment, minApplied}. Jami to'lovni qaytaradi.
+// Qiymatlar faqat attribute value sifatida (escaped) chiqadi — HTML injeksiya yo'q.
+function renderAreaWork(containerId, arr, calcFn, accent, arrName, delName){
+  const el = document.getElementById(containerId); if(!el) return 0;
+  el.innerHTML = ''; let total = 0;
+  const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  (arr||[]).forEach((r,i)=>{
+    const kv = parseFloat(r.kv)||0;
+    const c = calcFn(kv); if(c.ok) total += c.payment;
+    const div = document.createElement('div'); div.className = 'ui';
+    div.style.cssText = 'border-radius:var(--radius-md);padding:10px;margin-bottom:6px;background:'+accent+'14;border:1px solid '+accent+'44';
+    div.innerHTML = `<div style="display:grid;grid-template-columns:1fr 80px auto;gap:5px;align-items:center;margin-bottom:4px">
+      <input type="text" placeholder="Ish nomi..." value="${esc(r.nom)}" oninput="${arrName}[${i}].nom=this.value" style="font-size:12px">
+      <input type="text" inputmode="decimal" placeholder="Kv.m" value="${esc(r.kv)}" style="text-align:center;font-size:12px" id="${containerId}-kv${i}">
+      <div style="display:flex;gap:4px;align-items:center;justify-content:flex-end">
+        ${c.ok?`<span class="badge" style="background:${accent}22;color:${accent};border:1px solid ${accent}55;font-size:11px;white-space:nowrap">${fmt(c.payment)} so'm</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
+        ${delIcon(`${delName}(${i})`)}
+      </div>
+    </div>
+    ${c.ok?`<div class="ures" style="border-color:${accent}55">
+      <span class="badge" style="background:${accent}22;color:${accent};border:1px solid ${accent}55">${c.area} kv.m</span>
+      <span style="font-size:11px;color:var(--text3)">×</span>
+      <span class="badge bw">${fmt(c.rate)} so'm/kv.m</span>
+      <span style="font-size:11px;color:var(--text3)">=</span>
+      <span class="badge bo">${fmt(c.payment)} so'm</span>
+      ${c.minApplied?`<span class="badge" style="background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border)">⬆ min 20 000</span>`:''}
+    </div>`:''}`;
+    el.appendChild(div);
+    numInput(div.querySelector(`#${containerId}-kv${i}`), v=>{ arr[i].kv = v; renderIshlab(); });
+  });
+  return total;
 }
 
 function buildAdminMsg(){
