@@ -23,7 +23,7 @@
 //   SUPABASE_SERVICE_ROLE_KEY=<temp service-role key>
 //   DATABASE_URL=postgres://postgres:<pw>@db.<temp-ref>.supabase.co:5432/postgres
 //
-// Install deps once in this folder's package context:  npm i pg @supabase/supabase-js
+// Install deps once in this folder's package context:  npm ci --ignore-scripts
 // ════════════════════════════════════════════════════════════════════════
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -53,9 +53,9 @@ console.log(`== target accepted: temporary project ref ${target.ref} ==`);
 // ── deps (clear message if absent) ─────────────────────────────────────────
 let Pg, createClient;
 try { ({ default: Pg } = await import('pg')); }
-catch { console.error('MISSING DEP: run `npm i pg @supabase/supabase-js` in supabase/auth_self_service'); process.exit(2); }
+catch { console.error('MISSING DEP: run `npm ci --ignore-scripts` in supabase/auth_self_service'); process.exit(2); }
 try { ({ createClient } = await import('@supabase/supabase-js')); }
-catch { console.error('MISSING DEP: run `npm i pg @supabase/supabase-js` in supabase/auth_self_service'); process.exit(2); }
+catch { console.error('MISSING DEP: run `npm ci --ignore-scripts` in supabase/auth_self_service'); process.exit(2); }
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const ANON = process.env.SUPABASE_ANON_KEY;

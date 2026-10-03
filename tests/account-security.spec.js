@@ -22,6 +22,8 @@ test.describe('Account self-service security', () => {
       'supabase/auth_self_service/validate_lib.test.mjs',
       'supabase/auth_self_service/validate_auth_self_service.mjs',
       'supabase/auth_self_service/run-validation.ps1',
+      'supabase/auth_self_service/run-validation.test.mjs',
+      'supabase/auth_self_service/package.json',
       'docs/auth-self-service-runbook.md',
       'js/panels/account.js',
     ];
