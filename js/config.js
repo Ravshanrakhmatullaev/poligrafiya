@@ -103,6 +103,10 @@ const USER_ID_TO_EMAIL = {
   '9d23bc5f-1489-4400-b35f-899b99f0f3d2': 'ra.ravshan1998+ulugbekdesign@gmail.com',
   '9333ea8d-06c4-44c4-8e92-54d9f915b250': 'ra.ravshan1998+begzodbek@gmail.com',
   'e3e134df-7d35-4b63-8fb7-6fef9a9598ac': 'ra.ravshan1998+gaybulloh@gmail.com',
+  // Oybek — yangi ishlab chiqarish xodimi. Haqiqiy Supabase Auth UUID (Owner
+  // tomonidan production'da yaratilgan). Rol ERP'da crm_profiles.role='production'
+  // -> 'ishlab' orqali keladi; bu yerda admin/owner huquqi berilmaydi.
+  '940769f7-89d5-4a95-a067-fd3a44e8200b': 'ra.ravshan1998+oybek@gmail.com',
   'a8b50ac0-79f9-4af5-8598-ef84f026fe7a': 'adsuzuvdtf@gmail.com',
 };
 
