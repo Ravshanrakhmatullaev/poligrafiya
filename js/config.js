@@ -66,11 +66,19 @@ const XODIMLAR = {
   'ra.ravshan1998+umidjon@gmail.com':      'Umidjon',
   'ra.ravshan1998+ulugbek@gmail.com':      'Ulugbek',
   'ra.ravshan1998+zuhriddin@gmail.com':    'Zuhriddin',
-  'ra.ravshan1998+jorabek@gmail.com':      'Jorabek',
+  // Display-name o'zgarishi: bu xodim endi "Ulugbek (Ishlab chiqarish)" sifatida
+  // ko'rsatiladi. Auth email/UUID (+jorabek, USER_ID_TO_EMAIL dagi 5dab55ac...) va
+  // barcha tarixiy yozuvlar O'ZGARMAYDI — identity uzluksizligi saqlanadi. Bu
+  // mavjud 'Ulugbek' (+ulugbek) va 'Ulugbek (Dizayner)' (+ulugbekdesign)dan BOSHQA shaxs.
+  'ra.ravshan1998+jorabek@gmail.com':      'Ulugbek (Ishlab chiqarish)',
   'ra.ravshan1998+rashidulloh@gmail.com':  'Rashidulloh',
   'ra.ravshan1998+ulugbekdesign@gmail.com':'Ulugbek (Dizayner)',
   'ra.ravshan1998+begzodbek@gmail.com':    'Begzodbek',
   'ra.ravshan1998+gaybulloh@gmail.com':    'Gaybulloh',
+  // Yangi ishlab chiqarish xodimi. Display-name (email-kalit) shu yerda; Supabase
+  // Auth user + crm_profiles(role=production) + USER_ID_TO_EMAIL (haqiqiy UUID bilan)
+  // alohida privileged provisioning qadamida qo'shiladi (runbook; bu branchda bajarilMAYDI).
+  'ra.ravshan1998+oybek@gmail.com':        'Oybek',
   'adsuzuvdtf@gmail.com':                  'UV DTF Sherik',
 };
 
