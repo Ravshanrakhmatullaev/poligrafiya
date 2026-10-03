@@ -9,7 +9,14 @@ const rows = [
   { id:'r5', user_id:'p2', branch_id:'b1', sana:'2026-08-27', check_in:'2026-08-27T04:00:00Z', check_out:'2026-08-27T12:00:00Z', status:'checked_out', late_minutes:0, worked_minutes:480 },
 ];
 
+// Determinizm: "previous_week" UI presetlari jonli tizim soatiga bog'liq bo'lmasligi
+// uchun sanani muzlatamiz (faqat test; Davomat/product kodiga tegilmaydi).
+// 2026-08-31T07:00:00Z = 2026-08-31 12:00 Asia/Tashkent (dushanba) -> previous_week = 2026-08-24..29.
+// setFixedTime faqat Date.now()/new Date()ni muzlatadi, timerlar ishlashda davom etadi.
+const DV_FIXED_NOW = new Date('2026-08-31T07:00:00Z');
+
 async function openList(page, customRows = rows) {
+  await page.clock.setFixedTime(DV_FIXED_NOW);
   await page.goto('/');
   await page.evaluate(data => {
     currentUser = { id:'manager-1', email:'manager@example.com' };
