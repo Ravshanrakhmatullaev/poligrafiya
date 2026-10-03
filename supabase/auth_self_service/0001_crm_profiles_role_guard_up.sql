@@ -19,7 +19,7 @@
 -- their existing privileges, so owner/admin role maintenance still works.
 --
 -- Additive, idempotent, no CASCADE, isolated to crm_profiles. NOT auto-applied.
--- Validate on a TEMPORARY project first (see validate_auth_self_service.sh).
+-- Validate on a TEMPORARY project first (see validate_auth_self_service.mjs).
 -- Rollback: 0001_crm_profiles_role_guard_down.sql
 -- ════════════════════════════════════════════════════════════════════════
 
@@ -35,11 +35,13 @@ create policy "crm_profiles_update" on public.crm_profiles
   using (auth.uid() = id)
   with check (auth.uid() = id);
 
--- 2) Least-privilege column grants for employees. Remove broad UPDATE, then grant
---    ONLY the safe self-service columns. id/role (and created_at) are intentionally
---    NOT granted → an authenticated UPDATE touching them is denied at column level.
-revoke update on public.crm_profiles from authenticated;
-revoke update on public.crm_profiles from anon;      -- anon never updates
+-- 2) Least-privilege column grants for employees. Remove broad UPDATE from EVERY
+--    grantee (public, anon, authenticated), then grant ONLY the safe self-service
+--    columns back to authenticated. id/role (and created_at) are intentionally NOT
+--    granted → an authenticated UPDATE touching them is denied at the column level.
+revoke update on public.crm_profiles from public;        -- PUBLIC pseudo-role (defensive)
+revoke update on public.crm_profiles from anon;          -- anon never updates
+revoke update on public.crm_profiles from authenticated; -- drop broad table-wide UPDATE
 grant  update (full_name, telegram_id, phone) on public.crm_profiles to authenticated;
 
 -- 3) Ensure employees can still read their own row / directors read all (unchanged).

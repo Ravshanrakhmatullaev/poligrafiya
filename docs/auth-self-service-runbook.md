@@ -9,7 +9,7 @@ half-enabled is shipped.
 Automation here has **no privileged Supabase access** (publishable key only; no
 service-role, no CLI, no staging). So the steps below are owner-executed, and the
 corrected migrations **must pass temporary-project runtime validation before any
-production apply** (`supabase/auth_self_service/validate_auth_self_service.sh`).
+production apply** (`supabase/auth_self_service/validate_auth_self_service.mjs`).
 
 ## 0. CRITICAL — security fix (apply after temp validation)
 Pre-existing live vuln: `crm_profiles_update` used `using(auth.uid()=id)` with no
@@ -22,26 +22,42 @@ the column level, while `service_role`/`postgres` (SQL Editor) keep full privile
 so **owner/admin role maintenance still works** (no `auth.uid()` dependency).
 Rollback: `0001_..._down.sql`.
 
-## 1. Identity-independence migration
-`0002_erp_employee_profile_up.sql` — additive, **email-free** UUID-keyed table
-(display name, KPI tier/target/fiks, bonus eligibility; **no login email**), explicit
-grants (revoke public/anon; director-only writes via RLS), FK `on delete restrict`
-(deleting an Auth user cannot destroy historical business config), and an UPSERT
-backfill (re-run reconciles config; never silently stale). Also creates
+## 1. Identity-independence migration — SCHEMA + SEED split
+Schema (`0002_erp_employee_profile_up.sql`) is additive, **email-free**, UUID-keyed
+(display name, KPI tier/target/fiks, bonus eligibility; **no login email**), with
+explicit grants (revoke public/anon; director-only writes via RLS), FK `on delete
+restrict` (deleting an Auth user cannot destroy historical config), and
 `get_employee_directory()` (SECURITY DEFINER, fixed search_path, authenticated-only)
-returning **only `user_id` + `display_name`** for selectors — no emails.
-Validation queries at the file bottom (count 16, bonus_50=2, no nulls/dups).
-Rollback: `0002_..._down.sql`.
+returning **only `user_id` + `display_name`**. It contains **no production UUID seed**.
+
+Production config is applied separately by `0003_erp_employee_seed_up.sql` — a single
+**transaction** that verifies **every seeded UUID already exists in `auth.users`** and
+aborts atomically if any is absent, UPSERTs the config (re-run reconciles; never
+silently stale), then validates the seeded set landed (16 rows, 2 bonus-eligible, no
+null/empty names). Rollbacks: `0002_..._down.sql` (drops schema), `0003_..._down.sql`
+(removes only the seeded rows).
 
 ## 2. Temporary-project runtime validation (REQUIRED before production)
-Run `supabase/auth_self_service/validate_auth_self_service.sh` against a **temporary**
-Supabase/Postgres project (it refuses the production project and requires
-`AUTH_SS_TEMP=1` + a non-production `DATABASE_URL`). It applies 0001+0002, creates
-temp director/production/designer/unauthorized users, and asserts: employee role/id
-change denied; safe-field change allowed; cross-user update denied; anon denied;
-service/admin role provisioning allowed; directory exposes names but no email;
-rollback clean; unrelated tables survive. Do not apply to production without this
-evidence.
+The runner is **Node (cross-platform, Windows-friendly)**:
+`supabase/auth_self_service/validate_auth_self_service.mjs`, with a PowerShell wrapper
+`run-validation.ps1`. It **fails closed**: requires `AUTH_SS_TEMP=YES`, rejects the
+production ref/hostname, and requires the `DATABASE_URL` project ref to match
+`SUPABASE_URL`. It applies the base fixture if the temp project lacks the CRM schema,
+applies **0001 + 0002** (never 0003), creates **real disposable Auth users via the
+Admin API** (captures their UUIDs; random `@example.com` emails + random passwords,
+never printed), seeds temp `crm_profiles` + `erp_employee_profile`, then asserts:
+employee cannot change own role/id/created_at; can change an approved field; cross-user
+update affects 0 rows and leaves the target unchanged; anon denied; owner/admin
+provisioning allowed; a **real authenticated REST (JWT) session** is rejected on role
+and accepted on full_name; own private row selectable, another's KPI/bonus not; directory
+returns UUID+name only with no email; anon directory denied; employee write denied,
+director write allowed; rollback drops only feature objects while `crm_profiles`/
+`crm_contacts` (and its row) survive. It deletes **only the users it created**, and
+exits 0 only if **zero** checks failed. Guard/assertion unit tests (no credentials):
+`node supabase/auth_self_service/validate_lib.test.mjs`.
+
+**Do not apply 0001/0002/0003 to production until this runner has executed against a
+temporary project with zero failures and exit code 0.**
 
 ## 3. Supabase Auth Dashboard (before activating email/recovery)
 Site URL `https://ravshanrakhmatullaev.github.io/poligrafiya/`; redirect allow-list =
