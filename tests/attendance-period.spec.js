@@ -20,6 +20,10 @@ test('Davomat query supports non-destructive date bounds', () => {
 });
 
 test('signed-in period toolbar works on desktop and 390px', async ({ page }) => {
+  // Determinizm: "previous_week" presetini jonli tizim soatiga bog'lamaymiz.
+  // 2026-08-31T07:00:00Z = 2026-08-31 12:00 Asia/Tashkent (dushanba) -> previous_week = 2026-08-24..29.
+  // setFixedTime faqat Date ni muzlatadi (timerlar ishlaydi); product kodga tegilmaydi.
+  await page.clock.setFixedTime(new Date('2026-08-31T07:00:00Z'));
   await page.goto('/');
   await page.evaluate(() => {
     currentUser = { id: 'manager-1', email: 'manager@example.com' };
