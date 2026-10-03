@@ -415,6 +415,67 @@ function calcUv(sig, don){
 function ekoNarx(kv){ if(kv<=10)return 5000; if(kv<=50)return 4000; if(kv<=100)return 3700; return 3500; }
 function calcEko(kv){ if(!kv||kv<=0)return{narx:0,jami:0}; const narx=ekoNarx(kv); return{narx,jami:Math.round(kv*narx)}; }
 
+// ── ISHLAB CHIQARISH: Plotter kesish & Konturniy pechat+kesish ishchi to'lovi ──
+// YAGONA MANBA (tariflar faqat shu yerda). Bu ISHCHI TO'LOVI — mijoz PRICE
+// katalogi EMAS. Tarif BUTUN ishning umumiy maydoni bo'yicha tanlanadi
+// (progressiv soliq EMAS): payment = umumiy_maydon_m² × tanlangan_tarif.
+// Maydon musbat o'nlik m² bo'lishi shart; 0/manfiy/bo'sh/NaN rad etiladi.
+const PLOTTER_KESISH_TIERS = [       // [min<=, max>, so'm/m²]  (butun ish maydoni)
+  [0, 10, 10000],                    // 0 < m² < 10
+  [10, 20, 8000],                    // 10 <= m² < 20
+  [20, Infinity, 7000],              // 20 <= m²
+];
+// Konturniy: fayl tayyorlash + pechat + plotter kesish — HAMMASI bitta to'lov.
+const KONTUR_PK_TIERS = [
+  [0, 10, 20000],                    // 0 < m² < 10
+  [10, 20, 15000],                   // 10 <= m² < 20
+  [20, 40, 12000],                   // 20 <= m² < 40
+  [40, Infinity, 10000],             // 40 <= m² (100+ ham)
+];
+const KONTUR_PK_MIN = 20000;         // 1 m² dan kichik ish uchun minimal umumiy to'lov
+
+// Musbat o'nlik maydonni ajratib oladi; noto'g'ri bo'lsa null.
+function parsePositiveArea(v){
+  if(v === '' || v === null || v === undefined) return null;
+  const n = (typeof v === 'number') ? v : parseFloat(String(v).replace(',', '.'));
+  if(!isFinite(n) || isNaN(n) || n <= 0) return null;
+  return n;
+}
+// Butun ish maydoni bo'yicha tarifni tanlaydi (bir marta, progressiv emas).
+function areaTierRate(tiers, area){
+  for(const t of tiers){ if(area >= t[0] && area < t[1]) return t[2]; }
+  return tiers[tiers.length-1][2];
+}
+// cm×cm×soni -> m² (agar UI santimetr qabul qilsa). cm/m chalkashligi oldini oladi.
+function areaFromCm(widthCm, heightCm, qty){
+  const w = parseFloat(widthCm)||0, h = parseFloat(heightCm)||0, q = parseInt(qty)||0;
+  if(w <= 0 || h <= 0 || q <= 0) return 0;
+  return (w * h * q) / 10000;
+}
+// Plotter kesish — minimal qoida YO'Q (haqiqiy musbat maydon).
+function calcPlotterKesish(areaInput){
+  const area = parsePositiveArea(areaInput);
+  if(area === null) return { ok:false, error:'invalid_area', area:0, rate:0, payment:0 };
+  const rate = areaTierRate(PLOTTER_KESISH_TIERS, area);
+  return { ok:true, workType:'plotter_kesish', area, rate, payment: Math.round(area * rate), minApplied:false };
+}
+// Konturniy pechat+kesish — 1 m² dan kichik ishda minimal 20 000 so'm.
+function calcKonturPechatKesish(areaInput){
+  const area = parsePositiveArea(areaInput);
+  if(area === null) return { ok:false, error:'invalid_area', area:0, rate:0, payment:0 };
+  const rate = areaTierRate(KONTUR_PK_TIERS, area);
+  const raw = Math.round(area * rate);
+  const payment = (area < 1) ? Math.max(raw, KONTUR_PK_MIN) : raw;
+  return { ok:true, workType:'kontur_pechat_kesish', area, rate, rawPayment: raw, payment, minApplied: payment !== raw };
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Object.assign(module.exports || {}, {
+    calcPlotterKesish, calcKonturPechatKesish, areaFromCm, areaTierRate, parsePositiveArea,
+    PLOTTER_KESISH_TIERS, KONTUR_PK_TIERS, KONTUR_PK_MIN,
+  });
+}
+
 function gUN(key,m){ const p=PR[key]; if(!p||m<=0)return 0; if(p.fixed) return p.fixed; for(const[lo,hi,n]of p.t)if(m>=lo&&m<=hi)return n; return p.t[p.t.length-1][2]; }
 
 // ── Clipboard ──
