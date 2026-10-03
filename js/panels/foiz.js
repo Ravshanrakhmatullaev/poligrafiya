@@ -21,6 +21,8 @@ function initIshlabPanel(){
   if(prD===null) prD=[{key:'Futbolka DTF (old)',miq:'',brak:'',ex:false}];
   if(uvD===null) uvD=[{nom:'',sig:'',don:''}];
   if(ekoD===null) ekoD=[{nom:'',kv:''}];
+  if(plkD===null) plkD=[{nom:'',kv:''}];
+  if(kpkD===null) kpkD=[{nom:'',kv:''}];
   loadHiddenSections();
   renderIshlab();
   // CRM bog'lanishlar — alohida, tarmoq so'rovi kerak, qolgan panelni bloklamaydi.
@@ -84,6 +86,10 @@ function delUv(i){uvD.splice(i,1);renderIshlab();}
 function addEkoRow(){ekoD.push({nom:'',kv:'',brak:''});renderIshlab();}
 function delEko(i){ekoD.splice(i,1);renderIshlab();}
 function addProdRow(){prD.push({key:Object.keys(PR)[0],miq:'',ex:false});renderIshlab();}
+function addPlkRow(){plkD.push({nom:'',kv:''});renderIshlab();}
+function delPlk(i){plkD.splice(i,1);renderIshlab();}
+function addKpkRow(){kpkD.push({nom:'',kv:''});renderIshlab();}
+function delKpk(i){kpkD.splice(i,1);renderIshlab();}
 function delProd(i){prD.splice(i,1);renderIshlab();}
 function addAdminRow(){if(!Array.isArray(adD))adD=[];adD.push({nom:'',sum:'',bonus_50:false});renderAdmin();}
 function delAdmin(i){adD.splice(i,1);renderAdmin();}

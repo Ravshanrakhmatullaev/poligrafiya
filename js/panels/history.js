@@ -397,7 +397,15 @@ function renderHistoryCards(list, searchQuery=''){
         const{jami}=calcEko(parseFloat(r.kv));
         return {name:'Eko: '+(r.nom||'mahsulot'), qty:r.kv+' kv.m', brak:'', price:fmt(jami)+" so'm"};
       });
-      items = [...prod,...uv,...eko];
+      const plk = (d.plkRows||[]).filter(r=>parseFloat(r.kv)>0).map(r=>{
+        const c=calcPlotterKesish(parseFloat(r.kv));
+        return {name:'Plotter kesish: '+(r.nom||'ish'), qty:r.kv+' kv.m', brak:'', price:fmt(c.payment)+" so'm"};
+      });
+      const kpk = (d.kpkRows||[]).filter(r=>parseFloat(r.kv)>0).map(r=>{
+        const c=calcKonturPechatKesish(parseFloat(r.kv));
+        return {name:'Konturniy pechat+kesish: '+(r.nom||'ish'), qty:r.kv+' kv.m', brak:'', price:fmt(c.payment)+" so'm"};
+      });
+      items = [...prod,...uv,...eko,...plk,...kpk];
     } else if(isDiz && d.rows) {
       items = d.rows.filter(r=>r.nom||(parseInt(r.sum)||0)).map(r=>({
         name:r.nom||'—', qty:'—', brak:'', price:fmt(parseInt(r.sum)||0)+" so'm"
@@ -633,6 +641,8 @@ async function saveEditedHistory(){
     (d.prodRows||[]).forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m); total_jami+=m*np; });
     (d.uvRows||[]).forEach(r=>{ const{jami}=calcUv(parseInt(r.sig),parseInt(r.don)); total_jami+=jami; });
     (d.ekoRows||[]).forEach(r=>{ const{jami}=calcEko(parseFloat(r.kv)); total_jami+=jami; });
+    (d.plkRows||[]).forEach(r=>{ total_jami += calcPlotterKesish(parseFloat(r.kv)).payment; });
+    (d.kpkRows||[]).forEach(r=>{ total_jami += calcKonturPechatKesish(parseFloat(r.kv)).payment; });
   } else if(h.type === 'dizayner'){
     (d.rows||[]).forEach(r=>{ total_jami+=parseInt(r.summa)||0; });
   }
@@ -1188,6 +1198,14 @@ async function copyWeekly(type){
         totalJ+=jami;
         lines2.push('  Eko: '+(r.nom||'mahsulot')+': '+r.kv+' kv.m = '+fmt(jami)+" so'm");
       });
+      (h.data.plkRows||[]).filter(r=>parseFloat(r.kv)>0).forEach(r => {
+        const c=calcPlotterKesish(parseFloat(r.kv)); totalJ+=c.payment;
+        lines2.push('  Plotter kesish: '+(r.nom||'ish')+': '+r.kv+' kv.m = '+fmt(c.payment)+" so'm");
+      });
+      (h.data.kpkRows||[]).filter(r=>parseFloat(r.kv)>0).forEach(r => {
+        const c=calcKonturPechatKesish(parseFloat(r.kv)); totalJ+=c.payment;
+        lines2.push('  Konturniy pechat+kesish: '+(r.nom||'ish')+': '+r.kv+' kv.m = '+fmt(c.payment)+" so'm");
+      });
       lines2.push('');
     });
     lines2.push('Jami: '+fmt(totalJ)+" so'm");
@@ -1261,7 +1279,12 @@ async function saveOnly(type){
       const prodRows = prD.filter(r=>parseInt(r.miq)>0);
       const uvRows   = uvD.filter(r=>parseInt(r.sig)>0&&parseInt(r.don)>0);
       const ekoRows  = ekoD.filter(r=>parseFloat(r.kv)>0);
-      if(!prodRows.length&&!uvRows.length&&!ekoRows.length){
+      // Plotter kesish / Konturniy pechat+kesish — maydon (kv.m) bo'yicha ishchi to'lovi.
+      // Strukturaviy audit uchun hisoblangan rate/payment ham saqlanadi; jami esa
+      // har doim kv dan qayta hisoblanadi (yagona manba: utils.js engine).
+      const plkRows = (plkD||[]).filter(r=>parseFloat(r.kv)>0).map(r=>{ const c=calcPlotterKesish(parseFloat(r.kv)); return { nom:r.nom||'', kv:parseFloat(r.kv), rate:c.rate, payment:c.payment }; });
+      const kpkRows = (kpkD||[]).filter(r=>parseFloat(r.kv)>0).map(r=>{ const c=calcKonturPechatKesish(parseFloat(r.kv)); return { nom:r.nom||'', kv:parseFloat(r.kv), rate:c.rate, payment:c.payment, minApplied:c.minApplied }; });
+      if(!prodRows.length&&!uvRows.length&&!ekoRows.length&&!plkRows.length&&!kpkRows.length){
         caughtError = Object.assign(new Error('Hech narsa kiritilmagan'), { erpKind: 'validation' });
         showNotify('Hech narsa kiritilmagan');
         return;
@@ -1269,8 +1292,10 @@ async function saveOnly(type){
       prodRows.forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m)+(r.ex&&PR[r.key]&&PR[r.key].extra?200:0); totalJami+=m*np; });
       uvRows.forEach(r=>{ const {jami}=calcUv(parseInt(r.sig),parseInt(r.don)); totalJami+=jami; });
       ekoRows.forEach(r=>{ const {jami}=calcEko(parseFloat(r.kv)); totalJami+=jami; });
+      plkRows.forEach(r=>{ totalJami += calcPlotterKesish(r.kv).payment; });          // bitta kombinatsiyalangan to'lov; takror yo'q
+      kpkRows.forEach(r=>{ totalJami += calcKonturPechatKesish(r.kv).payment; });
       const brakRows = prodRows.filter(r=>parseInt(r.brak)>0);
-      data = { prodRows, uvRows, ekoRows, brakRows };
+      data = { prodRows, uvRows, ekoRows, plkRows, kpkRows, brakRows };
     }
 
     const sanaVaqt = getSanaVaqt();
@@ -1309,6 +1334,8 @@ async function saveOnly(type){
       prD = [{key:'Futbolka DTF (old)',miq:'',brak:'',ex:false}];
       uvD = [{nom:'',sig:'',don:''}];
       ekoD = [{nom:'',kv:''}];
+      plkD = [{nom:'',kv:''}];
+      kpkD = [{nom:'',kv:''}];
       renderIshlab();
     }
     outcome = 'success';

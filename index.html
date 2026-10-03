@@ -642,6 +642,76 @@
       </div>
     </div>
 
+    <!-- Plotter / Kontur — doimiy xavfsizlik ogohlantirishi (statik matn, injeksiya yo'q) -->
+    <div id="plotter-kontur-warning" style="margin-top:10px;padding:12px 14px;border-radius:var(--radius-md);background:var(--amber-light);border:1px solid var(--amber-border)">
+      <div style="font-weight:700;color:var(--amber);font-size:13px;margin-bottom:6px">⚠️ Diqqat — plotter / kesish ishlari</div>
+      <ul style="margin:0;padding-left:18px;font-size:12px;color:var(--text);line-height:1.6">
+        <li>Diqqat! Kesishdan oldin albatta test qilib ko‘ring. Noto‘g‘ri sozlama materialning yaxshi kesilmasligi yoki ortiqcha kesilib, brak bo‘lishiga olib kelishi mumkin.</li>
+        <li>Diqqat! Fayl o‘lchami berilgan materialdan katta emasligini va plotter materialni mahkam ushlab turishi uchun yetarli joy qolganini tekshiring. Shundan keyingina to‘liq faylni kesishga yuboring.</li>
+        <li>Diqqat! Ishni boshlashdan oldin fayldagi harflar va konturlarda uzilishlar, sinishlar yoki ustma-ust tushgan chiziqlar yo‘qligiga amin bo‘ling.</li>
+      </ul>
+    </div>
+
+    <!-- Plotter kesish -->
+    <div class="ish-card" id="card-plotter" style="--ish-accent:#06B6D4">
+      <div class="ish-card-header">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="ish-icon" style="background:rgba(6,182,212,.12)">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#06B6D4" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+          </div>
+          <span class="ish-card-title" style="color:#06B6D4">Plotter kesish</span>
+        </div>
+      </div>
+      <div class="ish-price-info" style="border-color:rgba(6,182,212,.25);background:rgba(6,182,212,.06)">
+        &lt;10 kv.m: <strong style="color:#06B6D4">10 000</strong> &nbsp;·&nbsp;
+        10–20 kv.m: <strong style="color:#06B6D4">8 000</strong> &nbsp;·&nbsp;
+        20+ kv.m: <strong style="color:#06B6D4">7 000</strong> so'm/kv.m &nbsp;·&nbsp; tarif butun ish maydoni bo'yicha
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 80px auto;gap:5px;font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:0 2px 6px">
+        <div>Ish nomi</div><div style="text-align:center">Kv.metr</div><div style="text-align:right">To'lov</div>
+      </div>
+      <div id="plotter-rows"></div>
+      <button class="ish-add-btn" style="border-color:rgba(6,182,212,.3);color:#06B6D4" onclick="addPlkRow()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Plotter kesish qo'shish
+      </button>
+      <div class="ish-total-bar" style="border-color:rgba(6,182,212,.2)">
+        <span>Plotter kesish jami</span>
+        <span id="plotter-grand" style="color:#06B6D4;font-size:16px;font-weight:700">0 so'm</span>
+      </div>
+    </div>
+
+    <!-- Konturniy pechat + kesish (birlashtirilgan ish) -->
+    <div class="ish-card" id="card-kontur" style="--ish-accent:#EC4899">
+      <div class="ish-card-header">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="ish-icon" style="background:rgba(236,72,153,.12)">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#EC4899" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          </div>
+          <span class="ish-card-title" style="color:#EC4899">Konturniy pechat + kesish</span>
+        </div>
+      </div>
+      <div class="ish-price-info" style="border-color:rgba(236,72,153,.25);background:rgba(236,72,153,.06)">
+        Tayyorlash + pechat + plotter kesish — <strong style="color:#EC4899">bitta to'lov</strong>. &nbsp;
+        &lt;10 kv.m: <strong style="color:#EC4899">20 000</strong> (min 20 000) &nbsp;·&nbsp;
+        10–20: <strong style="color:#EC4899">15 000</strong> &nbsp;·&nbsp;
+        20–40: <strong style="color:#EC4899">12 000</strong> &nbsp;·&nbsp;
+        40+: <strong style="color:#EC4899">10 000</strong> so'm/kv.m
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 80px auto;gap:5px;font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:0 2px 6px">
+        <div>Ish nomi</div><div style="text-align:center">Kv.metr</div><div style="text-align:right">To'lov</div>
+      </div>
+      <div id="kontur-rows"></div>
+      <button class="ish-add-btn" style="border-color:rgba(236,72,153,.3);color:#EC4899" onclick="addKpkRow()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Konturniy pechat + kesish qo'shish
+      </button>
+      <div class="ish-total-bar" style="border-color:rgba(236,72,153,.2)">
+        <span>Konturniy jami</span>
+        <span id="kontur-grand" style="color:#EC4899;font-size:16px;font-weight:700">0 so'm</span>
+      </div>
+    </div>
+
     <!-- Yashirilgan bo'limlar -->
     <div id="hidden-sections-bar" class="hidden" style="margin-top:8px;padding:10px 14px;background:var(--gray-light);border-radius:var(--radius-md);border:1px dashed var(--gray-border);font-size:12px;color:var(--text3)">
       <span>Yashirilgan bo'limlar: </span><span id="hidden-sections-list"></span>
@@ -2523,10 +2593,10 @@
   
   <!-- Cache-busting: har deployda ?v= ni yangilang (brauzer eski JS ni keshdan bermasligi uchun) -->
   <!-- 2. Config (constants) -->
-  <script src="js/config.js?v=20260803"></script>
+  <script src="js/config.js?v=20261004"></script>
 
   <!-- 3. Utils (fmt, showNotify, hisoblash) -->
-  <script src="js/utils.js?v=20260807"></script>
+  <script src="js/utils.js?v=20261003"></script>
 
   <!-- 4. DB (Supabase client + AppStore) -->
   <script src="js/db.js?v=20260814"></script>
@@ -2537,15 +2607,15 @@
   <!-- 6. Panel modules (mustaqil, bir-biriga bog'liq emas) -->
   <script src="js/attendance_period.js?v=20260831b"></script>
   <script src="js/panels/davomat.js?v=20260831c"></script>
-  <script src="js/panels/foiz.js?v=20260803"></script>
+  <script src="js/panels/foiz.js?v=20261003"></script>
   <script src="js/panels/xabar.js?v=20260803"></script>
-  <script src="js/panels/history.js?v=20260814"></script>
+  <script src="js/panels/history.js?v=20261003"></script>
   <script src="js/panels/dashboard.js?v=20260805"></script>
   <script src="js/panels/sklad.js?v=20260803"></script>
   <script src="js/panels/kalk_engines.js?v=20260813"></script>
   <script src="js/panels/kalk.js?v=20260813"></script>
   <script src="js/panels/bozorlik.js?v=20260807"></script>
-  <script src="js/panels/dizayner.js?v=20260814"></script>
+  <script src="js/panels/dizayner.js?v=20261003"></script>
   <script src="js/panels/uvdtf.js?v=20260803"></script>
 
   <!-- 7. App controller (oxirida) -->
