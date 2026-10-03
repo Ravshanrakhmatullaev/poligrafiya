@@ -65,4 +65,52 @@ test.describe('Ishlab chiqarish ishchi to\'lovi — plotter & kontur', () => {
     }));
     expect(src).toEqual({ plotter: 3, kontur: 4, min: 20000 });
   });
+
+  // Ishlab chiqarish UI: jonli preview + jami + doimiy ogohlantirish + save payload.
+  test('ishlab UI: plotter/kontur preview, jami, ogohlantirish va save payload', async ({ page }) => {
+    const r = await page.evaluate(() => {
+      currentUser = { id: 'ui-test', email: 'ra.ravshan1998+jorabek@gmail.com' };
+      currentRole = 'ishlab';
+      initIshlabPanel();
+      showScreen('app'); showPanel('ishlab');
+      plkD = [{ nom: 'A', kv: '9.9' }, { nom: 'B', kv: '20' }]; // 99000 + 140000 = 239000
+      kpkD = [{ nom: 'C', kv: '0.3' }, { nom: 'D', kv: '10' }]; // 20000(min) + 150000 = 170000
+      ekoD = [{ nom: '', kv: '' }]; prD = [{ key: Object.keys(PR)[0], miq: '', ex: false }]; uvD = [{ nom: '', sig: '', don: '' }];
+      renderIshlab();
+      const warn = document.getElementById('plotter-kontur-warning');
+      let captured = null; createHistoryItem = async (row) => { captured = row; return { id: 'x' }; };
+      showNotify = () => {}; loadHistory = async () => {};
+      return {
+        plotterRows: document.querySelectorAll('#plotter-rows .ui').length,
+        konturRows: document.querySelectorAll('#kontur-rows .ui').length,
+        plotterGrand: document.getElementById('plotter-grand').textContent.replace(/[^0-9]/g, ''),
+        konturGrand: document.getElementById('kontur-grand').textContent.replace(/[^0-9]/g, ''),
+        warnVisible: !!warn && getComputedStyle(warn).display !== 'none' && warn.offsetHeight > 0,
+        warnTexts: document.querySelectorAll('#plotter-kontur-warning li').length,
+        minBadge: /min 20 000/.test(document.getElementById('kontur-rows').innerHTML),
+      };
+    });
+    expect(r.plotterRows).toBe(2);
+    expect(r.konturRows).toBe(2);
+    expect(r.plotterGrand).toBe('239000');
+    expect(r.konturGrand).toBe('170000');
+    expect(r.warnVisible).toBe(true);
+    expect(r.warnTexts).toBe(3);
+    expect(r.minBadge).toBe(true);
+
+    const saved = await page.evaluate(async () => {
+      let captured = null; createHistoryItem = async (row) => { captured = row; return { id: 'x' }; };
+      showNotify = () => {}; loadHistory = async () => {};
+      plkD = [{ nom: 'A', kv: '9.9' }]; kpkD = [{ nom: 'C', kv: '0.3' }];
+      ekoD = [{ nom: '', kv: '' }]; prD = [{ key: Object.keys(PR)[0], miq: '', ex: false }]; uvD = [{ nom: '', sig: '', don: '' }];
+      renderIshlab();
+      await saveOnly('ishlab');
+      return captured && { type: captured.type, total: captured.total_jami,
+        plk: captured.data.plkRows, kpk: captured.data.kpkRows };
+    });
+    expect(saved.type).toBe('ishlab');
+    expect(saved.total).toBe(119000); // 99000 + 20000(min), no duplicate contour lines
+    expect(saved.plk).toEqual([{ nom: 'A', kv: 9.9, rate: 10000, payment: 99000 }]);
+    expect(saved.kpk).toEqual([{ nom: 'C', kv: 0.3, rate: 20000, payment: 20000, minApplied: true }]);
+  });
 });
