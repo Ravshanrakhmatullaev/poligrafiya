@@ -1,58 +1,55 @@
 -- ════════════════════════════════════════════════════════════════════════
 -- 0001 — CRITICAL SECURITY FIX: prevent crm_profiles self-escalation
+--        (least-privilege column grants; NO trigger)
 -- ════════════════════════════════════════════════════════════════════════
 -- FINDING (pre-existing, live): policy "crm_profiles_update" was
 --   for update using (auth.uid() = id)   -- NO with check, NO column guard
--- → an authenticated employee could run
---   update crm_profiles set role='director' where id = auth.uid();
--- and self-promote to director (ERP owner). This MUST be applied before any
--- self-service account feature is activated.
+-- → an authenticated employee could: update crm_profiles set role='director'
+--   where id = auth.uid();  and self-promote to director (ERP owner).
 --
--- Fix: a BEFORE UPDATE trigger that blocks changes to authorization/identity
--- columns (role, id) unless the caller is a director; and tighten the policy
--- with a WITH CHECK so a row cannot be re-pointed to another uid. full_name is
--- allowed to change by the owner of the row (display only) — unchanged behavior.
+-- WHY NOT A TRIGGER: a SECURITY DEFINER trigger gating on is_crm_director()
+-- would ALSO block legitimate SQL-Editor / service-role / postgres role
+-- maintenance (there auth.uid() is NULL → is_crm_director() = false), and a
+-- definer trigger cannot safely identify the original caller (execution identity
+-- becomes the function owner). So we use PostgreSQL least-privilege instead:
+-- revoke table-wide UPDATE from `authenticated` and grant UPDATE only on the
+-- genuinely self-editable columns. role/id are simply NOT grantable to
+-- employees, so an employee UPDATE touching role fails at the column level.
+-- `service_role` and the table owner (`postgres`, used by the SQL Editor) keep
+-- their existing privileges, so owner/admin role maintenance still works.
 --
 -- Additive, idempotent, no CASCADE, isolated to crm_profiles. NOT auto-applied.
--- Apply only with owner-authorized privileged access against the PRODUCTION
--- project (jxxmbgmbaqausqunfyna). Rollback: 0001_crm_profiles_role_guard_down.sql
+-- Validate on a TEMPORARY project first (see validate_auth_self_service.sh).
+-- Rollback: 0001_crm_profiles_role_guard_down.sql
 -- ════════════════════════════════════════════════════════════════════════
 
-create or replace function public.crm_profiles_guard_identity()
-  returns trigger
-  language plpgsql
-  security definer
-  set search_path = public
-as $$
-begin
-  -- role and id are authorization/identity fields: only a director may change them.
-  if (new.role is distinct from old.role or new.id is distinct from old.id)
-     and not public.is_crm_director() then
-    raise exception 'Not authorized to change role or identity'
-      using errcode = '42501';
-  end if;
-  return new;
-end;
-$$;
-
-revoke execute on function public.crm_profiles_guard_identity() from public;
-revoke execute on function public.crm_profiles_guard_identity() from anon;
-
+-- 0) Clean up the previously-authored definer trigger/function if a temporary
+--    environment ran the earlier draft (idempotent; safe if they don't exist).
 drop trigger if exists crm_profiles_guard_identity_trg on public.crm_profiles;
-create trigger crm_profiles_guard_identity_trg
-  before update on public.crm_profiles
-  for each row
-  execute function public.crm_profiles_guard_identity();
+drop function if exists public.crm_profiles_guard_identity();
 
--- Tighten the UPDATE policy: a user may update only their own row AND cannot
--- re-point it at another uid (WITH CHECK). Column-level role protection is the
--- trigger above (RLS WITH CHECK alone cannot compare OLD vs NEW).
+-- 1) RLS policy: own row only, both directions (cannot re-point row to another uid).
 drop policy if exists "crm_profiles_update" on public.crm_profiles;
 create policy "crm_profiles_update" on public.crm_profiles
   for update
   using (auth.uid() = id)
   with check (auth.uid() = id);
 
--- Verification (run manually after apply, as a non-director test user):
---   update crm_profiles set role='director' where id = auth.uid();  -- must FAIL (42501)
---   update crm_profiles set full_name='X'   where id = auth.uid();  -- must SUCCEED
+-- 2) Least-privilege column grants for employees. Remove broad UPDATE, then grant
+--    ONLY the safe self-service columns. id/role (and created_at) are intentionally
+--    NOT granted → an authenticated UPDATE touching them is denied at column level.
+revoke update on public.crm_profiles from authenticated;
+revoke update on public.crm_profiles from anon;      -- anon never updates
+grant  update (full_name, telegram_id, phone) on public.crm_profiles to authenticated;
+
+-- 3) Ensure employees can still read their own row / directors read all (unchanged).
+--    (SELECT policy "crm_profiles_select" from the base migration is preserved.)
+--    service_role / postgres retain their existing privileges → role maintenance OK.
+
+-- Verification (run on the temporary project, as each role):
+--   as ordinary authenticated:  update crm_profiles set role='director' where id=auth.uid();   -- DENIED (42501, column role)
+--                               update crm_profiles set id=gen_random_uuid() where id=auth.uid(); -- DENIED (column id)
+--                               update crm_profiles set full_name='X' where id=auth.uid();      -- ALLOWED
+--                               update crm_profiles set full_name='X' where id<>auth.uid();      -- 0 rows (RLS)
+--   as anon:                    any update → DENIED
+--   as service_role / postgres: update crm_profiles set role='production' where id='<uuid>';    -- ALLOWED (provisioning)
