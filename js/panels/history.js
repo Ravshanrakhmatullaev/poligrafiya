@@ -389,9 +389,10 @@ function renderHistoryCards(list, searchQuery=''){
         const np=gUN(r.key,m); const j=m*np;
         return {name:r.key, qty:m+' '+(PR[r.key]?PR[r.key].u:'dona'), brak:brak>0?brak+' brak':'', price:fmt(j)+" so'm"};
       });
-      const uv = (d.uvRows||[]).filter(r=>parseInt(r.sig)>0).map(r=>{
-        const{jami}=calcUv(parseInt(r.sig),parseInt(r.don));
-        return {name:'UV: '+(r.nom||'mahsulot'), qty:r.don+' dona', brak:'', price:fmt(jami)+" so'm"};
+      const uv = (d.uvRows||[]).filter(r=>uvRowIsList(r)?parseInt(r.list)>0:parseInt(r.sig)>0).map(r=>{
+        const c=calcUvRow(r);
+        const qty = uvRowIsList(r) ? (c.list+' list') : (r.don+' dona');
+        return {name:'UV: '+(r.nom||'mahsulot'), qty, brak:'', price:fmt(c.jami)+" so'm"};
       });
       const eko = (d.ekoRows||[]).filter(r=>parseFloat(r.kv)>0).map(r=>{
         const{jami}=calcEko(parseFloat(r.kv));
@@ -597,11 +598,20 @@ function editHistoryItem(id){
     if((editingHistoryData.uvRows||[]).length){
       html += '<div style="font-size:12px;color:var(--text3);margin:10px 0 6px">UV pechat:</div>';
       (editingHistoryData.uvRows||[]).forEach((r,i) => {
-        html += `<div style="display:grid;grid-template-columns:1fr 70px 70px;gap:8px;margin-bottom:8px">
-          <input type="text" value="${r.nom||''}" oninput="editingHistoryData.uvRows[${i}].nom=this.value" placeholder="Nomi">
-          <input type="text" inputmode="numeric" value="${r.sig||''}" oninput="editingHistoryData.uvRows[${i}].sig=this.value" placeholder="Sig'im" style="text-align:center">
-          <input type="text" inputmode="numeric" value="${r.don||''}" oninput="editingHistoryData.uvRows[${i}].don=this.value" placeholder="Dona" style="text-align:center">
-        </div>`;
+        if(uvRowIsList(r)){
+          // YANGI yozuv — list soni rejimi
+          html += `<div style="display:grid;grid-template-columns:1fr 90px;gap:8px;margin-bottom:8px">
+            <input type="text" value="${r.nom||''}" oninput="editingHistoryData.uvRows[${i}].nom=this.value" placeholder="Nomi">
+            <input type="text" inputmode="numeric" value="${r.list||''}" oninput="editingHistoryData.uvRows[${i}].list=this.value" placeholder="List soni" style="text-align:center">
+          </div>`;
+        } else {
+          // ESKI yozuv — sig'im/dona rejimi (0.2/0.5 list tariflari saqlanadi)
+          html += `<div style="display:grid;grid-template-columns:1fr 70px 70px;gap:8px;margin-bottom:8px">
+            <input type="text" value="${r.nom||''}" oninput="editingHistoryData.uvRows[${i}].nom=this.value" placeholder="Nomi">
+            <input type="text" inputmode="numeric" value="${r.sig||''}" oninput="editingHistoryData.uvRows[${i}].sig=this.value" placeholder="Sig'im" style="text-align:center">
+            <input type="text" inputmode="numeric" value="${r.don||''}" oninput="editingHistoryData.uvRows[${i}].don=this.value" placeholder="Dona" style="text-align:center">
+          </div>`;
+        }
       });
     }
   } else if(h.type === 'dizayner'){
@@ -639,7 +649,7 @@ async function saveEditedHistory(){
     (d.rows||[]).forEach(r=>{ const s=parseInt(r.sum)||0; total_zakaz+=s; const base=Math.round(s*getFoiz(s)); total_daromad+=(_editIsAbror&&r.bonus_50)?Math.round(base*1.5):base; });
   } else if(h.type === 'ishlab'){
     (d.prodRows||[]).forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m); total_jami+=m*np; });
-    (d.uvRows||[]).forEach(r=>{ const{jami}=calcUv(parseInt(r.sig),parseInt(r.don)); total_jami+=jami; });
+    (d.uvRows||[]).forEach(r=>{ const{jami}=calcUvRow(r); total_jami+=jami; });
     (d.ekoRows||[]).forEach(r=>{ const{jami}=calcEko(parseFloat(r.kv)); total_jami+=jami; });
     (d.plkRows||[]).forEach(r=>{ total_jami += calcPlotterKesish(parseFloat(r.kv)).payment; });
     (d.kpkRows||[]).forEach(r=>{ total_jami += calcKonturPechatKesish(parseFloat(r.kv)).payment; });
@@ -1188,10 +1198,11 @@ async function copyWeekly(type){
         const brakTxt = brak > 0 ? ' | BRAK: '+brak+' ta' : '';
         lines2.push('  '+(i+1)+'. '+r.key+': '+m+' '+(PR[r.key]?PR[r.key].u:'dona')+' = '+fmt(j)+" so'm"+brakTxt);
       });
-      (h.data.uvRows||[]).filter(r=>parseInt(r.sig)>0).forEach(r => {
-        const{ls,np,jami}=calcUv(parseInt(r.sig),parseInt(r.don));
+      (h.data.uvRows||[]).filter(r=>uvRowIsList(r)?parseInt(r.list)>0:parseInt(r.sig)>0).forEach(r => {
+        const c=calcUvRow(r); const jami=c.jami;
         totalJ+=jami;
-        lines2.push('  UV: '+(r.nom||'mahsulot')+': '+r.don+' dona '+ls+' list = '+fmt(jami)+" so'm");
+        const qtyStr = uvRowIsList(r) ? (c.list+' list') : (r.don+' dona '+c.ls+' list');
+        lines2.push('  UV: '+(r.nom||'mahsulot')+': '+qtyStr+' = '+fmt(jami)+" so'm");
       });
       (h.data.ekoRows||[]).filter(r=>parseFloat(r.kv)>0).forEach(r => {
         const{narx,jami}=calcEko(parseFloat(r.kv));
@@ -1277,7 +1288,7 @@ async function saveOnly(type){
       data = { rows };
     } else {
       const prodRows = prD.filter(r=>parseInt(r.miq)>0);
-      const uvRows   = uvD.filter(r=>parseInt(r.sig)>0&&parseInt(r.don)>0);
+      const uvRows   = uvD.filter(r=>parseInt(r.list)>0);
       const ekoRows  = ekoD.filter(r=>parseFloat(r.kv)>0);
       // Plotter kesish / Konturniy pechat+kesish — maydon (kv.m) bo'yicha ishchi to'lovi.
       // Strukturaviy audit uchun hisoblangan rate/payment ham saqlanadi; jami esa
@@ -1290,7 +1301,7 @@ async function saveOnly(type){
         return;
       }
       prodRows.forEach(r=>{ const m=parseInt(r.miq)||0; const np=gUN(r.key,m)+(r.ex&&PR[r.key]&&PR[r.key].extra?200:0); totalJami+=m*np; });
-      uvRows.forEach(r=>{ const {jami}=calcUv(parseInt(r.sig),parseInt(r.don)); totalJami+=jami; });
+      uvRows.forEach(r=>{ const {jami}=calcUvRow(r); totalJami+=jami; });
       ekoRows.forEach(r=>{ const {jami}=calcEko(parseFloat(r.kv)); totalJami+=jami; });
       plkRows.forEach(r=>{ totalJami += calcPlotterKesish(r.kv).payment; });          // bitta kombinatsiyalangan to'lov; takror yo'q
       kpkRows.forEach(r=>{ totalJami += calcKonturPechatKesish(r.kv).payment; });
@@ -1332,7 +1343,7 @@ async function saveOnly(type){
       renderDizayner();
     } else {
       prD = [{key:'Futbolka DTF (old)',miq:'',brak:'',ex:false}];
-      uvD = [{nom:'',sig:'',don:''}];
+      uvD = [{nom:'',list:'',brak:''}];
       ekoD = [{nom:'',kv:''}];
       plkD = [{nom:'',kv:''}];
       kpkD = [{nom:'',kv:''}];
@@ -1485,10 +1496,11 @@ async function sendWeekly(type){
         const brakTxt = brak > 0 ? ` | ⚠️ ${brak} ta BRAK` : '';
         lines.push(`  ${i+1}. ${r.key}: ${m} ${PR[r.key]?PR[r.key].u:'dona'} × ${fmt(np)} = ${fmt(j)} so'm${brakTxt}`);
       });
-      (h.data.uvRows||[]).filter(r=>parseInt(r.sig)>0).forEach((r,i) => {
-        const{ls,np,jami}=calcUv(parseInt(r.sig),parseInt(r.don));
+      (h.data.uvRows||[]).filter(r=>uvRowIsList(r)?parseInt(r.list)>0:parseInt(r.sig)>0).forEach((r,i) => {
+        const c=calcUvRow(r); const ls=c.ls, np=c.np, jami=c.jami;
         totalJ+=jami;
-        lines.push(`  UV: ${r.nom||'mahsulot'}: ${r.don} dona → ${ls} list × ${fmt(np)} = ${fmt(jami)} so'm`);
+        const desc = uvRowIsList(r) ? `${c.list} list × ${fmt(np)}` : `${r.don} dona → ${ls} list × ${fmt(np)}`;
+        lines.push(`  UV: ${r.nom||'mahsulot'}: ${desc} = ${fmt(jami)} so'm`);
       });
       lines.push('');
     });

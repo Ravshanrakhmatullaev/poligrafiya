@@ -367,32 +367,26 @@ function renderIshlab(){
 
   const pelU=document.getElementById('uv-rows'); pelU.innerHTML=''; let ut=0;
   uvD.forEach((r,i)=>{
-    const sig=parseInt(r.sig)||0; const don=parseInt(r.don)||0;
-    const{ls,lsFull,lsFrac,np,jami}=calcUv(sig,don); if(don>0&&sig>0)ut+=jami;
-    
-    // List ko'rinishi
-    let lsDisplay = '';
-    if(sig>0&&don>0){
-      if(lsFrac===0) lsDisplay = `${lsFull} list`;
-      else if(lsFull===0) lsDisplay = `${lsFrac} list`;
-      else lsDisplay = `${lsFull} + ${lsFrac} list`;
-    }
-    
+    // YANGI: list-soni rejimi. Hisob yagona router orqali (utils.js:calcUvRow).
+    const c = calcUvRow(r);
+    const list = parseInt(r.list)||0;
+    if(c.jami>0) ut+=c.jami;
+
      const div=document.createElement('div'); div.className='ui';
-     div.innerHTML=`<div style="display:grid;grid-template-columns:1fr 60px 64px auto;gap:5px;align-items:center;margin-bottom:4px">
-       <input type="text" placeholder="Mahsulot nomi..." value="${r.nom}" oninput="uvD[${i}].nom=this.value" style="font-size:12px">
-       <input type="text" inputmode="numeric" placeholder="Sig'im" value="${r.sig}" style="text-align:center;font-size:12px" id="usig${i}">
-       <input type="text" inputmode="numeric" placeholder="Dona" value="${r.don}" style="text-align:center;font-size:12px" id="udon${i}">
+     div.innerHTML=`<div style="display:grid;grid-template-columns:1fr 84px auto;gap:5px;align-items:center;margin-bottom:4px">
+       <input type="text" placeholder="Mahsulot nomi..." value="${r.nom||''}" oninput="uvD[${i}].nom=this.value" style="font-size:12px">
+       <input type="text" inputmode="numeric" placeholder="List soni" value="${r.list!==undefined&&r.list!==null?r.list:''}" style="text-align:center;font-size:12px" id="ulist${i}">
        <div style="display:flex;gap:4px;align-items:center;justify-content:flex-end">
-         ${sig>0&&don>0?`<span class="badge bo" style="font-size:11px;white-space:nowrap">${fmt(jami)}</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
+         ${list>0?`<span class="badge bo" style="font-size:11px;white-space:nowrap">${fmt(c.jami)}</span>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}
          ${delIcon(`delUv(${i})`)}
        </div>
      </div>
-     ${sig>0&&don>0?`<div class="ures">
-       <span class="badge bp">${lsDisplay}</span>
-       <span style="font-size:11px;color:var(--text3)">→</span>
-       <span class="badge bo">${fmt(jami)} so'm</span>
-       ${lsFrac>0?`<span style="font-size:11px;color:var(--text3)">(${lsFull}×${fmt(np)} + ${lsFrac} list)</span>`:''}
+     ${list>0?`<div class="ures">
+       <span class="badge bp">${c.list} list</span>
+       <span style="font-size:11px;color:var(--text3)">×</span>
+       <span class="badge" style="font-size:11px">${fmt(c.np)} so'm</span>
+       <span style="font-size:11px;color:var(--text3)">=</span>
+       <span class="badge bo">${fmt(c.jami)} so'm</span>
      </div>`:''}
      <div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap">
        <label style="font-size:11px;color:var(--text3)">Brak:</label>
@@ -400,8 +394,7 @@ function renderIshlab(){
        ${parseInt(r.brak)>0?`<span class="badge" style="background:var(--red-light);color:var(--red);border:1px solid var(--red-border)">⚠️ ${r.brak} ta brak</span>`:''}
      </div>`;
     pelU.appendChild(div);
-    numInput(div.querySelector(`#usig${i}`),v=>{uvD[i].sig=v;renderIshlab();});
-    numInput(div.querySelector(`#udon${i}`),v=>{uvD[i].don=v;renderIshlab();});
+    numInput(div.querySelector(`#ulist${i}`),v=>{uvD[i].list=v;renderIshlab();});
     if(div.querySelector(`#ubrak${i}`)) numInput(div.querySelector(`#ubrak${i}`),v=>{uvD[i].brak=v;renderIshlab();});
   });
   document.getElementById('uv-grand').textContent=fmt(ut)+" so'm";
@@ -500,7 +493,7 @@ function buildIshlabMsg(){
   let pt=0,ut=0; const pl=[],ul=[];
   prD.forEach(r=>{ const m=parseInt(r.miq)||0; if(!m)return; const p=PR[r.key]; const un=gUN(r.key,m); const np=un+(r.ex && p && p.extra?200:0); const j=m*np; pt+=j; pl.push(`${pl.length+1}. ${r.key}: ${m} ${p?p.u:'dona'} × ${fmt(np)} = ${fmt(j)} so'm`); });
   if(pl.length){lines.push(``,`📦 ODDIY MAHSULOTLAR:`);lines.push(...pl);}
-  uvD.forEach(r=>{ const sig=parseInt(r.sig)||0; const don=parseInt(r.don)||0; if(!sig||!don)return; const{ls,np,jami}=calcUv(sig,don); ut+=jami; ul.push(`${ul.length+1}. ${r.nom||'UV'}: ${don} dona (${sig}ta/list) → ${ls} list × ${fmt(np)} = ${fmt(jami)} so'm`); });
+  uvD.forEach(r=>{ const c=calcUvRow(r); if(!c.jami)return; ut+=c.jami; ul.push(`${ul.length+1}. ${r.nom||'UV'}: ${c.list} list × ${fmt(c.np)} = ${fmt(c.jami)} so'm`); });
   if(ul.length){lines.push(``,`🔆 UV PECHAT:`);lines.push(...ul);}
   lines.push(``,`📊 Oddiy: ${fmt(pt)} so'm`,`📊 UV: ${fmt(ut)} so'm`,`💰 JAMI: ${fmt(pt+ut)} so'm`);
   return lines.join('\n');

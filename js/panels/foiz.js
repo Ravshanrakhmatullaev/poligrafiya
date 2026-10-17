@@ -19,7 +19,7 @@ function calcFoiz(){ const v=parseInt(document.getElementById('calc-inp').value.
 // shuning uchun Mahsulot qo'shish/Saqlash tugmalari TypeError berardi ──
 function initIshlabPanel(){
   if(prD===null) prD=[{key:'Futbolka DTF (old)',miq:'',brak:'',ex:false}];
-  if(uvD===null) uvD=[{nom:'',sig:'',don:''}];
+  if(uvD===null) uvD=[{nom:'',list:'',brak:''}];
   if(ekoD===null) ekoD=[{nom:'',kv:''}];
   if(plkD===null) plkD=[{nom:'',kv:''}];
   if(kpkD===null) kpkD=[{nom:'',kv:''}];
@@ -81,7 +81,7 @@ function applyHiddenSections(){
 }
 
 
-function addUvRow(){uvD.push({nom:'',sig:'',don:'',brak:''});renderIshlab();}
+function addUvRow(){uvD.push({nom:'',list:'',brak:''});renderIshlab();}
 function delUv(i){uvD.splice(i,1);renderIshlab();}
 function addEkoRow(){ekoD.push({nom:'',kv:'',brak:''});renderIshlab();}
 function delEko(i){ekoD.splice(i,1);renderIshlab();}
