@@ -412,6 +412,36 @@ function calcUv(sig, don){
   return {ls: lsReal, lsReal, lsFull: fullLists, lsFrac: frac, np: npPerList, jami};
 }
 
+// ── UV pechat — YANGI "List soni" rejimi (biznes qoidasi 2026-10-17) ──
+// Pechatnik bevosita bosilgan LIST sonini kiritadi; jami = list × uvNarx(list).
+// Faqat butun list (floor). Tarif umumiy list soniga qarab (uvNarx):
+// 1-5 → 40 000, 6-10 → 25 000, 11+ → 20 000. Masalan: 30 list → 600 000.
+// 0.2/0.5 list YO'Q (butun list rejimi).
+function calcUvList(list){
+  const n = Math.max(0, Math.floor(Number(list) || 0));
+  if(n <= 0) return {mode:'list', list:0, np:0, jami:0};
+  const np = uvNarx(n);
+  return {mode:'list', list:n, np, jami: n * np};
+}
+
+// Router: UV qatorini TURIga qarab hisoblaydi — eski va yangi yozuvlarni farqlaydi.
+// YANGI yozuv: `list` maydoni bor → calcUvList (butun list).
+// ESKI yozuv: faqat sig/don → calcUv (0.2/0.5 list tariflari saqlanadi).
+// Panel/saqlash/tarix/hisobotning HAMMASIda ishlatiladi (yagona mantiq).
+function uvRowIsList(row){
+  return !!row && row.list !== undefined && row.list !== null && String(row.list) !== '';
+}
+function calcUvRow(row){
+  if(!row) return {mode:'empty', jami:0, np:0};
+  if(uvRowIsList(row)){
+    const r = calcUvList(row.list);
+    return {mode:'list', list:r.list, np:r.np, jami:r.jami};
+  }
+  const sig = parseInt(row.sig)||0, don = parseInt(row.don)||0;
+  const r = calcUv(sig, don);
+  return {mode:'sigdon', sig, don, ls:r.ls, lsFull:r.lsFull, lsFrac:r.lsFrac, np:r.np, jami:r.jami};
+}
+
 function ekoNarx(kv){ if(kv<=10)return 5000; if(kv<=50)return 4000; if(kv<=100)return 3700; return 3500; }
 function calcEko(kv){ if(!kv||kv<=0)return{narx:0,jami:0}; const narx=ekoNarx(kv); return{narx,jami:Math.round(kv*narx)}; }
 
