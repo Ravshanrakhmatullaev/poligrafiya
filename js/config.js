@@ -153,19 +153,20 @@ const KPI_BONUS = {
     { min: 40000000, max: 59999999,  bonus: 1200000, label: 'Yuqori natija' },
     { min: 60000000, max: Infinity,  bonus: 1500000, label: "A'lo darajadagi natija" },
   ],
+  // Tajriba bonus jadvali (2026-10-15, Owner tasdig'i). Fiksa 1 800 000 va target
+  // 45 000 000 O'ZGARMAYDI (KPI_DARAJALAR). Fiksa+bonus: 1.8M / 2.2M / 2.6M / 3.0M /
+  // 3.6M / 4.3M.
   tajriba: [
-    { min: 0,        max: 29999999,  bonus: 0,       label: 'Minimal natija' },
-    { min: 30000000, max: 44999999,  bonus: 200000,  label: '40+ bitimga yaqinlashish' },
-    { min: 45000000, max: 59999999,  bonus: 400000,  label: 'Qayta buyurtma ulushi 60%' },
-    { min: 60000000, max: 79999999,  bonus: 700000,  label: 'Reja bajarilgan' },
-    { min: 80000000, max: 99999999,  bonus: 1000000, label: 'Kross/apsell 20%' },
-    { min: 100000000, max: Infinity, bonus: 1500000, label: 'Elita daraja' },
+    { min: 0,        max: 24999999,  bonus: 0,       label: 'Minimal natija' },
+    { min: 25000000, max: 39999999,  bonus: 400000,  label: "Rag'bat darajasi" },
+    { min: 40000000, max: 49999999,  bonus: 800000,  label: 'Barqaror natija' },
+    { min: 50000000, max: 69999999,  bonus: 1200000, label: 'Reja bajarilgan' },
+    { min: 70000000, max: 89999999,  bonus: 1800000, label: 'Yuqori daraja' },
+    { min: 90000000, max: Infinity,  bonus: 2500000, label: 'Professionalga tayyor' },
   ],
   // Professional bonus jadvali (2026-10). Tasdiqlangan qiymatlar current main
   // asosida. Fiksa 1 000 000 va target 60 000 000 O'ZGARMAYDI (KPI_DARAJALAR).
-  // Invariant: prof(fiks 1.0M + bonus) har bir >=25mln sotuv nuqtasida tajriba
-  // (fiks 1.8M + bonus)dan YUQORI; <25mln da esa tajribadan kam (faqat lavozim
-  // uchun ortiqcha olmaydi). Oxirgi label 'Elita natija'. Tajribaga TEGILMAGAN.
+  // Oxirgi label 'Elita natija'. (Professional qiymatlari bu commitda o'zgarmagan.)
   professional: [
     { min: 0,        max: 24999999,  bonus: 0,       label: 'Minimal natija' },
     { min: 25000000, max: 39999999,  bonus: 1200000, label: "Rag'bat darajasi" },
