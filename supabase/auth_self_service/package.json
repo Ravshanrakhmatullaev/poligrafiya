@@ -1,0 +1,14 @@
+{
+  "name": "auth-self-service-validator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Temporary-project runtime validator for the auth self-service migrations. Deps are installed with lifecycle scripts DISABLED (npm ci --ignore-scripts) and ONLY before any secret enters the environment.",
+  "type": "module",
+  "scripts": {
+    "test": "node validate_lib.test.mjs && node run-validation.test.mjs"
+  },
+  "dependencies": {
+    "pg": "8.13.1",
+    "@supabase/supabase-js": "2.45.4"
+  }
+}

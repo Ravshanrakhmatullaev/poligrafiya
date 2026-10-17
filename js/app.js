@@ -229,6 +229,7 @@ function showPanel(id) {
     'bozorlik':  () => safeInitPanel('Bozorlik',      async () => { await loadBozorlik(); if (!skladData.length) await loadSklad(); }),
     'uvdtf':     () => safeInitPanel('UV DTF',        async () => { await loadUvdtfHisobot(); document.getElementById('nb-uvdtf')?.classList.add('active'); }),
     'kalk':      () => safeInitPanel('Kalkulyator',   () => { setKalkType('sigim', document.querySelector('.kc-tab[data-type="sigim"]')); }),
+    'account':   () => safeInitPanel('Profil',         initAccountPanel),
   };
 
   if (actions[id]) actions[id]();
